@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">МайКо</string>
+    <string name="login_welcomtext">Мы поможем\nОБЪЕДИНИТЬ ВСЁ\nв одном месте</string>
+    <string name="login_enter">Войти</string>
+    <string name="login_registration">Зарегистрироваться</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_passwordrepeat">Повторите пароль</string>
+    <string name="login_login">Логин</string>
+    <string name="login_registrationoffer">Ещё нет аккаунта? Регистрация</string>
+    <string name="login_enteroffer">Уже есть аккаунт? Вход</string>
+</resources>
