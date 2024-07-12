@@ -1,19 +1,31 @@
 package com.coolgirl.majko.data.dataStore
 
-import androidx.datastore.DataStore
-import androidx.datastore.preferences.Preferences
-import kotlinx.coroutines.CoroutineScope
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-object UserDataStore{
-    private var userDataStore : DataStore<Preferences>? = null
-    var coroutineScope : CoroutineScope? = null
+class UserDataStore(private val context: Context){
+    companion object {
 
-    fun InitDataStore(initDataStore : DataStore<Preferences>, initCoroutineScope: CoroutineScope){
-        userDataStore = initDataStore
-        coroutineScope = initCoroutineScope
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "master_data_store")
+        private val ACCESS_TOKEN = stringPreferencesKey("access_token")
+
     }
 
-    fun GetDataStore() : DataStore<Preferences>? {
-        return userDataStore
+    fun getAccessToken() : Flow<String?>{
+        return  context.dataStore.data.map { preferences ->
+            preferences[ACCESS_TOKEN].toString()
+        }
+    }
+
+    suspend fun setAccesToken(accesToken:String){
+        context.dataStore.edit { preferences ->
+            preferences[ACCESS_TOKEN] = accesToken
+        }
     }
 }

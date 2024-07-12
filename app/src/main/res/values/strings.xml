@@ -2,6 +2,7 @@
     <string name="app_name">МайКо</string>
     <string name="login_welcomtext">Мы поможем\nОБЪЕДИНИТЬ ВСЁ\nв одном месте</string>
     <string name="login_enter">Войти</string>
+    <string name="login_username">Юзернейм</string>
     <string name="login_registration">Зарегистрироваться</string>
     <string name="login_password">Пароль</string>
     <string name="login_passwordrepeat">Повторите пароль</string>

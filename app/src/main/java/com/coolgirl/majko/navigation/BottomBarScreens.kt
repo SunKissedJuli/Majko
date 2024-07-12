@@ -9,7 +9,7 @@ sealed class BottomBarScreens(
 ) {
 
     object Notifications : BottomBarScreens(
-        route = "notifications",
+        route = "notification",
         title = "Уведомления",
         icon = R.drawable.icon_notifications
     )

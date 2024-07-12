@@ -18,23 +18,20 @@ import com.coolgirl.majko.navigation.BottomBarScreens
 @Composable
 fun TaskScreen(navController: NavHostController){
     val viewModel:TaskViewModel = viewModel()
-    SetTaskScreen(navController, viewModel)
+    Column(Modifier.fillMaxSize()) {
+        Column(Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.94f)) {
+            SetTaskScreen(navController, viewModel)
+        }
+        BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
+    }
 }
 
 @Composable
 fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel){
     Column(Modifier.fillMaxSize()) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.94f)) {
-            Text(text = "Задачи", fontWeight = FontWeight.Bold, fontSize = 30.sp)
-        }
-        BottomBar(navController, listOf(
-            BottomBarScreens.Notifications,
-            BottomBarScreens.Task,
-            BottomBarScreens.Profile
-        ))
+
     }
 
 }
