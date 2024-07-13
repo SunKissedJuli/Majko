@@ -1,6 +1,8 @@
 package com.coolgirl.majko.data.remote
 
-import com.coolgirl.majko.data.remote.dto.CurrentUserData.CurrentUserDataResponse
+import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
+import com.coolgirl.majko.data.remote.dto.FavoritesDataResponse
+import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignInData
 import com.coolgirl.majko.data.remote.dto.UserSignInDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
@@ -20,5 +22,11 @@ interface ApiMajko{
 
     @GET("api/user/current")
     fun currentUser(@Header("Authorization") tocken: String): Call<CurrentUserDataResponse>
+
+    @POST("api/task/allUserTasks")
+    fun getAllUserTask(@Header("Authorization") tocken: String): Call<List<TaskDataResponse>>
+
+    @GET("api/task/favorites/")
+    fun getAllFavorites(@Header("Authorization") tocken: String): Call<FavoritesDataResponse>
 
 }

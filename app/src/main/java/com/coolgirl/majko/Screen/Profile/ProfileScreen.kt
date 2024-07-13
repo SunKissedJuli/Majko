@@ -1,20 +1,12 @@
 package com.coolgirl.majko.Screen.Profile
 
+import android.content.Context
 import android.util.Log
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -22,38 +14,33 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.dataStore
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
-
 import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.LoadNotesStatus
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import kotlinx.coroutines.launch
 
+
+
 @Composable
-fun ProfileScreen(navController: NavHostController) {
-    val dataStore : UserDataStore = UserDataStore(LocalContext.current)
-    val viewModel: ProfileViewModel = ProfileViewModel(dataStore)
-    val coroutineScope = rememberCoroutineScope()
-    var loadNotesStatus by remember { mutableStateOf(LoadNotesStatus.NOT_STARTED) }
+fun ProfileScreen( navController: NavHostController) {
+    val viewModel: ProfileViewModel = viewModel(key = "profileViewModel",
+        factory = ProfileViewModelProvider.getInstance(LocalContext.current))
 
-    LaunchedEffect(loadNotesStatus) {
-        coroutineScope.launch {
-            viewModel.LoadData()
-        }
-    }
-
+    val uiState by viewModel.uiState.collectAsState()
     Column(
         Modifier
             .fillMaxSize()
@@ -62,39 +49,41 @@ fun ProfileScreen(navController: NavHostController) {
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.94f)) {
-
-            SetProfileScreen(navController, viewModel)
+            SetProfileScreen(uiState, {viewModel.updateUserName(it)}, {viewModel.updateUserEmail(it)})
         }
         BottomBar(navController, listOf(
             BottomBarScreens.Notifications,
             BottomBarScreens.Task,
-            BottomBarScreens.Profile
-        ))
+            BottomBarScreens.Profile))
     }
 }
 
 @Composable
-fun SetProfileScreen(navController: NavHostController, viewModel: ProfileViewModel){
-    Column(Modifier.fillMaxSize(),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center) {
-        Image(painter = painterResource(R.drawable.icon_plug),
+fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit, onUpdateUserEmail: (String) -> Unit) {
+    Column(
+        Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(R.drawable.icon_plug),
             contentDescription = "image",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .clickable {}
                 .size(200.dp)
-                .clip(CircleShape))
+                .clip(CircleShape)
+        )
         Spacer(modifier = Modifier.height(20.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Имя:", fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Spacer(modifier = Modifier.width(20.dp))
             TextField(
-                value = viewModel.userName,
+                value = uiState.userName,
                 modifier = Modifier
                     .height(55.dp)
                     .width(150.dp),
-                onValueChange = { viewModel.updateUserName(it) },
+                onValueChange = onUpdateUserName,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = colorResource(R.color.white),
                     unfocusedContainerColor = colorResource(R.color.white)
@@ -106,15 +95,16 @@ fun SetProfileScreen(navController: NavHostController, viewModel: ProfileViewMod
             Text("Логин:", fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Spacer(modifier = Modifier.width(20.dp))
             TextField(
-                value = viewModel.userEmail,
+                value = uiState.userEmail,
                 modifier = Modifier
                     .height(55.dp)
                     .width(150.dp),
-                onValueChange = { viewModel.updateUserEmail(it) },
+                onValueChange = onUpdateUserEmail,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = colorResource(R.color.white),
-                    unfocusedContainerColor = colorResource(R.color.white)))
+                    unfocusedContainerColor = colorResource(R.color.white)
+                )
+            )
         }
-
     }
 }

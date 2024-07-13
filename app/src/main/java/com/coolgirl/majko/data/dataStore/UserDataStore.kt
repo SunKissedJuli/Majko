@@ -1,6 +1,8 @@
 package com.coolgirl.majko.data.dataStore
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -16,6 +18,8 @@ class UserDataStore(private val context: Context){
         private val ACCESS_TOKEN = stringPreferencesKey("access_token")
 
     }
+
+
 
     fun getAccessToken() : Flow<String?>{
         return  context.dataStore.data.map { preferences ->

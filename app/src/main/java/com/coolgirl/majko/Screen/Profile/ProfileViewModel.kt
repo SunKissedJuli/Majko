@@ -1,7 +1,6 @@
 package com.coolgirl.majko.Screen.Profile
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,57 +8,42 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.commons.RandomString
 import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.data.remote.dto.CurrentUserData.CurrentUserDataResponse
+import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
 import com.coolgirl.majko.di.ApiClient
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProfileViewModel(userdataStore : UserDataStore) : ViewModel() {
-    val dataStore : UserDataStore = userdataStore
-    var acessToken by mutableStateOf("")
-    var userName by mutableStateOf("")
-    var change by mutableStateOf("")
-    var dataLoaded by mutableStateOf("")
-    var userEmail by mutableStateOf("")
+class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
+    private val _uiState = MutableStateFlow(ProfileUiState())
+    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
+    init { loadData() }
 
-    fun updateUserName(username : String) {
-        userName = username
-        Log.d("tag", "profileScreen updateUserEmail userName = " + userName)
+    fun updateUserName(username: String) {
+        _uiState.update { it.copy(userName = username) }
     }
-    fun updateUserEmail(email: String){
-        userEmail = email
-        Log.d("tag", "profileScreen updateUserEmail userEmail = " + userEmail)
+
+    fun updateUserEmail(email: String) {
+        _uiState.update { it.copy(userEmail = email) }
     }
-    fun getAccessToken() : String{
+
+    private fun loadData() {
         viewModelScope.launch {
-            acessToken = dataStore.getAccessToken().first()?: ""
-        }
-        return acessToken
-    }
-
-    fun changeScreen(){
-        change = RandomString()
-    }
-
-    fun LoadData(){
-        acessToken = getAccessToken()
-        val call: Call<CurrentUserDataResponse> = ApiClient().currentUser("Bearer " + acessToken)
-        call.enqueue(object : Callback<CurrentUserDataResponse> {
-            override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
-                if(response.code()==200){
-                    updateUserEmail(response.body()?.email.toString())
-                    updateUserName(response.body()?.name.toString())
-                    Log.d("tag", "profileScreen LoadData username = " + userName)
-                    changeScreen()
-                    dataLoaded = RandomString()
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val call: Call<CurrentUserDataResponse> = ApiClient().currentUser("Bearer " + accessToken)
+            call.enqueue(object : Callback<CurrentUserDataResponse> {
+                override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
+                    if(response.code()==200){
+                        updateUserEmail(response.body()?.email.toString())
+                        updateUserName(response.body()?.name.toString())
+                    }
                 }
-            }
-            override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
-                //дописать
-            } })
+                override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
+                    //дописать
+                } })
+        }
     }
 }
