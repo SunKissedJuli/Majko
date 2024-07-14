@@ -48,7 +48,7 @@ fun ProfileScreen( navController: NavHostController) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.94f)) {
+                .fillMaxHeight(0.93f)) {
             SetProfileScreen(uiState, {viewModel.updateUserName(it)}, {viewModel.updateUserEmail(it)})
         }
         BottomBar(navController, listOf(

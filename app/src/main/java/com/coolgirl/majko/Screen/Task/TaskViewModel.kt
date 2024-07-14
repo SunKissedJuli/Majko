@@ -47,10 +47,6 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
         }
     }
 
-    fun getTaskList(): List<TaskDataResponse>? {
-           return _uiState.value.allTaskList
-    }
-
     fun loadData() {
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
@@ -61,7 +57,6 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
                     response: Response<List<TaskDataResponse>>) {
                     if (response.code() == 200) {
                         _uiState.update { it.copy(allTaskList = response.body()) }
-                       // changeScreen()
                     }
                 }
 

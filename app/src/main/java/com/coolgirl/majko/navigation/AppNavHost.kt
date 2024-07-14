@@ -2,12 +2,15 @@ package com.coolgirl.majko.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.coolgirl.majko.Screen.Login.LoginScreen
 import com.coolgirl.majko.Screen.Notification.NotificationScreen
 import com.coolgirl.majko.Screen.Profile.ProfileScreen
 import com.coolgirl.majko.Screen.Task.TaskScreen
+import com.coolgirl.majko.Screen.TaskEditor.TaskEditorScreen
 
 @Composable
 fun AppNavHost(
@@ -32,6 +35,14 @@ fun AppNavHost(
 
         composable(Screen.Profile.route) {
             ProfileScreen(navController)
+        }
+
+        composable(Screen.TaskEditor.route,
+            arguments = listOf(navArgument("task_id"){
+                type = NavType.IntType
+            })){ backStackEntry ->
+            val task_id : Int = backStackEntry.arguments?.getInt("task_id")!!
+            TaskEditorScreen(navController,task_id)
         }
     }
 }
