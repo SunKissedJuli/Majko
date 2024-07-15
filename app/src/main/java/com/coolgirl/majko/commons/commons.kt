@@ -2,9 +2,15 @@ package com.coolgirl.majko.commons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -75,6 +81,46 @@ fun TaskCard(navHostController: NavHostController, priorityColor : Int, statusNa
         }
     }
 }
+
+@Composable
+fun SpinnerSample(
+    name: String,
+    items: List<SpinnerItems>,
+    selectedItem: String,
+    onChange: (String) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var currentSelectedItem by remember { mutableStateOf(selectedItem) }
+
+    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+        androidx.compose.material.Text(
+            text = name + " " + currentSelectedItem,
+            fontSize = 18.sp)
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.fillMaxWidth()) {
+            items.forEach { item ->
+                DropdownMenuItem(
+                    onClick = {
+                        expanded = false
+                        currentSelectedItem = item.Name
+                        onChange(item.Id)})
+                {Text(item.Name)}
+            }
+        }
+        Icon(imageVector = Icons.Filled.ArrowDropDown,
+            contentDescription = "Expand",
+            modifier = Modifier
+                .height(24.dp)
+                .clickable { expanded = true })
+    }
+}
+
+data class SpinnerItems(
+    val Id:String,
+    val Name:  String
+)
 
 @Composable
 fun IsAutorize(){

@@ -1,7 +1,5 @@
 package com.coolgirl.majko.Screen.Profile
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,19 +19,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.dataStore
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.LoadNotesStatus
-import com.coolgirl.majko.data.dataStore.UserDataStore
-import kotlinx.coroutines.launch
-
-
 
 @Composable
 fun ProfileScreen( navController: NavHostController) {

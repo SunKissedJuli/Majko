@@ -9,4 +9,10 @@
     <string name="login_login">Логин</string>
     <string name="login_registrationoffer">Ещё нет аккаунта? Регистрация</string>
     <string name="login_enteroffer">Уже есть аккаунт? Вход</string>
+    <string name="taskeditor_hint">Начните писать..</string>
+    <string name="taskeditor_name">Название</string>
+    <string name="taskeditor_deadline">Дедлайн:</string>
+    <string name="taskeditor_priority">Приоритет:</string>
+    <string name="taskeditor_status">Статус:</string>
+    <string name="taskeditor_project">Проект:</string>
 </resources>

@@ -25,7 +25,7 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
 
     init{ loadData() }
 
-    var allTaskList = MutableStateFlow<List<TaskDataResponse>?>(null)
+   // var allTaskList = MutableStateFlow<List<TaskDataResponse>?>(null)
 
     fun getPriority(priorityId: Int): Int{
         return when (priorityId) {
@@ -57,6 +57,8 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
                     response: Response<List<TaskDataResponse>>) {
                     if (response.code() == 200) {
                         _uiState.update { it.copy(allTaskList = response.body()) }
+
+                        Log.d("tag", "Taskeditor " + response.body())
                     }
                 }
 
