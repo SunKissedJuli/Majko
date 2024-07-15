@@ -20,7 +20,7 @@ data class TaskDataResponse(
     val countSubtasks: Int,
     val countNotes: Int,
     val countFiles: Int,
-    val isFavorite: Boolean,
+    val is_favorite: Boolean,
     val project: ProjectDataResponse?
 )
 

@@ -11,7 +11,7 @@ sealed class Screen(val route: String) {
     object Profile : Screen("profile")
 
     object TaskEditor : Screen("task_editor/{task_id}"){
-        fun task_id(task_id: Int): String{
+        fun task_id(task_id: String): String{
             return "task_editor/$task_id"
         }
     }

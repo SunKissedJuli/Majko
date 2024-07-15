@@ -7,11 +7,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -22,9 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.SpinnerItems
 import com.coolgirl.majko.commons.SpinnerSample
@@ -32,7 +29,7 @@ import com.coolgirl.majko.data.dataStore.UserDataStore
 import java.util.*
 
 @Composable
-fun TaskEditorScreen(navController: NavHostController, task_id : Int){
+fun TaskEditorScreen(navController: NavHostController, task_id : String){
     val cont = LocalContext.current
     val viewModel : TaskEditorViewModel = remember{ TaskEditorViewModel(UserDataStore(cont), task_id)}
     val uiState by viewModel.uiState.collectAsState()
@@ -45,7 +42,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
     Column(
         Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.white))) {
+            .background(colorResource(uiState.backgroundColor))) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -98,11 +95,9 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 val mYear: Int = mCalendar.get(Calendar.YEAR)
                 val mMonth: Int = mCalendar.get(Calendar.MONTH)
                 val mDay: Int = mCalendar.get(Calendar.DAY_OF_MONTH)
-
                 val currentDate = Date()
                 val currentCalendar = Calendar.getInstance()
                 currentCalendar.time = currentDate
-                val maxDay: Int = currentCalendar.get(Calendar.DAY_OF_MONTH)
 
                 val mDatePickerDialog = DatePickerDialog(
                     LocalContext.current,
@@ -122,7 +117,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
             Row(){
                 SpinnerSample(name = stringResource(R.string.taskeditor_priority),
                     items = viewModel.getPriority(),
-                    selectedItem = "Низкий",
+                    selectedItem = viewModel.getPriorityName(uiState.taskPriority),
                     {viewModel.updateTaskPriority(it)})
             }
             Spacer(modifier = Modifier.height(10.dp))
@@ -138,8 +133,24 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
             Row(){
                 SpinnerSample(name = stringResource(R.string.taskeditor_status),
                     items = viewModel.getStatus(),
-                    selectedItem = "Не выбрано",
+                    selectedItem = viewModel.getStatusName(uiState.taskStatus),
                     {viewModel.updateTaskStatus(it)})
+            }
+            Row(Modifier
+                .fillMaxSize()
+                .padding(15.dp,0.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End){
+                    var expanded by remember { mutableStateOf(false) }
+
+                    Box { IconButton(onClick = { expanded = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "Показать меню") }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }) {
+                            Text("Удалить", fontSize=18.sp, modifier = Modifier.padding(10.dp).clickable { viewModel.removeTask(navController) })
+                        }
+                    }
             }
         }
     }

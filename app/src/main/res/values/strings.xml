@@ -15,4 +15,6 @@
     <string name="taskeditor_priority">Приоритет:</string>
     <string name="taskeditor_status">Статус:</string>
     <string name="taskeditor_project">Проект:</string>
+    <string name="task_favorites">Избранные</string>
+    <string name="task_each">Другие</string>
 </resources>

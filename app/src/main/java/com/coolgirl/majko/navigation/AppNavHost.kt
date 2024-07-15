@@ -39,9 +39,9 @@ fun AppNavHost(
 
         composable(Screen.TaskEditor.route,
             arguments = listOf(navArgument("task_id"){
-                type = NavType.IntType
-            })){ backStackEntry ->
-            val task_id : Int = backStackEntry.arguments?.getInt("task_id")!!
+                type = NavType.StringType
+            })){
+            val task_id : String = it.arguments?.getString("task_id")!!
             TaskEditorScreen(navController,task_id)
         }
     }

@@ -9,8 +9,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,13 +39,19 @@ import com.coolgirl.majko.data.remote.dto.FavoritesDataResponse
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 
 @Composable
-fun TaskCard(navHostController: NavHostController, priorityColor : Int, statusName : String, taskData: TaskDataResponse){
+fun TaskCard(navHostController: NavHostController,
+             priorityColor : Int,
+             statusName : String,
+             taskData: TaskDataResponse,
+             onBurnStarClick: (String) -> Unit,
+             onDeadStarClick: (String) -> Unit){
     Column(modifier = Modifier
         .height(260.dp)
         .width(180.dp)
         .padding(5.dp)
         .clip(RoundedCornerShape(20.dp))
-        .background(color = colorResource(priorityColor)),
+        .background(color = colorResource(priorityColor))
+        .clickable { navHostController.navigate(Screen.TaskEditor.task_id(taskData.id)) },
     horizontalAlignment = Alignment.Start,
     verticalArrangement = Arrangement.Top) {
         Row(
@@ -50,7 +59,7 @@ fun TaskCard(navHostController: NavHostController, priorityColor : Int, statusNa
                 .padding(10.dp, 10.dp, 10.dp, 0.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(0.14f),
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ){
             Image(painter = painterResource(R.drawable.icon_plug),
@@ -59,12 +68,22 @@ fun TaskCard(navHostController: NavHostController, priorityColor : Int, statusNa
                 modifier = Modifier
                     .fillMaxHeight(0.8f)
                     .clip(CircleShape))
-            Spacer(Modifier.width(10.dp))
-            Text(text= taskData.title?: "Без названия", fontSize = 15.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
+            Spacer(Modifier.width(5.dp))
+            Text(text= taskData.title?: "Без названия", modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
+            Spacer(Modifier.width(5.dp))
+            if (taskData.is_favorite==true){
+                IconButton(onClick = { onBurnStarClick(taskData.id) }) {
+                    Icon(imageVector = Icons.Filled.Star, contentDescription = "Favorites", tint = colorResource(R.color.yellow))
+                }
+            }else{
+                IconButton(onClick = { onDeadStarClick(taskData.id) }) {
+                    Icon(imageVector = Icons.Outlined.Star, contentDescription = "Favorites", tint = colorResource(R.color.gray))
+                }
+            }
         }
         Row(
             Modifier
-                .padding(10.dp,10.dp,10.dp,0.dp)
+                .padding(10.dp, 10.dp, 10.dp, 0.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(0.7f),
             horizontalArrangement = Arrangement.Start,
