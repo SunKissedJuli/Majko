@@ -62,11 +62,29 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 .background(colorResource(R.color.blue))
                 .padding(10.dp, 0.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start) {
+            horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                modifier = Modifier.clickable { /*сохранение*/ },
+                modifier = Modifier.clickable { viewModel.saveProject(navController) },
                 text = "←", fontWeight = FontWeight.Medium,
                 color = colorResource(R.color.white), fontSize = 50.sp,)
+
+            var expanded by remember { mutableStateOf(false) }
+
+          //  Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
+                Box() { IconButton(onClick = { expanded = true }) {
+                    Icon(Icons.Default.MoreVert, tint = colorResource(R.color.white), contentDescription = "Показать меню") }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.fillMaxWidth(0.5f)) {
+                        Text("Удалить", fontSize=18.sp,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .clickable { viewModel.removeProject(navController) })
+                    }
+                }
+          //  }
+
             //   Text(text = noteData, fontSize = 18.sp)
         }
 
@@ -240,7 +258,10 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                     }
                 }
 
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 0.dp, 0.dp, 30.dp), horizontalArrangement = Arrangement.Center){
                     Button(onClick = { viewModel.saveTask()},
                         shape = CircleShape,
                         modifier = Modifier

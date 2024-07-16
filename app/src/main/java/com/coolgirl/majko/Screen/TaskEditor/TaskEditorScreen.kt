@@ -142,11 +142,13 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 horizontalArrangement = Arrangement.End){
                     var expanded by remember { mutableStateOf(false) }
 
-                    Box { IconButton(onClick = { expanded = true }) {
+                    Box {
+                        IconButton(onClick = { expanded = true }) {
                             Icon(Icons.Default.MoreVert, contentDescription = "Показать меню") }
                         DropdownMenu(
                             expanded = expanded,
-                            onDismissRequest = { expanded = false }) {
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier.fillMaxWidth(0.5f)) {
                             Text("Удалить", fontSize=18.sp, modifier = Modifier.padding(10.dp).clickable { viewModel.removeTask(navController) })
                         }
                     }

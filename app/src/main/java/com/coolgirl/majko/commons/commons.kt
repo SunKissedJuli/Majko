@@ -126,7 +126,7 @@ fun ProjectCard(navHostController: NavHostController,
                 .padding(15.dp, 10.dp, 10.dp, 0.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(0.27f),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically){
             Image(painter = painterResource(R.drawable.icon_plug),
                 contentDescription = "image",
@@ -134,7 +134,7 @@ fun ProjectCard(navHostController: NavHostController,
                 modifier = Modifier
                     .fillMaxHeight(0.8f)
                     .clip(CircleShape))
-            Spacer(Modifier.width(5.dp))
+            Spacer(Modifier.width(15.dp))
             Text(text= projectData.name?: "Без названия", modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
         }
         Row(

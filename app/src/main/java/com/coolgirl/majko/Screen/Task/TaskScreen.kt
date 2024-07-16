@@ -27,11 +27,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.commons.TaskCard
-import com.coolgirl.majko.navigation.BottomBar
-import com.coolgirl.majko.navigation.BottomBarScreens
 import com.coolgirl.majko.R
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
-import com.coolgirl.majko.navigation.Screen
+import com.coolgirl.majko.navigation.*
 import kotlin.math.roundToInt
 
 @Composable
@@ -52,6 +50,10 @@ fun TaskScreen(navController: NavHostController) {
             BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
         }
 
+        ModalNavigationDrawer(navController,
+            listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project,
+                ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive) )
+
         Button(onClick = { navController.navigate(Screen.TaskEditor.task_id("0"))},
             shape = CircleShape,
             modifier = Modifier
@@ -71,13 +73,13 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel) {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
-        Row(Modifier
+        Row(
+            Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.1f)
                 .padding(10.dp)
                 .clip(RoundedCornerShape(30.dp))
                 .background(color = colorResource(R.color.blue))) {
-
             // строка поиска, бургер и тд и тп
         }
 
@@ -86,7 +88,8 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel) {
         if (allTaskList != null && favoritesTaskList != null) {
             val columnItems1: Int = ((allTaskList!!.size).toFloat() / 2).roundToInt()
             val columnItems: Int = ((favoritesTaskList!!.size).toFloat() / 2).roundToInt()
-            LazyColumn(Modifier
+            LazyColumn(
+                Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,

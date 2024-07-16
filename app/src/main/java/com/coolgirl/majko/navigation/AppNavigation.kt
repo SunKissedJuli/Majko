@@ -12,6 +12,8 @@ sealed class Screen(val route: String) {
 
     object Project : Screen("project")
 
+    object Archive : Screen("archive")
+
     object ProjectEditor : Screen("project_editor/{project_id}"){
         fun project_id(project_id: String): String{
             return "project_editor/$project_id"

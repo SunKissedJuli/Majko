@@ -7,8 +7,10 @@ import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.SpinnerItems
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.di.ApiClient
@@ -147,6 +149,43 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
 
                 override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
                     Log.d("tag", "ProjectEditlog t = " + t.message)
+                }
+            })
+        }
+    }
+
+    fun saveProject(navHostController: NavHostController){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val updateProject = ProjectUpdate(uiState.value.projectId, uiState.value.projectData!!.name,uiState.value.projectData!!.description,0)
+            val call: Call<ProjectCurrentResponse> = ApiClient().updateProject("Bearer " + accessToken, updateProject)
+            call.enqueue(object : Callback<ProjectCurrentResponse> {
+                override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
+                    if (response.code() == 200||response.code()==201) {
+                       navHostController.navigate(Screen.Project.route)
+                    }
+                }
+                override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
+                    Log.d("tag", "Taskeditor response t" + t.message)
+                }
+            })
+        }
+    }
+
+    fun removeProject(navHostController: NavHostController){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val call: Call<Unit> = ApiClient().removeProject("Bearer " + accessToken, ProjectById(uiState.value.projectId))
+            call.enqueue(object : Callback<Unit> {
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    if (response.code() == 200||response.code()==201) {
+                        Log.d("tag", "Taskeditor response 200 " + response.body())
+                        navHostController.navigate(Screen.Project.route)
+                    }
+                    Log.d("tag", "Taskeditor response не200 " + response.code())
+                }
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    Log.d("tag", "Taskeditor response t" + t.message)
                 }
             })
         }

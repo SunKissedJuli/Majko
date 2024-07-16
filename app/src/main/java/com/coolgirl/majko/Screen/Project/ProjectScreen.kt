@@ -27,6 +27,7 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.ProjectCard
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
+import com.coolgirl.majko.navigation.ModalNavigationDrawerScreens
 
 @Composable
 fun ProjectScreen(navController: NavHostController){
@@ -48,6 +49,12 @@ fun ProjectScreen(navController: NavHostController){
             }
             BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
         }
+
+
+        com.coolgirl.majko.navigation.ModalNavigationDrawer(
+            navController, listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project,
+                ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
+        )
 
         Button(onClick = { viewModel.addingProject()},
             shape = CircleShape,

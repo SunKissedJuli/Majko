@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.coolgirl.majko.Screen.Archive.ArchiveScreen
 import com.coolgirl.majko.Screen.Login.LoginScreen
 import com.coolgirl.majko.Screen.Notification.NotificationScreen
 import com.coolgirl.majko.Screen.Profile.ProfileScreen
@@ -41,6 +42,10 @@ fun AppNavHost(
 
         composable(Screen.Project.route) {
             ProjectScreen(navController)
+        }
+
+        composable(Screen.Archive.route) {
+            ArchiveScreen(navController)
         }
 
         composable(Screen.ProjectEditor.route,

@@ -1,10 +1,7 @@
 package com.coolgirl.majko.data.remote
 
 import com.coolgirl.majko.data.remote.dto.*
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectData
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
+import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskBy_Id
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
@@ -63,5 +60,11 @@ interface ApiMajko{
 
     @POST("api/project/getById")
     fun getProjectById(@Header("Authorization") tocken: String, @Body projectById: ProjectById) : Call<ProjectCurrentResponse>
+
+    @POST("api/project/update")
+    fun updateProject(@Header("Authorization") tocken: String, @Body projectById: ProjectUpdate) : Call<ProjectCurrentResponse>
+
+    @HTTP(method = "DELETE", path = "api/project/delete", hasBody = true)
+    fun removeProject(@Header("Authorization") tocken: String, @Body taskId: ProjectById) : Call<Unit>
 
 }
