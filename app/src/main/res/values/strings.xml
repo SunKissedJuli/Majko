@@ -22,4 +22,6 @@
     <string name="project_name">Название проекта</string>
     <string name="project_description">Описание проекта</string>
     <string name="project_add">Добавить</string>
+    <string name="projectedit_project">Проект:</string>
+    <string name="projectedit_addtask">Добавить задачу</string>
 </resources>

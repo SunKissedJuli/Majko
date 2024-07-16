@@ -36,14 +36,12 @@ fun ProjectScreen(navController: NavHostController){
     )
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(
-        Modifier
+    Box(Modifier
             .fillMaxSize()
             .alpha(uiState.is_adding_background)) {
         Column(Modifier.fillMaxSize()) {
 
-            Column(
-                Modifier
+            Column(Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.93f)) {
                 SetProjectScreen(uiState, navController)

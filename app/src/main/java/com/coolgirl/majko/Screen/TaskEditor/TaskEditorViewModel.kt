@@ -53,7 +53,6 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
 
     fun updateTaskDeadlie(deadline:String){
         _uiState.update { it.copy(taskDeadline = deadline) }
-        Log.d("tag", "Taskeditor updateTaskDeadlie = " + _uiState.value.taskDeadline)
     }
 
     fun getStatus() : List<SpinnerItems>{
@@ -95,9 +94,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
     }
 
     fun saveTask(navHostController: NavHostController){
-        Log.d("tag", "Taskeditor это savetask")
         viewModelScope.launch {
-            Log.d("tag", "Taskeditor это savetask launch")
             val accessToken = dataStore.getAccessToken().first() ?: ""
             val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
                 uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.taskProject,"")
@@ -125,11 +122,9 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                call.enqueue(object : Callback<Unit> {
                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
                        if (response.code() == 200 || response.code() == 201) {
-                           Log.d("tag","Taskeditor 200")
                            navHostController.navigate(Screen.Task.route)
 
                        }
-                       Log.d("tag","Taskeditor после 200")
                    }
 
                    override fun onFailure(call: Call<Unit>, t: Throwable) {
@@ -144,13 +139,11 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
         if(!task_id.equals("0")){
             _uiState.update { it.copy(taskId = task_id) }
             viewModelScope.launch {
-                Log.d("tag", "Taskeditor это loadData")
                 val accessToken = dataStore.getAccessToken().first() ?: ""
                 val call: Call<TaskDataResponse> = ApiClient().getTaskById("Bearer " + accessToken, TaskById(uiState.value.taskId))
                 call.enqueue(object : Callback<TaskDataResponse> {
                     override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
                         if (response.code() == 200||response.code()==201) {
-                            Log.d("tag", "Taskeditor это loadData body = " + response.body())
                             _uiState.update { it.copy(taskId = task_id) }
                             _uiState.update { it.copy(taskDeadline = response.body()!!.deadline) }
                             if(response.body()?.project !=null){
@@ -161,8 +154,6 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                             _uiState.update { it.copy(taskText = response.body()!!.text!!) }
                             _uiState.update { it.copy(taskStatus = response.body()!!.status!!) }
                         }
-                        Log.d("tag", "Taskeditor это loadData body = " + response.code())
-
                     }
 
                     override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {

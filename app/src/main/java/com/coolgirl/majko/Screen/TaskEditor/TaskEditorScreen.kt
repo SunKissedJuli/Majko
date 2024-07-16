@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -51,7 +50,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 .padding(10.dp, 0.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start) {
-            Text(modifier = Modifier.clickable { viewModel.saveTask(navController) }, text = "←", fontWeight = FontWeight.Black,
+            Text(modifier = Modifier.clickable { viewModel.saveTask(navController) }, text = "←", fontWeight = FontWeight.Medium,
                 color = colorResource(R.color.white), fontSize = 50.sp,
             )
             //   Text(text = noteData, fontSize = 18.sp)

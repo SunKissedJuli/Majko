@@ -10,6 +10,7 @@ import com.coolgirl.majko.Screen.Login.LoginScreen
 import com.coolgirl.majko.Screen.Notification.NotificationScreen
 import com.coolgirl.majko.Screen.Profile.ProfileScreen
 import com.coolgirl.majko.Screen.Project.ProjectScreen
+import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditScreen
 import com.coolgirl.majko.Screen.Task.TaskScreen
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorScreen
 
@@ -42,12 +43,20 @@ fun AppNavHost(
             ProjectScreen(navController)
         }
 
+        composable(Screen.ProjectEditor.route,
+            arguments = listOf(navArgument("project_id"){
+                type = NavType.StringType
+            })){
+            val project_id : String = it.arguments?.getString("project_id")!!
+            ProjectEditScreen(navController, project_id)
+        }
+
         composable(Screen.TaskEditor.route,
             arguments = listOf(navArgument("task_id"){
                 type = NavType.StringType
             })){
             val task_id : String = it.arguments?.getString("task_id")!!
-            TaskEditorScreen(navController,task_id)
+            TaskEditorScreen(navController, task_id)
         }
     }
 }

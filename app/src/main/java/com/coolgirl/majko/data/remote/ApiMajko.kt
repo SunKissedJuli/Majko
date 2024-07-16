@@ -1,6 +1,8 @@
 package com.coolgirl.majko.data.remote
 
 import com.coolgirl.majko.data.remote.dto.*
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectData
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
@@ -58,5 +60,8 @@ interface ApiMajko{
 
     @POST("api/project/create")
     fun postNewProject(@Header("Authorization") tocken: String, @Body project:ProjectData): Call<ProjectDataResponse>
+
+    @POST("api/project/getById")
+    fun getProjectById(@Header("Authorization") tocken: String, @Body projectById: ProjectById) : Call<ProjectCurrentResponse>
 
 }

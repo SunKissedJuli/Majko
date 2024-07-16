@@ -110,26 +110,24 @@ fun TaskCard(navHostController: NavHostController,
 @Composable
 fun ProjectCard(navHostController: NavHostController,
              priorityColor : Int = R.color.white,
-             projectData: ProjectDataResponse
-) {
+             projectData: ProjectDataResponse) {
     Column(modifier = Modifier
         .fillMaxWidth()
-        .height(220.dp)
-        .padding(10.dp)
+        .height(150.dp)
+        .padding(10.dp, 10.dp, 10.dp, 0.dp)
         .clip(RoundedCornerShape(20.dp))
         .border(3.dp, color = colorResource(R.color.blue), shape = RoundedCornerShape(20.dp))
-        .background(color = colorResource(priorityColor)),
-      //  .clickable { navHostController.navigate(Screen.TaskEditor.task_id(taskData.id)) },
+        .background(color = colorResource(priorityColor))
+        .clickable { navHostController.navigate(Screen.ProjectEditor.project_id(projectData.id)) },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
         Row(
             Modifier
-                .padding(10.dp, 10.dp, 10.dp, 0.dp)
+                .padding(15.dp, 10.dp, 10.dp, 0.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(0.14f),
+                .fillMaxHeight(0.27f),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ){
+            verticalAlignment = Alignment.CenterVertically){
             Image(painter = painterResource(R.drawable.icon_plug),
                 contentDescription = "image",
                 contentScale = ContentScale.Crop,
@@ -141,7 +139,7 @@ fun ProjectCard(navHostController: NavHostController,
         }
         Row(
             Modifier
-                .padding(10.dp, 10.dp, 10.dp, 0.dp)
+                .padding(15.dp, 10.dp, 10.dp, 0.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(0.7f),
             horizontalArrangement = Arrangement.Start,
@@ -220,6 +218,15 @@ fun RandomString() : String{
     return (1..length)
         .map { charPool[Random.nextInt(0, charPool.size)] }
         .joinToString("")
+}
+
+@Composable
+fun HorizontalLine(){
+    Box(modifier = Modifier
+        .fillMaxWidth().padding(0.dp,5.dp,0.dp,12.dp)
+        .height(1.dp)
+        .background(color = colorResource(R.color.gray))
+    )
 }
 
 enum class LoadNotesStatus {
