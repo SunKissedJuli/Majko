@@ -5,17 +5,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
@@ -23,6 +25,7 @@ import com.coolgirl.majko.commons.ProjectCard
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
 import com.coolgirl.majko.navigation.ModalNavigationDrawerScreens
+import kotlinx.coroutines.launch
 
 @Composable
 fun ArchiveScreen(navController: NavHostController){
@@ -34,26 +37,60 @@ fun ArchiveScreen(navController: NavHostController){
 
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(
-        Modifier
-            .fillMaxSize()) {
-        Column(Modifier.fillMaxSize()) {
+    val items = listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project, ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
+    val (selectedItem, setSelectedItem) = remember { mutableStateOf(items[0]) }
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.93f)) {
-                SetArchiveScreen(uiState, navController)
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+                Modifier.fillMaxWidth(0.7f),
+                drawerContainerColor = colorResource(R.color.purple)) {
+                items.forEach { item ->
+                    NavigationDrawerItem(
+                        label = { Text(item.title, fontSize = 22.sp) },
+                        selected = selectedItem == item,
+                        onClick = {
+                            setSelectedItem(item)
+                            navController.navigate(item.route)
+                            scope.launch { drawerState.close() } },
+                        colors = NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = Color.Transparent, unselectedContainerColor = Color.Transparent,
+                            selectedTextColor = Color.Black, unselectedTextColor = Color.White)
+                    )
+                }
             }
-            BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
-        }
+        },
+        content = {
+            Row(Modifier.padding(10.dp)) {
+                Box(
+                    Modifier
+                        .fillMaxSize()) {
+                    Column(Modifier.fillMaxSize()) {
 
-        com.coolgirl.majko.navigation.ModalNavigationDrawer(
-            navController, listOf(
-                ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project,
-                ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
-        )
-    }
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.93f)) {
+                            SetArchiveScreen(uiState, navController)
+                        }
+                        BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
+                    }
+                }
+                IconButton(
+                    onClick = { scope.launch { drawerState.open() } },
+                    content = {
+                        Icon(
+                            Icons.Filled.Menu,
+                            contentDescription = "Menu",
+                            tint = colorResource(R.color.white))
+                    }
+                )
+            }
+        }
+    )
 }
 
 @Composable

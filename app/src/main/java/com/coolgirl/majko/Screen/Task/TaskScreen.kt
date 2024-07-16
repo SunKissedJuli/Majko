@@ -1,35 +1,34 @@
 package com.coolgirl.majko.Screen.Task
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.commons.TaskCard
 import com.coolgirl.majko.R
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.navigation.*
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
@@ -39,32 +38,69 @@ fun TaskScreen(navController: NavHostController) {
         factory = TaskViewModelProvider.getInstance(LocalContext.current)
     )
 
-    Box(Modifier.fillMaxSize()) {
-        Column(Modifier.fillMaxSize()) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.93f)) {
-                SetTaskScreen(navController, viewModel)
+    val items = listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project, ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
+    val (selectedItem, setSelectedItem) = remember { mutableStateOf(items[0]) }
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+                Modifier.fillMaxWidth(0.7f),
+                drawerContainerColor = colorResource(R.color.purple)) {
+                items.forEach { item ->
+                    NavigationDrawerItem(
+                        label = { androidx.compose.material3.Text(item.title, fontSize = 22.sp) },
+                        selected = selectedItem == item,
+                        onClick = {
+                            setSelectedItem(item)
+                            navController.navigate(item.route)
+                            scope.launch { drawerState.close() } },
+                        colors = NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = Color.Transparent, unselectedContainerColor = Color.Transparent,
+                            selectedTextColor = Color.Black, unselectedTextColor = Color.White)
+                    )
+                }
             }
-            BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
-        }
+        },
+        content = {
+            Box(Modifier.fillMaxSize()) {
+                Column(Modifier.fillMaxSize()) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.93f)) {
+                        SetTaskScreen(navController, viewModel)
+                    }
+                    BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
+                }
 
-        ModalNavigationDrawer(navController,
-            listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project,
-                ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive) )
+                Button(onClick = { navController.navigate(Screen.TaskEditor.task_id("0"))},
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(20.dp, 65.dp)
+                        .size(56.dp),
+                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
+                    Text(text = "+", color = colorResource(R.color.white),
+                        fontSize = 34.sp, fontWeight = FontWeight.Bold)
+                }
+            }
 
-        Button(onClick = { navController.navigate(Screen.TaskEditor.task_id("0"))},
-            shape = CircleShape,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(20.dp, 65.dp)
-                .size(56.dp),
-            colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-            Text(text = "+", color = colorResource(R.color.white),
-                fontSize = 34.sp, fontWeight = FontWeight.Bold)
+            Row(Modifier.padding(10.dp)) {
+                IconButton(
+                    onClick = { scope.launch { drawerState.open() } },
+                    content = {
+                        Icon(
+                            Icons.Filled.Menu,
+                            contentDescription = "Menu",
+                            tint = colorResource(R.color.white))
+                    }
+                )
+            }
         }
-    }
+    )
 }
 
 @Composable
