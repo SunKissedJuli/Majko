@@ -9,14 +9,14 @@ sealed class BottomBarScreens(
 ) {
 
     object Notifications : BottomBarScreens(
-        route = "notification",
-        title = "Уведомления",
-        icon = R.drawable.icon_notifications
+        route = "project",
+        title = "Проекты",
+        icon = R.drawable.icon_project
     )
 
     object Task : BottomBarScreens(
         route = "tasks",
-        title = "Мои задачи",
+        title = "Задачи",
         icon = R.drawable.icon_task
     )
 

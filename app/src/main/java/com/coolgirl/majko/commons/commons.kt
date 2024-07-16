@@ -2,6 +2,7 @@ package com.coolgirl.majko.commons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -35,7 +36,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import com.coolgirl.majko.R
-import com.coolgirl.majko.data.remote.dto.FavoritesDataResponse
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 
 @Composable
@@ -46,7 +47,7 @@ fun TaskCard(navHostController: NavHostController,
              onBurnStarClick: (String) -> Unit,
              onDeadStarClick: (String) -> Unit){
     Column(modifier = Modifier
-        .height(260.dp)
+        .height(270.dp)
         .width(180.dp)
         .padding(5.dp)
         .clip(RoundedCornerShape(20.dp))
@@ -96,6 +97,62 @@ fun TaskCard(navHostController: NavHostController,
             }
             Row(Modifier.padding(10.dp, 0.dp,10.dp,10.dp), horizontalArrangement = Arrangement.Center){
                 Text(text= "Статус: " + statusName, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+            }
+            if(taskData.project!=null){
+                Row(Modifier.padding(10.dp, 0.dp,10.dp,10.dp), horizontalArrangement = Arrangement.Center){
+                    Text(text= "Провет: " + taskData.project.name, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProjectCard(navHostController: NavHostController,
+             priorityColor : Int = R.color.white,
+             projectData: ProjectDataResponse
+) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .height(220.dp)
+        .padding(10.dp)
+        .clip(RoundedCornerShape(20.dp))
+        .border(3.dp, color = colorResource(R.color.blue), shape = RoundedCornerShape(20.dp))
+        .background(color = colorResource(priorityColor)),
+      //  .clickable { navHostController.navigate(Screen.TaskEditor.task_id(taskData.id)) },
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top) {
+        Row(
+            Modifier
+                .padding(10.dp, 10.dp, 10.dp, 0.dp)
+                .fillMaxWidth()
+                .fillMaxHeight(0.14f),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Image(painter = painterResource(R.drawable.icon_plug),
+                contentDescription = "image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxHeight(0.8f)
+                    .clip(CircleShape))
+            Spacer(Modifier.width(5.dp))
+            Text(text= projectData.name?: "Без названия", modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
+        }
+        Row(
+            Modifier
+                .padding(10.dp, 10.dp, 10.dp, 0.dp)
+                .fillMaxWidth()
+                .fillMaxHeight(0.7f),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Top){
+            Text(text= projectData.description?: "Без описания", fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
+        }
+        Column(Modifier.fillMaxSize()) {
+            if (!projectData.is_personal){
+                for(item in projectData.members){
+                    item.name?.let { Text(text = it) }
+                }
             }
         }
     }

@@ -77,6 +77,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel) {
                 .padding(10.dp)
                 .clip(RoundedCornerShape(30.dp))
                 .background(color = colorResource(R.color.blue))) {
+
             // строка поиска, бургер и тд и тп
         }
 
@@ -87,7 +88,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel) {
             val columnItems: Int = ((favoritesTaskList!!.size).toFloat() / 2).roundToInt()
             LazyColumn(Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(), // Remove verticalScroll modifier
+                    .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (favoritesTaskList != null) {

@@ -1,7 +1,7 @@
 package com.coolgirl.majko.data.remote.dto.TaskData
 
 import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
-import com.coolgirl.majko.data.remote.dto.ProjectDataResponse
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 
 data class TaskDataResponse(
     val id: String,

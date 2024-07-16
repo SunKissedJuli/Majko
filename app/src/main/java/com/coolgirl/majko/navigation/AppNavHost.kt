@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.coolgirl.majko.Screen.Login.LoginScreen
 import com.coolgirl.majko.Screen.Notification.NotificationScreen
 import com.coolgirl.majko.Screen.Profile.ProfileScreen
+import com.coolgirl.majko.Screen.Project.ProjectScreen
 import com.coolgirl.majko.Screen.Task.TaskScreen
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorScreen
 
@@ -35,6 +36,10 @@ fun AppNavHost(
 
         composable(Screen.Profile.route) {
             ProfileScreen(navController)
+        }
+
+        composable(Screen.Project.route) {
+            ProjectScreen(navController)
         }
 
         composable(Screen.TaskEditor.route,
