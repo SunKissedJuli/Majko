@@ -43,7 +43,6 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
         }else{
             _uiState.update { it.copy(is_adding = true) }
         }
-
     }
 
     fun updateProjectDescription(description: String){

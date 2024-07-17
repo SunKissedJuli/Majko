@@ -16,5 +16,12 @@ data class TaskEditorUiState(
     val noteText: String = "",
     val newNote:Boolean = false,
     val notes: List<NoteDataResponse>? = null,
-    val subtask: List<TaskDataResponse>? = null
+    val subtask: List<TaskDataResponse>? = null,
+    val is_adding: Boolean = false,
+    val subtaskText: String = "",
+    val subtaskName: String = "",
+    val subtaskDeadline: String = "",
+    val subtaskPriority: Int = 1,
+    val subtaskStatus: Int = 1,
+    val subtaskProject: String = "",
 )

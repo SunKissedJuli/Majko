@@ -25,4 +25,5 @@
     <string name="project_add">Добавить</string>
     <string name="projectedit_project">Проект:</string>
     <string name="projectedit_addtask">Добавить задачу</string>
+    <string name="taskeditor_addtask">Добавить субзадачу</string>
 </resources>

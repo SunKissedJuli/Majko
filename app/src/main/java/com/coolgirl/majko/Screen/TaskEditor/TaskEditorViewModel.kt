@@ -52,6 +52,32 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
         _uiState.update { it.copy(noteText = note) }
     }
 
+
+    fun updateSubtaskText(text: String) {
+        _uiState.update { it.copy(subtaskText = text) }
+    }
+
+    fun updateSubtaskName(name:String){
+        _uiState.update { it.copy(subtaskName = name) }
+    }
+
+    fun updateSubtaskStatus(status:String){
+        _uiState.update { it.copy(subtaskStatus = status.toInt()) }
+    }
+
+    fun updateSubtaskDeadlie(deadline:String){
+        _uiState.update { it.copy(subtaskDeadline = deadline) }
+        Log.d("tag", "Taskeditor updateTaskDeadlie = " + _uiState.value.taskDeadline)
+    }
+
+    fun updateSubtaskPriority(prioryti:String){
+        _uiState.update { it.copy(subtaskPriority = prioryti.toInt()) }
+    }
+
+    fun updateSubtaskProject(project:String){
+        _uiState.update { it.copy(subtaskProject = project) }
+    }
+
     fun updateOldNoteText(noteText:String, id: String){
         _uiState.update { currentState ->
             val updatedNotes = currentState.notes?.map { note ->
@@ -66,6 +92,15 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                 noteText = noteText
             )
         }
+    }
+
+    fun addingTask(){
+        if(uiState.value.is_adding){
+            _uiState.update { it.copy(is_adding = false) }
+        }else{
+            _uiState.update { it.copy(is_adding = true) }
+        }
+
     }
 
     fun addNewNote(){
@@ -221,6 +256,26 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
             }
         }
 
+    }
+
+    fun saveSubtask(){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val newTask = TaskData(uiState.value.subtaskName, uiState.value.subtaskText,uiState.value.subtaskDeadline,
+                uiState.value.subtaskPriority,uiState.value.subtaskStatus,"",uiState.value.taskId)
+            val call: Call<TaskDataResponse> = ApiClient().postNewTask("Bearer " + accessToken, newTask)
+            call.enqueue(object : Callback<TaskDataResponse> {
+                override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
+                    if (response.code() == 200||response.code()==201) {
+                        addingTask()
+                        loadSubtaskData()
+                    }
+                }
+                override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
+                    Log.d("tag", "Taskeditor response t" + t.message)
+                }
+            })
+        }
     }
 
     fun removeTask(navHostController: NavHostController){
