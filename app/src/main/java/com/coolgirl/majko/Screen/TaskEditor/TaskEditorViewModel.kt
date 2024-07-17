@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.commons.SpinnerItems
 import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.di.ApiClient
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -13,9 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskBy_Id
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
+import com.coolgirl.majko.data.remote.dto.TaskData.*
 import com.coolgirl.majko.navigation.Screen
 import retrofit2.Response
 
@@ -94,24 +91,47 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
     }
 
     fun saveTask(navHostController: NavHostController){
-        viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
-                uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.taskProject,"")
-            val call: Call<TaskDataResponse> = ApiClient().postNewTask("Bearer " + accessToken, newTask)
-            call.enqueue(object : Callback<TaskDataResponse> {
-                override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        navHostController.navigate(Screen.Task.route)
+
+        if(!task_id.equals("0")){
+            viewModelScope.launch {
+                val accessToken = dataStore.getAccessToken().first() ?: ""
+                val newTask = TaskUpdateData(uiState.value.taskId, uiState.value.taskName, uiState.value.taskText,
+                    uiState.value.taskPriority,uiState.value.taskDeadline, uiState.value.taskStatus)
+                val call: Call<TaskDataResponse> = ApiClient().updateTask("Bearer " + accessToken, newTask)
+                call.enqueue(object : Callback<TaskDataResponse> {
+                    override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
+                        if (response.code() == 200||response.code()==201) {
+                            navHostController.navigate(Screen.Task.route)
+                        }
+
                     }
 
-                }
+                    override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
+                        Log.d("tag", "Taskeditor response t" + t.message)
+                    }
+                })
+            }
+        }else{
+            viewModelScope.launch {
+                val accessToken = dataStore.getAccessToken().first() ?: ""
+                val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
+                    uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.taskProject,"")
+                val call: Call<TaskDataResponse> = ApiClient().postNewTask("Bearer " + accessToken, newTask)
+                call.enqueue(object : Callback<TaskDataResponse> {
+                    override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
+                        if (response.code() == 200||response.code()==201) {
+                            navHostController.navigate(Screen.Task.route)
+                        }
 
-                override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
-                }
-            })
+                    }
+
+                    override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
+                        Log.d("tag", "Taskeditor response t" + t.message)
+                    }
+                })
+            }
         }
+
     }
 
     fun removeTask(navHostController: NavHostController){

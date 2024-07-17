@@ -1,11 +1,17 @@
 package com.coolgirl.majko.Screen.Project
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.coolgirl.majko.R
+import com.coolgirl.majko.commons.ProjectCardUiState
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectData
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
 import com.coolgirl.majko.di.ApiClient
+import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -15,6 +21,9 @@ import retrofit2.Response
 class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
     private val _uiState = MutableStateFlow(ProjectUiState())
     val uiState: StateFlow<ProjectUiState> = _uiState.asStateFlow()
+
+    val _uiStateCard = MutableStateFlow(ProjectCardUiState())
+    val uiStateCard: StateFlow<ProjectCardUiState> = _uiStateCard.asStateFlow()
 
     init{loadData()}
 
@@ -34,6 +43,72 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
     fun notAddingProjectYet(){
         _uiState.update { it.copy(is_adding_background = 1f)}
         _uiState.update { it.copy(is_adding = false)}
+    }
+
+    fun openPanel(id: String){
+        Log.d("tag", "хуй = " + id)
+        if(id!=""){
+            _uiState.update { it.copy(is_longtap = true) }
+            _uiState.update { it.copy(longtapProjectId = uiState.value.longtapProjectId + id) }
+        }else{
+            _uiState.update { it.copy(is_longtap = false) }
+            _uiState.update { it.copy(longtapProjectId = "") }
+        }
+
+    }
+
+    fun updateSearchString(newSearchString:String){
+        _uiState.update { currentState ->
+            val filteredPersonalProject = currentState.personalProject?.filter { task ->
+                task.name?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.description?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            val filteredGroupProject = currentState.groupProject?.filter { task ->
+                task.name?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.description?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            currentState.copy(
+                searchString = newSearchString,
+                searchPersonalProject = filteredPersonalProject,
+                searchGroupProject = filteredGroupProject
+            )
+        }
+    }
+
+    fun toArchive(){
+
+        val projectIds = uiState.value.longtapProjectId.chunked(36) // Разделяем строку на ID длиной 36 символов
+        projectIds.mapNotNull { id ->
+            val project = uiState.value.personalProject?.find { it.id == id }
+                ?: uiState.value.groupProject?.find { it.id == id }
+
+            project?.let {
+                val updateProject = ProjectUpdate(
+                    id = it.id,
+                    name = it.name,
+                    description = it.description,
+                    is_archive = 1
+                )
+
+                viewModelScope.launch {
+                    val accessToken = dataStore.getAccessToken().first() ?: ""
+                    val call: Call<ProjectCurrentResponse> = ApiClient().updateProject("Bearer " + accessToken, updateProject)
+                    call.enqueue(object : Callback<ProjectCurrentResponse> {
+                        override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
+                            if (response.code() == 200||response.code()==201) {
+                                openPanel("")
+                                loadData()
+                            }
+                        }
+                        override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
+                            Log.d("tag", "response t" + t.message)
+                        }
+                    })
+                }
+            }
+        }
     }
 
     fun addProject(){
@@ -68,6 +143,7 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
                             }
                         }
                         _uiState.update { it.copy(personalProject = validData)}
+                        _uiState.update { it.copy(searchPersonalProject = validData)}
                     }
                 }
 
@@ -86,6 +162,7 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
                             }
                         }
                         _uiState.update { it.copy(groupProject = validData)}
+                        _uiState.update { it.copy(searchGroupProject = validData)}
                     }
                 }
 

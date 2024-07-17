@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +39,8 @@ fun TaskScreen(navController: NavHostController) {
         key = "taskViewModel",
         factory = TaskViewModelProvider.getInstance(LocalContext.current)
     )
+
+    val uiState by viewModel.uiState.collectAsState()
 
     val items = listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project, ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
     val (selectedItem, setSelectedItem) = remember { mutableStateOf(items[0]) }
@@ -71,7 +75,7 @@ fun TaskScreen(navController: NavHostController) {
                         Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.93f)) {
-                        SetTaskScreen(navController, viewModel)
+                        SetTaskScreen(navController, viewModel, uiState)
                     }
                     BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
                 }
@@ -104,7 +108,7 @@ fun TaskScreen(navController: NavHostController) {
 }
 
 @Composable
-fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel) {
+fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, uiState: TaskUiState) {
     Column(Modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
@@ -116,11 +120,23 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel) {
                 .padding(10.dp)
                 .clip(RoundedCornerShape(30.dp))
                 .background(color = colorResource(R.color.blue))) {
+
+            BasicTextField(
+                value = uiState.searchString,
+                modifier = Modifier.padding(50.dp, 14.dp, 0.dp,0.dp),
+                textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = colorResource(R.color.white)),
+                onValueChange = {viewModel.updateSearchString(it)},
+                decorationBox = { innerTextField ->
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        if (uiState.searchString.isEmpty()) {
+                            Text(text = stringResource(R.string.task_search),
+                                color = Color.DarkGray,fontSize = 17.sp) }
+                        innerTextField() } })
             // строка поиска, бургер и тд и тп
         }
 
-        val allTaskList = viewModel.uiState.collectAsState().value.allTaskList
-        val favoritesTaskList = viewModel.uiState.collectAsState().value.favoritesTaskList
+        val allTaskList = viewModel.uiState.collectAsState().value.searchAllTaskList
+        val favoritesTaskList = viewModel.uiState.collectAsState().value.searchFavoritesTaskList
         if (allTaskList != null && favoritesTaskList != null) {
             val columnItems1: Int = ((allTaskList!!.size).toFloat() / 2).roundToInt()
             val columnItems: Int = ((favoritesTaskList!!.size).toFloat() / 2).roundToInt()

@@ -25,6 +25,8 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.SpinnerItems
 import com.coolgirl.majko.commons.SpinnerSample
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Composable
@@ -103,14 +105,23 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
                         val formattedData = "${year}-${month+1}-$dayOfMonth ${String.format("%02d", mCalendar.get(Calendar.HOUR_OF_DAY))}:${String.format("%02d", mCalendar.get(Calendar.MINUTE))}:${String.format("%02d", mCalendar.get(Calendar.SECOND))}"
                         viewModel.updateTaskDeadlie(formattedData)
-                        Log.d("tag", "Taskeditor formattedData = $formattedData")
                         }, mYear, mMonth, mDay)
 
-                Text(
-                    text = stringResource(R.string.taskeditor_deadline) + " " + uiState.taskDeadline,
-                    fontSize = 18.sp,
-                    modifier = Modifier.clickable { mDatePickerDialog.show() }
-                )
+
+                var formattedData : String = ""
+                if(uiState.taskDeadline!="") {
+                    val dateTime = LocalDateTime.parse(uiState.taskDeadline, DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"))
+                    formattedData = dateTime.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, Locale("ru")) +
+                            ", " + dateTime.dayOfMonth + " "+
+                            dateTime.month.getDisplayName(java.time.format.TextStyle.FULL, Locale("ru"))
+                }
+                    Text(
+                        text = stringResource(R.string.taskeditor_deadline) + " " + formattedData,
+                        fontSize = 18.sp,
+                        modifier = Modifier.clickable { mDatePickerDialog.show() }
+                    )
+
+
             }
             Spacer(modifier = Modifier.height(10.dp))
             Row(){

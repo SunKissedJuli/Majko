@@ -25,6 +25,26 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
 
     init{ loadData() }
 
+    fun updateSearchString(newSearchString:String){
+        _uiState.update { currentState ->
+            val filteredAllTasks = currentState.allTaskList?.filter { task ->
+                task.title?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.text?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            val filteredFavoritesTasks = currentState.favoritesTaskList?.filter { task ->
+                task.title?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.text?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            currentState.copy(
+                searchString = newSearchString,
+                searchAllTaskList = filteredAllTasks,
+                searchFavoritesTaskList = filteredFavoritesTasks
+            )
+        }
+    }
+
     fun getPriority(priorityId: Int): Int{
         return when (priorityId) {
             1 -> R.color.green
@@ -59,6 +79,7 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
                             }
                         }
                         _uiState.update { it.copy(allTaskList = notFavorite)}
+                        _uiState.update { it.copy(searchAllTaskList = notFavorite)}
                         Log.d("tag", "Taskeditor all = " + uiState.value.allTaskList)
                     }
                 }
@@ -72,6 +93,7 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
                 override fun onResponse(call1: Call<List<TaskDataResponse>>, response: Response<List<TaskDataResponse>>) {
                     if (response.code() == 200 && response.body()!=null) {
                         _uiState.update { it.copy(favoritesTaskList = response.body())}
+                        _uiState.update { it.copy(searchFavoritesTaskList =  response.body())}
                         Log.d("tag", "Taskeditor fav = " + uiState.value.favoritesTaskList)
                     }
                 }

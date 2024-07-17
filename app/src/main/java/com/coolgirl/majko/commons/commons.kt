@@ -1,9 +1,6 @@
 package com.coolgirl.majko.commons
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,8 +9,7 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -32,12 +28,17 @@ import androidx.navigation.compose.rememberNavController
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.navigation.AppNavHost
 import com.coolgirl.majko.navigation.Screen
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import com.coolgirl.majko.R
+import com.coolgirl.majko.Screen.Project.ProjectUiState
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
+import kotlinx.coroutines.flow.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.*
 
 @Composable
 fun TaskCard(navHostController: NavHostController,
@@ -47,7 +48,7 @@ fun TaskCard(navHostController: NavHostController,
              onBurnStarClick: (String) -> Unit,
              onDeadStarClick: (String) -> Unit){
     Column(modifier = Modifier
-        .height(270.dp)
+        .height(280.dp)
         .width(180.dp)
         .padding(5.dp)
         .clip(RoundedCornerShape(20.dp))
@@ -86,39 +87,61 @@ fun TaskCard(navHostController: NavHostController,
             Modifier
                 .padding(10.dp, 10.dp, 10.dp, 0.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(0.7f),
+                .fillMaxHeight(0.71f),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top){
-            Text(text= taskData.text?: "Без записей", fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
+            Text(text= taskData.text?: "Без записей", fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines =10)
         }
-        Column(Modifier.fillMaxSize()) {
-            Row(Modifier.padding(10.dp, 10.dp,10.dp,2.dp), horizontalArrangement = Arrangement.Center){
-                Text(text= taskData.deadline?: "Без дедлайна", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Column(Modifier.fillMaxSize().padding(0.dp,0.dp,0.dp,8.dp), verticalArrangement = Arrangement.Bottom) {
+            Row(Modifier.padding(10.dp, 5.dp,10.dp,2.dp), horizontalArrangement = Arrangement.Center){
+                
+                val dateTime = LocalDateTime.parse(taskData.deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                Text(text= dateTime.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale("ru"))
+                        + ", " + dateTime.dayOfMonth + " "
+                    + dateTime.month.getDisplayName(TextStyle.FULL, Locale("ru")), fontSize = 13.sp, fontWeight = FontWeight.Medium)
             }
-            Row(Modifier.padding(10.dp, 0.dp,10.dp,10.dp), horizontalArrangement = Arrangement.Center){
+            Row(Modifier.padding(10.dp, 0.dp,10.dp,2.dp), horizontalArrangement = Arrangement.Center){
                 Text(text= "Статус: " + statusName, fontSize = 13.sp, fontWeight = FontWeight.Medium)
             }
             if(taskData.project!=null){
-                Row(Modifier.padding(10.dp, 0.dp,10.dp,10.dp), horizontalArrangement = Arrangement.Center){
-                    Text(text= "Провет: " + taskData.project.name, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                Row(Modifier.padding(10.dp, 0.dp,10.dp,0.dp), horizontalArrangement = Arrangement.Center){
+                    Text(text= "Проект: " + taskData.project.name, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                 }
             }
         }
     }
 }
 
+data class ProjectCardUiState(
+    var borderColor: Int = R.color.gray,
+)
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProjectCard(navHostController: NavHostController,
-             priorityColor : Int = R.color.white,
-             projectData: ProjectDataResponse) {
+                priorityColor : Int = R.color.white,
+                projectData: ProjectDataResponse,
+                is_archive:Boolean=false,
+                onLongTap:(String) -> Unit) {
+
+    var tapType by remember { mutableStateOf(R.color.gray) }
     Column(modifier = Modifier
         .fillMaxWidth()
         .height(150.dp)
         .padding(10.dp, 10.dp, 10.dp, 0.dp)
         .clip(RoundedCornerShape(20.dp))
-        .border(3.dp, color = colorResource(R.color.blue), shape = RoundedCornerShape(20.dp))
+        .border(
+            3.dp,
+            color = colorResource(tapType),
+            shape = RoundedCornerShape(20.dp)
+        )
         .background(color = colorResource(priorityColor))
-        .clickable { navHostController.navigate(Screen.ProjectEditor.project_id(projectData.id)) },
+        .combinedClickable(
+            onClick = { navHostController.navigate(Screen.ProjectEditor.project_id(projectData.id)) },
+            onLongClick = {
+                tapType = R.color.purple
+                onLongTap(projectData.id)},
+        ),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
         Row(
@@ -136,6 +159,7 @@ fun ProjectCard(navHostController: NavHostController,
                     .clip(CircleShape))
             Spacer(Modifier.width(15.dp))
             Text(text= projectData.name?: "Без названия", modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
+
         }
         Row(
             Modifier
@@ -223,7 +247,8 @@ fun RandomString() : String{
 @Composable
 fun HorizontalLine(){
     Box(modifier = Modifier
-        .fillMaxWidth().padding(0.dp,5.dp,0.dp,12.dp)
+        .fillMaxWidth()
+        .padding(0.dp, 5.dp, 0.dp, 12.dp)
         .height(1.dp)
         .background(color = colorResource(R.color.gray))
     )

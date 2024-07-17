@@ -17,6 +17,7 @@
     <string name="taskeditor_project">Проект:</string>
     <string name="task_favorites">Избранные</string>
     <string name="task_each">Другие</string>
+    <string name="task_search">Искать в задачах</string>
     <string name="project_personal">Личные проекты</string>
     <string name="project_group">Групповые проекты</string>
     <string name="project_name">Название проекта</string>

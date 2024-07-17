@@ -2,10 +2,7 @@ package com.coolgirl.majko.data.remote
 
 import com.coolgirl.majko.data.remote.dto.*
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskBy_Id
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
+import com.coolgirl.majko.data.remote.dto.TaskData.*
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
 import retrofit2.Call
@@ -46,6 +43,9 @@ interface ApiMajko{
 
     @GET("api/task/favorites")
     fun getAllFavorites(@Header("Authorization") tocken: String): Call<List<TaskDataResponse>>
+
+    @POST("api/task/update")
+    fun updateTask(@Header("Authorization") tocken: String, @Body taskData: TaskUpdateData) : Call<TaskDataResponse>
 
 
     //проекты
