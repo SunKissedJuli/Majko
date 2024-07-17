@@ -12,6 +12,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
+import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
+import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
+import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
+import com.coolgirl.majko.data.remote.dto.NoteData.NoteUpdate
 import com.coolgirl.majko.data.remote.dto.TaskData.*
 import com.coolgirl.majko.navigation.Screen
 import retrofit2.Response
@@ -42,6 +46,36 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
 
     fun updateTaskStatus(status:String){
         _uiState.update { it.copy(taskStatus = status.toInt()) }
+    }
+
+    fun updateNoteText(note:String){
+        _uiState.update { it.copy(noteText = note) }
+    }
+
+    fun updateOldNoteText(noteText:String, id: String){
+        _uiState.update { currentState ->
+            val updatedNotes = currentState.notes?.map { note ->
+                if (note.id == id) {
+                    note.copy(note = noteText)
+                } else {
+                    note
+                }
+            }
+            currentState.copy(
+                notes = updatedNotes,
+                noteText = noteText
+            )
+        }
+    }
+
+    fun addNewNote(){
+        if(uiState.value.newNote==false){
+            _uiState.update { it.copy(newNote = true) }
+        }else{
+            _uiState.update { it.copy(newNote = false) }
+            _uiState.update { it.copy(noteText = "") }
+        }
+
     }
 
     fun updateTaskProject(project:String){
@@ -81,6 +115,26 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
         }
     }
 
+    fun getPriority(priorityId: Int): Int{
+        return when (priorityId) {
+            1 -> R.color.green
+            2 -> R.color.orange
+            3 -> R.color.red
+            else -> R.color.white
+        }
+    }
+
+    fun getStatus(priorityId: Int): String{
+        return when (priorityId) {
+            1 -> "Не выбрано"
+            2 -> "Обсуждается"
+            3 -> "Ожидает"
+            4 -> "В процессе"
+            5 -> "Завершена"
+            else -> "Нет статуса"
+        }
+    }
+
     fun getPriorityName(priority: Int) : String{
         return when (priority) {
             1 -> "Низкий"
@@ -90,8 +144,43 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
         }
     }
 
-    fun saveTask(navHostController: NavHostController){
+    fun saveUpdateNote(noteId: String, noteText: String){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val call: Call<NoteDataResponse> = ApiClient().updateNote("Bearer " + accessToken, NoteUpdate(noteId,uiState.value.taskId, noteText))
+            call.enqueue(  object :Callback<NoteDataResponse>{
+                override fun onResponse(call: Call<NoteDataResponse>, response: Response<NoteDataResponse>) {
+                    if (response.code() == 200||response.code()==201) {
+                        loadNotesData()
+                    }
+                }
 
+                override fun onFailure(call: Call<NoteDataResponse>, t: Throwable) {
+                    Log.d("tag", "Taskeditor response t" + t.message)
+                }
+            })
+        }
+    }
+
+    fun removeNote(noteId: String){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val call: Call<Unit> = ApiClient().removeNote("Bearer " + accessToken, NoteById(noteId))
+            call.enqueue(  object :Callback<Unit>{
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    if (response.code() == 200||response.code()==201) {
+                        loadNotesData()
+                    }
+                }
+
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    Log.d("tag", "Taskeditor response t" + t.message)
+                }
+            })
+        }
+    }
+
+    fun saveTask(navHostController: NavHostController){
         if(!task_id.equals("0")){
             viewModelScope.launch {
                 val accessToken = dataStore.getAccessToken().first() ?: ""
@@ -173,6 +262,12 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                             _uiState.update { it.copy(taskName = response.body()!!.title!!) }
                             _uiState.update { it.copy(taskText = response.body()!!.text!!) }
                             _uiState.update { it.copy(taskStatus = response.body()!!.status!!) }
+                            if(response.body()!!.count_notes!=0){
+                                loadNotesData()
+                            }
+                            if(response.body()!!.count_subtasks!=0){
+                                loadSubtaskData()
+                            }
                         }
                     }
 
@@ -182,6 +277,64 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                 })
             }
         }
+    }
 
+    fun addNote(){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val call: Call<NoteDataResponse> = ApiClient().addNote("Bearer " + accessToken, NoteData(uiState.value.taskId, uiState.value.noteText))
+            call.enqueue(object : Callback<NoteDataResponse> {
+                override fun onResponse(call: Call<NoteDataResponse>, response: Response<NoteDataResponse>) {
+                    if (response.code() == 200||response.code()==201) {
+                        addNewNote()
+                        loadNotesData()
+                    }
+                }
+
+                override fun onFailure(call: Call<NoteDataResponse>, t: Throwable) {
+                    Log.d("tag", "Taskeditor response t" + t.message)
+                }
+            })
+        }
+    }
+
+    fun loadSubtaskData() {
+        if(!task_id.equals("0")){
+            _uiState.update { it.copy(taskId = task_id) }
+            viewModelScope.launch {
+                val accessToken = dataStore.getAccessToken().first() ?: ""
+                val call: Call<List<TaskDataResponse>> = ApiClient().getSubtask("Bearer " + accessToken, TaskById(uiState.value.taskId))
+                call.enqueue(object : Callback<List<TaskDataResponse>> {
+                    override fun onResponse(call: Call<List<TaskDataResponse>>, response: Response<List<TaskDataResponse>>) {
+                        if (response.code() == 200||response.code()==201) {
+                            _uiState.update { it.copy(subtask = response.body()!!) }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<List<TaskDataResponse>>, t: Throwable) {
+                        Log.d("tag", "Taskeditor response t" + t.message)
+                    }
+                })
+            }
+        }
+    }
+
+    fun loadNotesData(){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val call: Call<List<NoteDataResponse>> = ApiClient().getNotes("Bearer " + accessToken, TaskById(uiState.value.taskId))
+            call.enqueue(object : Callback<List<NoteDataResponse>> {
+                override fun onResponse(call: Call<List<NoteDataResponse>>, response: Response<List<NoteDataResponse>>) {
+                    if (response.code() == 200||response.code()==201) {
+                        Log.d("tag", "Taskeditor response t" + response.body())
+                        _uiState.update { it.copy(notes = response.body()) }
+                    }
+                }
+
+                override fun onFailure(call: Call<List<NoteDataResponse>>, t: Throwable) {
+                    Log.d("tag", "Taskeditor response t" + t.message)
+                }
+            })
+        }
     }
 }

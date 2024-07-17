@@ -1,6 +1,10 @@
 package com.coolgirl.majko.data.remote
 
 import com.coolgirl.majko.data.remote.dto.*
+import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
+import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
+import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
+import com.coolgirl.majko.data.remote.dto.NoteData.NoteUpdate
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.data.remote.dto.TaskData.*
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
@@ -32,6 +36,10 @@ interface ApiMajko{
 
     @HTTP(method = "DELETE", path = "api/task/delete", hasBody = true)
     fun removeTask(@Header("Authorization") tocken: String, @Body taskId: TaskBy_Id) : Call<Unit>
+
+    //субтаски
+    @POST("api/task/getSubtaskForTask")
+    fun getSubtask(@Header("Authorization") tocken: String, @Body taskId: TaskById): Call<List<TaskDataResponse>>
 
 
     //фавориты
@@ -66,5 +74,19 @@ interface ApiMajko{
 
     @HTTP(method = "DELETE", path = "api/project/delete", hasBody = true)
     fun removeProject(@Header("Authorization") tocken: String, @Body taskId: ProjectById) : Call<Unit>
+
+
+    //записи
+    @POST("api/note/create")
+    fun addNote(@Header("Authorization") tocken: String, @Body note: NoteData) : Call<NoteDataResponse>
+
+    @POST("api/note/update")
+    fun updateNote(@Header("Authorization") tocken: String, @Body note: NoteUpdate) : Call<NoteDataResponse>
+
+    @HTTP(method = "DELETE", path = "api/note/delete", hasBody = true)
+    fun removeNote(@Header("Authorization") tocken: String, @Body noteId: NoteById) : Call<Unit>
+
+    @POST("api/note/getNotes?aseae=asdsad")
+    fun getNotes(@Header("Authorization") tocken: String, @Body taskId: TaskById) : Call<List<NoteDataResponse>>
 
 }

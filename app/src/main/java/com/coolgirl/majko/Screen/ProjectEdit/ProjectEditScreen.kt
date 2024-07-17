@@ -38,6 +38,8 @@ import com.coolgirl.majko.commons.SpinnerItems
 import com.coolgirl.majko.commons.SpinnerSample
 import com.coolgirl.majko.commons.TaskCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Composable
@@ -70,21 +72,18 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
 
             var expanded by remember { mutableStateOf(false) }
 
-          //  Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
-                Box() { IconButton(onClick = { expanded = true }) {
-                    Icon(Icons.Default.MoreVert, tint = colorResource(R.color.white), contentDescription = "Показать меню") }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier.fillMaxWidth(0.5f)) {
-                        Text("Удалить", fontSize=18.sp,
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .clickable { viewModel.removeProject(navController) })
-                    }
+            Box() { IconButton(onClick = { expanded = true }) {
+                Icon(Icons.Default.MoreVert, tint = colorResource(R.color.white), contentDescription = "Показать меню") }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.fillMaxWidth(0.5f)) {
+                    Text("Удалить", fontSize=18.sp,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .clickable { viewModel.removeProject(navController) })
                 }
-          //  }
-
+            }
             //   Text(text = noteData, fontSize = 18.sp)
         }
 
@@ -233,11 +232,20 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                         }, mYear, mMonth, mDay)
 
                     Column(Modifier.padding(20.dp,10.dp)) {
+
+                        var formattedData : String = ""
+                        if(uiState.taskDeadline!="") {
+                            val dateTime = LocalDateTime.parse(uiState.taskDeadline, DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"))
+                            formattedData = dateTime.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, Locale("ru")) +
+                                    ", " + dateTime.dayOfMonth + " "+
+                                    dateTime.month.getDisplayName(java.time.format.TextStyle.FULL, Locale("ru"))
+                        }
                         Text(
-                            text = stringResource(R.string.taskeditor_deadline) + " " + uiState.taskDeadline,
+                            text = stringResource(R.string.taskeditor_deadline) + " " + formattedData,
                             fontSize = 18.sp,
                             modifier = Modifier.clickable { mDatePickerDialog.show() }
                         )
+
                         HorizontalLine()
                         SpinnerSample(name = stringResource(R.string.taskeditor_priority),
                             items = viewModel.getPriority(),
