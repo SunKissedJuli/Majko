@@ -354,12 +354,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                 {viewModel.updateSubtaskPriority(it)}
                             )
                             HorizontalLine()
-                            SpinnerSample(name = stringResource(R.string.taskeditor_project), items = listOf(
-                                SpinnerItems("1", "Item 1"),
-                                SpinnerItems("2", "Item 2"),
-                                SpinnerItems("3", "Item 3")),
-                                selectedItem = "",
-                                {viewModel.updateSubtaskProject(it)})
+                            Text(text= stringResource(R.string.taskeditor_project) + (" ") + (uiState.taskProjectObj?.name ?: "нет"), fontSize = 18.sp)
                             HorizontalLine()
                             SpinnerSample(
                                 name = stringResource(R.string.taskeditor_status),
@@ -445,12 +440,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     {viewModel.updateTaskPriority(it)}
                 )
                 HorizontalLine()
-                SpinnerSample(name = stringResource(R.string.taskeditor_project), items = listOf(
-                    SpinnerItems("1", "Item 1"),
-                    SpinnerItems("2", "Item 2"),
-                    SpinnerItems("3", "Item 3")),
-                    selectedItem = "",
-                    {viewModel.updateTaskProject(it)})
+                Text(text= stringResource(R.string.taskeditor_project) + (" ") + (uiState.taskProjectObj?.name ?: "нет"), fontSize = 18.sp)
                 HorizontalLine()
                 SpinnerSample(
                     name = stringResource(R.string.taskeditor_status),

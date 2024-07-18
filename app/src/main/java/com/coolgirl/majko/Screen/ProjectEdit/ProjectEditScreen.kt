@@ -1,7 +1,6 @@
 package com.coolgirl.majko.Screen.ProjectEdit
 
 import android.app.DatePickerDialog
-import android.util.Log
 import com.coolgirl.majko.R
 import android.widget.DatePicker
 import androidx.compose.foundation.background
@@ -13,17 +12,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -34,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.commons.HorizontalLine
-import com.coolgirl.majko.commons.SpinnerItems
 import com.coolgirl.majko.commons.SpinnerSample
 import com.coolgirl.majko.commons.TaskCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
@@ -56,7 +53,8 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(colorResource(R.color.white))) {
+            .background(colorResource(R.color.white))
+            .alpha(uiState.is_invite_backgroun)) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -78,10 +76,15 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier.fillMaxWidth(0.5f)) {
-                    Text("Удалить", fontSize=18.sp,
+                    Text(  stringResource(R.string.project_delite), fontSize=18.sp,
                         modifier = Modifier
                             .padding(10.dp)
                             .clickable { viewModel.removeProject(navController) })
+                    Text(
+                        stringResource(R.string.project_createinvite), fontSize=18.sp,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .clickable { viewModel.createInvite() })
                 }
             }
             //   Text(text = noteData, fontSize = 18.sp)
@@ -143,7 +146,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                     val count = uiState.projectData?.tasks?.size?:0
                     items(count) { rowIndex ->
                         TaskCard(navController, viewModel.getPriority(projectData[rowIndex].priority),
-                            viewModel.getStatus(projectData[rowIndex].status), projectData[rowIndex], {}, {})
+                            viewModel.getStatusName(projectData[rowIndex].status), projectData[rowIndex], {}, {})
                     }
                 }
             }
@@ -276,12 +279,59 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             .fillMaxWidth(0.65f)
                             .padding(0.dp, 10.dp),
                         colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                        androidx.compose.material3.Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
+                        Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
                             fontSize = 18.sp, fontWeight = FontWeight.Medium)
                     }
                 }
             }
         }
     }
+
+    if(uiState.is_invite){
+        SetInviteWindow(uiState, viewModel)
+    }
+}
+
+@Composable
+fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewModel){
+    Column(
+        Modifier.fillMaxSize().padding(0.dp,100.dp,0.dp,0.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top) {
+        Column(
+            Modifier
+                .fillMaxWidth(0.9f)
+                .clip(RoundedCornerShape(20.dp))
+                .background(colorResource(R.color.purple)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center) {
+
+            OutlinedTextField(
+                value = uiState.invite,
+                onValueChange = { },
+                Modifier.padding(20.dp, 20.dp, 20.dp, 20.dp),
+                enabled = true,
+                shape = RoundedCornerShape(30.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = colorResource(R.color.white),
+                    unfocusedContainerColor = colorResource(R.color.white),
+                    focusedBorderColor = colorResource(R.color.white),
+                    unfocusedBorderColor = colorResource(R.color.white)
+                ),
+            )
+
+            Button(onClick = { viewModel.newInvite()},
+                shape = CircleShape,
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .padding(0.dp, 10.dp),
+                colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
+                Text(text = stringResource(R.string.projectedit_close), color = colorResource(R.color.white),
+                    fontSize = 18.sp, fontWeight = FontWeight.Medium)
+            }
+
+        }
+    }
+
 }
 

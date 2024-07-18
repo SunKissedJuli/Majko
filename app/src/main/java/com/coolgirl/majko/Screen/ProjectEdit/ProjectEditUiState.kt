@@ -11,5 +11,9 @@ data class ProjectEditUiState(
     val taskPriority: Int = 1,
     val taskStatus: Int = 1,
     val taskProject: String = "",
-    val is_adding: Boolean = false
+    val is_adding: Boolean = false,
+    val taskProjectName: String = "",
+    val is_invite: Boolean = false,
+    val is_invite_backgroun: Float = 1f,
+    val invite: String = "",
 )

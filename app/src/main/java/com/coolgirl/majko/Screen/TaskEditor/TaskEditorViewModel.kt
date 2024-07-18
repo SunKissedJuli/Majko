@@ -131,6 +131,8 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
         )
     }
 
+
+
     fun getPriority() : List<SpinnerItems>{
         return listOf(
             SpinnerItems("1", "Низкий"),
@@ -317,6 +319,10 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                             _uiState.update { it.copy(taskName = response.body()!!.title!!) }
                             _uiState.update { it.copy(taskText = response.body()!!.text!!) }
                             _uiState.update { it.copy(taskStatus = response.body()!!.status!!) }
+                            if(response.body()!!.project!=null){
+                                _uiState.update { it.copy(taskProjectObj = response.body()!!.project!!) }
+                            }
+
                             if(response.body()!!.count_notes!=0){
                                 loadNotesData()
                             }

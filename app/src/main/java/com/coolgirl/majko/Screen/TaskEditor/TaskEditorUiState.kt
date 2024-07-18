@@ -2,6 +2,7 @@ package com.coolgirl.majko.Screen.TaskEditor
 
 import com.coolgirl.majko.R
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 
 data class TaskEditorUiState(
@@ -11,6 +12,7 @@ data class TaskEditorUiState(
     val taskPriority: Int = 1,
     val taskStatus: Int = 1,
     val taskProject: String = "",
+    val taskProjectObj: ProjectDataResponse? = null,
     val taskId: String = "0",
     val backgroundColor: Int = R.color.white,
     val noteText: String = "",

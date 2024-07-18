@@ -8,9 +8,7 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.SpinnerItems
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.MessageData
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
+import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.di.ApiClient
@@ -42,6 +40,16 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
             _uiState.update { it.copy(is_adding = false) }
         }else{
             _uiState.update { it.copy(is_adding = true) }
+        }
+    }
+
+    fun newInvite(){
+        if(uiState.value.is_invite){
+            _uiState.update { it.copy(is_invite = false) }
+            _uiState.update { it.copy(is_invite_backgroun = 1f) }
+        }else{
+            _uiState.update { it.copy(is_invite = true) }
+            _uiState.update { it.copy(is_invite_backgroun = 0.5f) }
         }
     }
 
@@ -85,16 +93,6 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
         }
     }
 
-    fun getStatus(priorityId: Int): String{
-        return when (priorityId) {
-            1 -> "Не выбрано"
-            2 -> "Обсуждается"
-            3 -> "Ожидает"
-            4 -> "В процессе"
-            5 -> "Завершена"
-            else -> "Нет статуса"
-        }
-    }
 
     fun getStatus() : List<SpinnerItems>{
         return listOf(
@@ -205,6 +203,24 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
                     }
                 }
                 override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
+                    Log.d("tag", "Taskeditor response t" + t.message)
+                }
+            })
+        }
+    }
+
+    fun createInvite(){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val call: Call<ProjectCreateInviteResponse> = ApiClient().createInvitetoProject("Bearer " + accessToken, ProjectBy_Id(uiState.value.projectId))
+            call.enqueue(object : Callback<ProjectCreateInviteResponse> {
+                override fun onResponse(call: Call<ProjectCreateInviteResponse>, response: Response<ProjectCreateInviteResponse>) {
+                    if (response.code() == 200||response.code()==201) {
+                        _uiState.update { it.copy(invite = response.body()!!.invite) }
+                        newInvite()
+                    }
+                }
+                override fun onFailure(call: Call<ProjectCreateInviteResponse>, t: Throwable) {
                     Log.d("tag", "Taskeditor response t" + t.message)
                 }
             })

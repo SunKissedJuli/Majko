@@ -23,7 +23,20 @@
     <string name="project_name">Название проекта</string>
     <string name="project_description">Описание проекта</string>
     <string name="project_add">Добавить</string>
+    <string name="project_createinvite">Создать инвайт</string>
+    <string name="project_delite">Удалить</string>
+    <string name="project_to_archive">В архив</string>
+    <string name="archive_to_project">Разархивировать</string>
     <string name="projectedit_project">Проект:</string>
+    <string name="projectedit_close">Закрыть</string>
     <string name="projectedit_addtask">Добавить задачу</string>
     <string name="taskeditor_addtask">Добавить субзадачу</string>
+    <string name="profile_login">Логин:</string>
+    <string name="profile_username">Имя:</string>
+    <string name="profile_forget">Забыли пароль?</string>
+    <string name="profile_newpassword">Новый пароль</string>
+    <string name="profile_oldpassword">Старый пароль</string>
+    <string name="profile_confirmpassword">Подтвердите пароль</string>
+    <string name="profile_save">Сохранить</string>
+    <string name="profile_logout">Выход из аккаунта</string>
 </resources>

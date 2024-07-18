@@ -121,19 +121,12 @@ fun ProjectScreen(navController: NavHostController){
                                 onDismissRequest = { expanded = false },
                                 modifier = Modifier.fillMaxWidth(0.5f)) {
                                 Text(
-                                    "Удалить",
+                                    stringResource(R.string.project_to_archive),
                                     fontSize = 18.sp,
-                                    modifier = Modifier.padding(10.dp)
+                                    modifier = Modifier
+                                        .padding(10.dp)
                                         .clickable {
-                                            //  viewModel.removeTask(navController)
-                                        }
-                                )
-                                Text(
-                                    "В архив",
-                                    fontSize = 18.sp,
-                                    modifier = Modifier.padding(10.dp)
-                                        .clickable {
-                                              viewModel.toArchive()
+                                            viewModel.toArchive()
                                         }
                                 )
                             }

@@ -117,18 +117,12 @@ fun ArchiveScreen(navController: NavHostController){
                             expanded = expanded,
                             onDismissRequest = { expanded = false },
                             modifier = Modifier.fillMaxWidth(0.5f)) {
+
                             Text(
-                                "Удалить",
+                                stringResource(R.string.archive_to_project),
                                 fontSize = 18.sp,
-                                modifier = Modifier.padding(10.dp)
-                                    .clickable {
-                                        //  viewModel.removeTask(navController)
-                                    }
-                            )
-                            Text(
-                                "Разархивировать",
-                                fontSize = 18.sp,
-                                modifier = Modifier.padding(10.dp)
+                                modifier = Modifier
+                                    .padding(10.dp)
                                     .clickable {
                                         viewModel.fromArchive()
                                     }

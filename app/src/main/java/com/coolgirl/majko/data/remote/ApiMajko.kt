@@ -24,6 +24,15 @@ interface ApiMajko{
     @GET("api/user/current")
     fun currentUser(@Header("Authorization") tocken: String): Call<CurrentUserDataResponse>
 
+    @POST("api/user/update")
+    fun updateUserName(@Header("Authorization") tocken: String, @Body user: UserUpdateName): Call<CurrentUserDataResponse>
+
+    @POST("api/user/update")
+    fun updateUserEmail(@Header("Authorization") tocken: String, @Body user: UserUpdateEmail): Call<CurrentUserDataResponse>
+
+    @POST("api/user/update")
+    fun updateUserPassword(@Header("Authorization") tocken: String, @Body user: UserUpdatePassword): Call<CurrentUserDataResponse>
+
     //таски
     @POST("api/task/allUserTasks")
     fun getAllUserTask(@Header("Authorization") tocken: String): Call<List<TaskDataResponse>>
@@ -74,6 +83,9 @@ interface ApiMajko{
 
     @HTTP(method = "DELETE", path = "api/project/delete", hasBody = true)
     fun removeProject(@Header("Authorization") tocken: String, @Body taskId: ProjectById) : Call<Unit>
+
+    @POST("api/project/createInvite")
+    fun createInvitetoProject(@Header("Authorization") tocken: String, @Body projectById: ProjectBy_Id) : Call<ProjectCreateInviteResponse>
 
 
     //записи
