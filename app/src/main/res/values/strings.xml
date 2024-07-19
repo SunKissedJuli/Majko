@@ -31,6 +31,7 @@
     <string name="archive_to_project">Разархивировать</string>
     <string name="projectedit_project">Проект:</string>
     <string name="projectedit_close">Закрыть</string>
+    <string name="projectedit_members">Мемберы:</string>
     <string name="projectedit_addtask">Добавить задачу</string>
     <string name="taskeditor_addtask">Добавить субзадачу</string>
     <string name="profile_login">Логин:</string>
@@ -46,4 +47,7 @@
     <string name="group_personal">Личные группы</string>
     <string name="group_group">Общие группы</string>
     <string name="group_search">Искать в группах</string>
+    <string name="groupeditor_groupname">Название группы</string>
+    <string name="groupeditor_groupdescription">Описание группы</string>
+    <string name="groupeditor_addproject">Добавить проект</string>
 </resources>

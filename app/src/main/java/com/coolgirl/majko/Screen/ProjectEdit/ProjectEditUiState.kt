@@ -1,5 +1,6 @@
 package com.coolgirl.majko.Screen.ProjectEdit
 
+import com.coolgirl.majko.data.remote.dto.ProjectData.Member
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
 
 data class ProjectEditUiState(
@@ -16,4 +17,5 @@ data class ProjectEditUiState(
     val is_invite: Boolean = false,
     val is_invite_backgroun: Float = 1f,
     val invite: String = "",
+    val members: List<Member>? = null
 )

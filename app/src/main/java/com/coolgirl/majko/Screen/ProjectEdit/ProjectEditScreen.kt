@@ -125,7 +125,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                     decorationBox = { innerTextField ->
                         Row(modifier = Modifier.fillMaxWidth()) {
                             if (uiState.projectData!!.description.isEmpty()) {
-                                Text(text = stringResource(R.string.project_name),
+                                Text(text = stringResource(R.string.project_description),
                                     color = colorResource(R.color.gray), fontSize = 18.sp)
                             }
                             innerTextField()
@@ -284,6 +284,55 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                         Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
                             fontSize = 18.sp, fontWeight = FontWeight.Medium)
                     }
+                }
+            }
+        }
+
+        //мемберы
+
+        if(uiState.members!=null){
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                    .clip(RoundedCornerShape(25.dp, 25.dp))
+                    .background(color = colorResource(R.color.purple)),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top) {
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(text = stringResource(R.string.projectedit_members),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 18.sp
+                )
+
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(20.dp, 0.dp)) {
+                    for(item in uiState.members!!)
+                        Row(verticalAlignment = Alignment.CenterVertically){
+
+                            Column() {
+                                Text(
+                                    text = "-",
+                                    fontSize = 55.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = colorResource(R.color.white)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Column() {
+                                Text(text = "Имя: " + item.user.name)
+                                Text(text = "Роль: " + item.role_id.name)
+                            }
+
+
+
+                        }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }

@@ -20,6 +20,12 @@ sealed class Screen(val route: String) {
         }
     }
 
+    object GroupEditor : Screen("group_editor/{group_id}"){
+        fun group_id(group_id: String): String{
+            return "group_editor/$group_id"
+        }
+    }
+
 
     object TaskEditor : Screen("task_editor/{task_id}"){
         fun task_id(task_id: String): String{

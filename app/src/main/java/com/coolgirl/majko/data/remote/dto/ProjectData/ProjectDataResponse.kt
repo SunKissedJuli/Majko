@@ -10,8 +10,9 @@ data class ProjectDataResponse(
     val description: String,
     val is_archive: Int,
     val author: CurrentUserDataResponse,
-    val members: List<CurrentUserDataResponse>,
+    val members: List<Member>,
     val image: String?,
     val is_personal: Boolean,
     val countFiles: Int
     )
+

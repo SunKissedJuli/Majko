@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.coolgirl.majko.Sc.GroupEditorScreen
 import com.coolgirl.majko.Screen.Archive.ArchiveScreen
 import com.coolgirl.majko.Screen.Group.GroupScreen
 import com.coolgirl.majko.Screen.Login.LoginScreen
@@ -54,6 +55,14 @@ fun AppNavHost(
             })){
             val project_id : String = it.arguments?.getString("project_id")!!
             ProjectEditScreen(navController, project_id)
+        }
+
+        composable(Screen.GroupEditor.route,
+            arguments = listOf(navArgument("group_id"){
+                type = NavType.StringType
+            })){
+            val group_id : String = it.arguments?.getString("group_id")!!
+            GroupEditorScreen(navController, group_id)
         }
 
         composable(Screen.TaskEditor.route,

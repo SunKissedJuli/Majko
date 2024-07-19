@@ -1,8 +1,7 @@
 package com.coolgirl.majko.data.remote
 
 import com.coolgirl.majko.data.remote.dto.*
-import com.coolgirl.majko.data.remote.dto.GroupData.GroupData
-import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
+import com.coolgirl.majko.data.remote.dto.GroupData.*
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
@@ -93,6 +92,7 @@ interface ApiMajko{
     fun joinByInvitation(@Header("Authorization") tocken: String, @Body invite: JoinByInviteProjectData) : Call<MessageData>
 
 
+
     //записи
     @POST("api/note/create")
     fun addNote(@Header("Authorization") tocken: String, @Body note: NoteData) : Call<NoteDataResponse>
@@ -116,5 +116,21 @@ interface ApiMajko{
 
     @POST("api/group/getPrivate")
     fun getGroupGroup(@Header("Authorization") tocken: String): Call<List<GroupResponse>>
+
+    @POST("api/group/getById")
+    fun getGroupById(@Header("Authorization") tocken: String, @Body groupId: GroupById): Call<GroupResponse>
+
+    @POST("api/group/update")
+    fun updateGroup(@Header("Authorization") tocken: String, @Body group: GroupUpdate): Call<GroupResponse>
+
+    @HTTP(method = "DELETE", path = "api/group/delete", hasBody = true)
+    fun removeGroup(@Header("Authorization") tocken: String, @Body groupId: GroupById) : Call<Unit>
+
+    @POST("api/group/addProjectInGroup")
+    fun addProjectInGroup(@Header("Authorization") tocken: String, @Body group: ProjectInGroup): Call<ProjectDataResponse>
+
+    @POST("api/group/createInvite")
+    fun createInvitetoGroup(@Header("Authorization") tocken: String, @Body groupId: GroupBy_Id) : Call<GroupInviteResponse>
+
 
 }

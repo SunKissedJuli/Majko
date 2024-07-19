@@ -141,11 +141,15 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
                 override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
                     if (response.code() == 200||response.code()==201) {
                         _uiState.update { it.copy(projectData = response.body()!!) }
+                        if(response.body()!!.members.isNotEmpty()){
+                            _uiState.update { it.copy(members = response.body()!!.members) }
+                        }
+
                     }
                 }
 
                 override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
-                    Log.d("tag", "ProjectEditlog t = " + t.message)
+                    Log.d("tag", "Projectedit t = " + t.message)
                 }
             })
         }
@@ -163,7 +167,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
                     }
                 }
                 override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
+                    Log.d("tag", "Projectedit response t" + t.message)
                 }
             })
         }
@@ -176,13 +180,11 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
             call.enqueue(object : Callback<Unit> {
                 override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
                     if (response.code() == 200||response.code()==201) {
-                        Log.d("tag", "Taskeditor response 200 " + response.body())
                         navHostController.navigate(Screen.Project.route)
                     }
-                    Log.d("tag", "Taskeditor response не200 " + response.code())
                 }
                 override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
+                    Log.d("tag", "Projectedit response t" + t.message)
                 }
             })
         }
@@ -203,7 +205,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
                     }
                 }
                 override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
+                    Log.d("tag", "Projectedit response t" + t.message)
                 }
             })
         }
@@ -221,7 +223,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
                     }
                 }
                 override fun onFailure(call: Call<ProjectCreateInviteResponse>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
+                    Log.d("tag", "Projectedit response t" + t.message)
                 }
             })
         }

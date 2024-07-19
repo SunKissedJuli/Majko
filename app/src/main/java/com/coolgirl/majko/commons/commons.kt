@@ -217,7 +217,7 @@ fun GroupCard(navHostController: NavHostController,
         .clip(RoundedCornerShape(20.dp))
         .border(3.dp, color = colorResource(tapType), shape = RoundedCornerShape(20.dp))
         .background(color = colorResource(priorityColor))
-        .clickable { },
+        .clickable { navHostController.navigate(Screen.GroupEditor.group_id(groupData.id))},
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
         Row(
@@ -246,11 +246,14 @@ fun GroupCard(navHostController: NavHostController,
             verticalAlignment = Alignment.Top){
             Text(text= groupData.description?: "Без описания", fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
         }
-        Column(Modifier.fillMaxSize()) {
+        Row(Modifier
+            .fillMaxSize()
+            .padding(0.dp, 0.dp, 15.dp, 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End) {
             if (!groupData.is_personal){
-                for(item in groupData.members){
-                    item.name?.let { Text(text = it) }
-                }
+                Icon(imageVector = Icons.Filled.Person, contentDescription = "Favorites", tint = colorResource(R.color.black))
+                Text(text = groupData.members.size.toString())
             }
         }
     }

@@ -58,7 +58,6 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
     }
 
     fun openPanel(id: String){
-        Log.d("tag", "хуй = " + id)
         if(id!=""){
             _uiState.update { it.copy(is_longtap = true) }
             _uiState.update { it.copy(longtapProjectId = uiState.value.longtapProjectId + id) }
