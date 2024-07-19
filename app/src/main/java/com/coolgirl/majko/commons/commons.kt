@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 import com.coolgirl.majko.R
 import com.coolgirl.majko.Screen.Project.ProjectUiState
+import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import kotlinx.coroutines.flow.*
@@ -49,7 +50,7 @@ fun TaskCard(navHostController: NavHostController,
              onDeadStarClick: (String) -> Unit){
     Column(modifier = Modifier
         .height(280.dp)
-        .width(180.dp)
+        .fillMaxWidth()
         .padding(5.dp)
         .clip(RoundedCornerShape(20.dp))
         .background(color = colorResource(priorityColor))
@@ -87,28 +88,43 @@ fun TaskCard(navHostController: NavHostController,
             Modifier
                 .padding(10.dp, 10.dp, 10.dp, 0.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(0.71f),
+                .fillMaxHeight(0.64f),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top){
-            Text(text= taskData.text?: "Без записей", fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines =10)
+            Text(text= taskData.text?: "Без записей", fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
         }
-        Column(Modifier.fillMaxSize().padding(0.dp,0.dp,0.dp,8.dp), verticalArrangement = Arrangement.Bottom) {
-            Row(Modifier.padding(10.dp, 5.dp,10.dp,2.dp), horizontalArrangement = Arrangement.Center){
-                
-                val dateTime = LocalDateTime.parse(taskData.deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                Text(text= dateTime.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale("ru"))
-                        + ", " + dateTime.dayOfMonth + " "
-                    + dateTime.month.getDisplayName(TextStyle.FULL, Locale("ru")), fontSize = 13.sp, fontWeight = FontWeight.Medium)
-            }
-            Row(Modifier.padding(10.dp, 0.dp,10.dp,2.dp), horizontalArrangement = Arrangement.Center){
-                Text(text= "Статус: " + statusName, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-            }
-            if(taskData.project!=null){
-                Row(Modifier.padding(10.dp, 0.dp,10.dp,0.dp), horizontalArrangement = Arrangement.Center){
-                    Text(text= "Проект: " + taskData.project.name, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom){
+            Column(
+                Modifier.fillMaxWidth(0.8f)
+                    .padding(0.dp, 0.dp, 0.dp, 8.dp), verticalArrangement = Arrangement.Bottom) {
+                Row(Modifier.padding(10.dp, 5.dp,0.dp,2.dp), horizontalArrangement = Arrangement.Center){
+
+                    val dateTime = LocalDateTime.parse(taskData.deadline, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    Text(text= dateTime.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale("ru"))
+                            + ", " + dateTime.dayOfMonth + " "
+                            + dateTime.month.getDisplayName(TextStyle.FULL, Locale("ru")), fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                }
+                Row(Modifier.padding(10.dp, 0.dp,0.dp,2.dp), horizontalArrangement = Arrangement.Center){
+                    Text(text= "Статус: " + statusName, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                }
+                if(taskData.project!=null){
+                    Row(Modifier.padding(10.dp, 0.dp,0.dp,0.dp), horizontalArrangement = Arrangement.Center){
+                        Text(text= "Проект: " + taskData.project.name, fontSize = 13.sp, fontWeight = FontWeight.Medium, maxLines = 2)
+                    }
                 }
             }
+
+            Row(Modifier.fillMaxSize().padding(0.dp,0.dp,0.dp,10.dp),
+                verticalAlignment = Alignment.Bottom){
+                Image(painter = painterResource(R.drawable.icon_subtask),
+                    contentDescription = "Favorites",
+                Modifier.size(20.dp))
+                Text(text = taskData.count_subtasks.toString())
+            }
+
+
         }
+
     }
 }
 
@@ -140,7 +156,8 @@ fun ProjectCard(navHostController: NavHostController,
             onClick = { navHostController.navigate(Screen.ProjectEditor.project_id(projectData.id)) },
             onLongClick = {
                 tapType = R.color.purple
-                onLongTap(projectData.id)},
+                onLongTap(projectData.id)
+            },
         ),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
@@ -173,6 +190,58 @@ fun ProjectCard(navHostController: NavHostController,
         Column(Modifier.fillMaxSize()) {
             if (!projectData.is_personal){
                 for(item in projectData.members){
+                    item.name?.let { Text(text = it) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun GroupCard(navHostController: NavHostController,
+                priorityColor : Int = R.color.white,
+              groupData: GroupResponse, ) {
+
+    var tapType by remember { mutableStateOf(R.color.gray) }
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .height(150.dp)
+        .padding(10.dp, 10.dp, 10.dp, 0.dp)
+        .clip(RoundedCornerShape(20.dp))
+        .border(3.dp, color = colorResource(tapType), shape = RoundedCornerShape(20.dp))
+        .background(color = colorResource(priorityColor))
+        .clickable {  },
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top) {
+        Row(
+            Modifier
+                .padding(15.dp, 10.dp, 10.dp, 0.dp)
+                .fillMaxWidth()
+                .fillMaxHeight(0.27f),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically){
+            Image(painter = painterResource(R.drawable.icon_plug),
+                contentDescription = "image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxHeight(0.8f)
+                    .clip(CircleShape))
+            Spacer(Modifier.width(15.dp))
+            Text(text= groupData.title?: "Без названия", modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
+
+        }
+        Row(
+            Modifier
+                .padding(15.dp, 10.dp, 10.dp, 0.dp)
+                .fillMaxWidth()
+                .fillMaxHeight(0.7f),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Top){
+            Text(text= groupData.description?: "Без описания", fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
+        }
+        Column(Modifier.fillMaxSize()) {
+            if (!groupData.is_personal){
+                for(item in groupData.members){
                     item.name?.let { Text(text = it) }
                 }
             }

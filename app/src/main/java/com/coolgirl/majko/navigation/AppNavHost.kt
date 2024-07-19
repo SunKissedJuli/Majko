@@ -7,8 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.coolgirl.majko.Screen.Archive.ArchiveScreen
+import com.coolgirl.majko.Screen.Group.GroupScreen
 import com.coolgirl.majko.Screen.Login.LoginScreen
-import com.coolgirl.majko.Screen.Notification.NotificationScreen
 import com.coolgirl.majko.Screen.Profile.ProfileScreen
 import com.coolgirl.majko.Screen.Project.ProjectScreen
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditScreen
@@ -32,8 +32,8 @@ fun AppNavHost(
             TaskScreen(navController)
         }
 
-        composable(Screen.Notification.route) {
-            NotificationScreen(navController)
+        composable(Screen.Group.route) {
+            GroupScreen(navController)
         }
 
         composable(Screen.Profile.route) {

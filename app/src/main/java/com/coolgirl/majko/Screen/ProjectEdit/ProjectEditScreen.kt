@@ -145,8 +145,11 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                     val projectData = uiState.projectData.tasks
                     val count = uiState.projectData?.tasks?.size?:0
                     items(count) { rowIndex ->
-                        TaskCard(navController, viewModel.getPriority(projectData[rowIndex].priority),
-                            viewModel.getStatusName(projectData[rowIndex].status), projectData[rowIndex], {}, {})
+                        Column(Modifier.width(200.dp)) {
+                            TaskCard(navController, viewModel.getPriority(projectData[rowIndex].priority),
+                                viewModel.getStatusName(projectData[rowIndex].status), projectData[rowIndex], {}, {})
+
+                        }
                     }
                 }
             }
@@ -159,7 +162,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                     .fillMaxWidth(0.65f)
                     .padding(0.dp, 10.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                androidx.compose.material3.Text(text = stringResource(R.string.projectedit_addtask), color = colorResource(R.color.white),
+                Text(text = stringResource(R.string.projectedit_addtask), color = colorResource(R.color.white),
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)
             }
         }
@@ -295,7 +298,9 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
 @Composable
 fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewModel){
     Column(
-        Modifier.fillMaxSize().padding(0.dp,100.dp,0.dp,0.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(0.dp, 100.dp, 0.dp, 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top) {
         Column(

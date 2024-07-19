@@ -43,8 +43,8 @@ fun ArchiveScreen(navController: NavHostController){
     val uiState by viewModel.uiState.collectAsState()
     val uiStateCard by viewModel.uiStateCard.collectAsState()
 
-    val items = listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project, ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
-    val (selectedItem, setSelectedItem) = remember { mutableStateOf(items[0]) }
+    val items = listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project, ModalNavigationDrawerScreens.Group, ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
+    val (selectedItem, setSelectedItem) = remember { mutableStateOf(items[4]) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 

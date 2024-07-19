@@ -42,7 +42,7 @@ fun TaskScreen(navController: NavHostController) {
 
     val uiState by viewModel.uiState.collectAsState()
 
-    val items = listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project, ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
+    val items = listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project, ModalNavigationDrawerScreens.Group, ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
     val (selectedItem, setSelectedItem) = remember { mutableStateOf(items[0]) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -137,53 +137,83 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
 
         val allTaskList = viewModel.uiState.collectAsState().value.searchAllTaskList
         val favoritesTaskList = viewModel.uiState.collectAsState().value.searchFavoritesTaskList
-        if (allTaskList != null && favoritesTaskList != null) {
-            val columnItems1: Int = ((allTaskList!!.size).toFloat() / 2).roundToInt()
-            val columnItems: Int = ((favoritesTaskList!!.size).toFloat() / 2).roundToInt()
+       // if (allTaskList != null && favoritesTaskList != null) {
             LazyColumn(
                 Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (favoritesTaskList != null) {
+
+                if (favoritesTaskList != null && favoritesTaskList.isNotEmpty()) {
                     item {
-                        Text(text = stringResource(R.string.task_favorites), color = colorResource(R.color.gray),
-                            modifier = Modifier.padding(15.dp, 10.dp, 0.dp, 10.dp))
+                        Text(
+                            text = stringResource(R.string.task_favorites),
+                            color = colorResource(R.color.gray),
+                            modifier = Modifier.padding(15.dp, 10.dp, 0.dp, 10.dp)
+                        )
                     }
-                    items(columnItems) { columnIndex ->
-                        LazyRow(Modifier.fillMaxWidth()) {
-                            val count =
-                                if (columnIndex == columnItems - 1 && favoritesTaskList.size % 2 != 0) 1 else 2
-                            items(count) { rowIndex ->
-                                val currentIndex = columnIndex * 2 + rowIndex
-                                TaskCard(navController, viewModel.getPriority(favoritesTaskList[currentIndex].priority),
-                                    viewModel.getStatus(favoritesTaskList[currentIndex].status), favoritesTaskList[currentIndex],
-                                    {viewModel.removeFavotite(it)}, {viewModel.addFavotite(it)})
+                    items(favoritesTaskList.size / 2 + favoritesTaskList.size % 2) { rowIndex ->
+                        Row(Modifier.fillMaxWidth()) {
+                            val firstIndex = rowIndex * 2
+                            if (firstIndex < favoritesTaskList.size) {
+                                Column(Modifier.fillMaxWidth(0.5f)) {
+                                    TaskCard(navController, viewModel.getPriority(favoritesTaskList[firstIndex].priority),
+                                        viewModel.getStatus(favoritesTaskList[firstIndex].status), taskData = favoritesTaskList[firstIndex],
+                                        { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) }
+                                    )
+                                }
+
+                            }
+
+                            val secondIndex = firstIndex + 1
+                            if (secondIndex < favoritesTaskList.size) {
+                                Column(Modifier.fillMaxWidth()) {
+                                    TaskCard(navController, viewModel.getPriority(favoritesTaskList[secondIndex].priority),
+                                        viewModel.getStatus(favoritesTaskList[secondIndex].status), taskData = favoritesTaskList[secondIndex],
+                                        { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) }
+                                    )
+                                }
+
                             }
                         }
                     }
                 }
 
-                if (allTaskList != null) {
+                if (allTaskList != null && allTaskList.isNotEmpty()) {
                     item {
-                        Text(text = stringResource(R.string.task_each), color = colorResource(R.color.gray),
-                            modifier = Modifier.padding(15.dp, 10.dp, 0.dp, 10.dp))
+                        Text(
+                            text = stringResource(R.string.task_each),
+                            color = colorResource(R.color.gray),
+                            modifier = Modifier.padding(15.dp, 10.dp, 0.dp, 10.dp)
+                        )
                     }
+                    items(allTaskList.size / 2 + allTaskList.size % 2) { rowIndex ->
+                        Row(Modifier.fillMaxWidth()) {
+                            val firstIndex = rowIndex * 2
+                            if (firstIndex < allTaskList.size) {
+                                Column(Modifier.fillMaxWidth(0.5f)) {
+                                    TaskCard(navController, viewModel.getPriority(allTaskList[firstIndex].priority),
+                                        viewModel.getStatus(allTaskList[firstIndex].status), taskData = allTaskList[firstIndex],
+                                        { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) }
+                                    )
+                                }
 
-                    items(columnItems1) { columnIndex ->
-                        LazyRow(Modifier.fillMaxWidth()) {
-                            val count = if (columnIndex == columnItems1 - 1 && allTaskList.size % 2 != 0) 1 else 2
-                            items(count) { rowIndex ->
-                                val currentIndex = columnIndex * 2 + rowIndex
-                                TaskCard(navController, viewModel.getPriority(allTaskList[currentIndex].priority),
-                                    viewModel.getStatus(allTaskList[currentIndex].status), allTaskList[currentIndex],
-                                    {viewModel.removeFavotite(it)}, {viewModel.addFavotite(it)})
+                            }
+
+                            val secondIndex = firstIndex + 1
+                            if (secondIndex < allTaskList.size) {
+                                Column(Modifier.fillMaxWidth()) {
+                                    TaskCard(navController, viewModel.getPriority(allTaskList[secondIndex].priority),
+                                        viewModel.getStatus(allTaskList[secondIndex].status), taskData = allTaskList[secondIndex],
+                                        { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) }
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
+      //  }
     }
 }

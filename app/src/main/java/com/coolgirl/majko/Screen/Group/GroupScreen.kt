@@ -1,4 +1,4 @@
-package com.coolgirl.majko.Screen.Project
+package com.coolgirl.majko.Screen.Group
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
@@ -29,6 +30,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.Screen.Project.ProjectUiState
+import com.coolgirl.majko.Screen.Project.ProjectViewModel
+import com.coolgirl.majko.Screen.Project.ProjectViewModelProvider
+import com.coolgirl.majko.commons.GroupCard
 import com.coolgirl.majko.commons.ProjectCard
 import com.coolgirl.majko.commons.ProjectCardUiState
 import com.coolgirl.majko.navigation.BottomBar
@@ -37,16 +42,15 @@ import com.coolgirl.majko.navigation.ModalNavigationDrawerScreens
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProjectScreen(navController: NavHostController){
-    val viewModel: ProjectViewModel = viewModel(
-        key = "taskViewModel",
-        factory = ProjectViewModelProvider.getInstance(LocalContext.current)
+fun GroupScreen(navController: NavHostController) {
+    val viewModel: GroupViewModel = viewModel(
+        key = "groupViewModel",
+        factory = GroupViewModelProvider.getInstance(LocalContext.current)
     )
     val uiState by viewModel.uiState.collectAsState()
-    val uiStateCard by viewModel.uiStateCard.collectAsState()
 
     val items = listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project, ModalNavigationDrawerScreens.Group, ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
-    val (selectedItem, setSelectedItem) = remember { mutableStateOf(items[1]) }
+    val (selectedItem, setSelectedItem) = remember { mutableStateOf(items[2]) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -55,7 +59,8 @@ fun ProjectScreen(navController: NavHostController){
         drawerContent = {
             ModalDrawerSheet(
                 Modifier.fillMaxWidth(0.7f),
-                drawerContainerColor = colorResource(R.color.purple)) {
+                drawerContainerColor = colorResource(R.color.purple)
+            ) {
                 items.forEach { item ->
                     NavigationDrawerItem(
                         label = { Text(item.title, fontSize = 22.sp) },
@@ -82,13 +87,13 @@ fun ProjectScreen(navController: NavHostController){
                         Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.93f)) {
-                        SetProjectScreen(uiState, navController, viewModel, uiStateCard)
+                        SetGroupScreen(uiState, navController, viewModel)
                     }
                     BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
                 }
 
 
-                Button(onClick = { viewModel.addingProject()},
+                Button(onClick = { viewModel.addingGroup()},
                     shape = CircleShape,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -98,56 +103,22 @@ fun ProjectScreen(navController: NavHostController){
                     Text(text = "+", color = colorResource(R.color.white),
                         fontSize = 34.sp, fontWeight = FontWeight.Bold)
                 }
-
-                //панель при длинном нажатии
-                if(uiState.is_longtap){
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.1f)
-                            .background(color = colorResource(R.color.purple)),
-                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
-                        var expanded by remember { mutableStateOf(false) }
-
-                        Box(Modifier.padding(10.dp)) {
-                            IconButton(onClick = { expanded = true }) {
-                                androidx.compose.material.Icon(
-                                    Icons.Default.MoreVert,
-                                    contentDescription = "Показать меню"
-                                )
-                            }
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false },
-                                modifier = Modifier.fillMaxWidth(0.5f)) {
-                                Text(
-                                    stringResource(R.string.project_to_archive),
-                                    fontSize = 18.sp,
-                                    modifier = Modifier
-                                        .padding(10.dp)
-                                        .clickable {
-                                            viewModel.toArchive()
-                                        }
-                                )
-                            }
-                        }
-                    }
-                }
             }
 
-            //экран добавления проекта
+            //экран добавления группы
             if(uiState.is_adding){
-                AddProject(uiState, viewModel)
+                AddGroup(uiState, viewModel)
             }
 
             Row(Modifier.padding(10.dp)) {
                 IconButton(
                     onClick = { scope.launch { drawerState.open() } },
                     content = {
-                        Icon(
+                        androidx.compose.material3.Icon(
                             Icons.Filled.Menu,
                             contentDescription = "Menu",
-                            tint = colorResource(R.color.white))
+                            tint = colorResource(R.color.white)
+                        )
                     }
                 )
             }
@@ -157,7 +128,7 @@ fun ProjectScreen(navController: NavHostController){
 }
 
 @Composable
-fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, viewModel: ProjectViewModel, uiStateCard: ProjectCardUiState) {
+fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, viewModel: GroupViewModel) {
     Column(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
@@ -179,14 +150,14 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
                 decorationBox = { innerTextField ->
                     Row(modifier = Modifier.fillMaxWidth()) {
                         if (uiState.searchString.isEmpty()) {
-                            androidx.compose.material.Text(text = stringResource(R.string.project_search),
+                            androidx.compose.material.Text(text = stringResource(R.string.group_search),
                                 color = Color.DarkGray,fontSize = 17.sp) }
                         innerTextField() } })
             // строка поиска, бургер и тд и тп
         }
 
-        val personalProject = uiState.searchPersonalProject
-        val groupProject = uiState.searchGroupProject
+        val personalGroup = uiState.searchPersonalGroup
+        val groupGroup = uiState.searchGroupGroup
 
         LazyColumn(
             Modifier
@@ -194,25 +165,25 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (!groupProject.isNullOrEmpty()) {
+            if (!groupGroup.isNullOrEmpty()) {
                 item {
-                    Text(text = stringResource(R.string.project_group),
+                    Text(text = stringResource(R.string.group_group),
                         color = colorResource(R.color.gray),
                         modifier = Modifier.padding(15.dp, 10.dp, 0.dp, 10.dp))
                 }
-                items(groupProject) { project ->
-                    ProjectCard(navController, projectData = project, onLongTap = {viewModel.openPanel(it)})
+                items(groupGroup) { group ->
+                    GroupCard(navController, groupData = group)
                 }
             }
 
-            if (!personalProject.isNullOrEmpty()) {
+            if (!personalGroup.isNullOrEmpty()) {
                 item {
-                    Text(text = stringResource(R.string.project_personal),
+                    Text(text = stringResource(R.string.group_personal),
                         color = colorResource(R.color.gray),
                         modifier = Modifier.padding(15.dp, 10.dp, 0.dp, 10.dp))
                 }
-                items(personalProject) { project ->
-                    ProjectCard(navController, projectData = project, onLongTap = {viewModel.openPanel(it)})
+                items(personalGroup) { group ->
+                    GroupCard(navController, groupData = group)
                 }
             }
         }
@@ -220,7 +191,7 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
 }
 
 @Composable
-fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel){
+fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel){
     Column(Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -234,29 +205,39 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel){
             horizontalAlignment = Alignment.Start) {
 
             OutlinedTextField(
-                value = uiState.newProjectName,
-                onValueChange = {viewModel.updateProjectName(it)},
+                value = uiState.newGroupName,
+                onValueChange = {viewModel.updateGroupName(it)},
                 Modifier.padding(20.dp, 20.dp, 0.dp, 0.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(R.color.white)),
-                placeholder = {Text(text = stringResource(R.string.project_name), color = colorResource(R.color.gray))})
+                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(
+                        R.color.white),
+                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(
+                        R.color.white)
+                ),
+                placeholder = {Text(text = stringResource(R.string.group_name), color = colorResource(
+                    R.color.gray)
+                )})
 
-            OutlinedTextField(value = uiState.newProjectDescription,
-                onValueChange = {viewModel.updateProjectDescription(it)},
+            OutlinedTextField(value = uiState.newGroupDescription,
+                onValueChange = {viewModel.updateGroupDescription(it)},
                 Modifier
                     .fillMaxHeight(0.75f)
                     .padding(20.dp, 20.dp, 0.dp, 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(R.color.white)),
-                placeholder = {Text(text = stringResource(R.string.project_description), color = colorResource(R.color.gray))})
+                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(
+                        R.color.white),
+                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(
+                        R.color.white)
+                ),
+                placeholder = {Text(text = stringResource(R.string.group_description), color = colorResource(
+                    R.color.gray)
+                )})
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){
-                Button(onClick = { viewModel.addProject()},
+                Button(onClick = { viewModel.addGroup()},
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier
                         .fillMaxWidth(0.7f)

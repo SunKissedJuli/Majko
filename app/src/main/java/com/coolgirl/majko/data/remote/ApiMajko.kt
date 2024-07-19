@@ -1,6 +1,8 @@
 package com.coolgirl.majko.data.remote
 
 import com.coolgirl.majko.data.remote.dto.*
+import com.coolgirl.majko.data.remote.dto.GroupData.GroupData
+import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
@@ -100,5 +102,16 @@ interface ApiMajko{
 
     @POST("api/note/getNotes?aseae=asdsad")
     fun getNotes(@Header("Authorization") tocken: String, @Body taskId: TaskById) : Call<List<NoteDataResponse>>
+
+
+    //группы
+    @POST("api/group/create")
+    fun addGroup(@Header("Authorization") tocken: String, @Body group: GroupData) : Call<GroupResponse>
+
+    @POST("api/group/getPersonal")
+    fun getPersonalGroup(@Header("Authorization") tocken: String): Call<List<GroupResponse>>
+
+    @POST("api/group/getPrivate")
+    fun getGroupGroup(@Header("Authorization") tocken: String): Call<List<GroupResponse>>
 
 }

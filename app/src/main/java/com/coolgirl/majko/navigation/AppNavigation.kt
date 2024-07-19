@@ -6,7 +6,7 @@ sealed class Screen(val route: String) {
 
     object Task : Screen("tasks")
 
-    object Notification : Screen("notification")
+    object Group : Screen("group")
 
     object Profile : Screen("profile")
 

@@ -25,4 +25,9 @@ sealed class ModalNavigationDrawerScreens(
         route = "archive",
         title = "Архив"
     )
+
+    object Group : ModalNavigationDrawerScreens(
+        route = "group",
+        title = "Группа"
+    )
 }

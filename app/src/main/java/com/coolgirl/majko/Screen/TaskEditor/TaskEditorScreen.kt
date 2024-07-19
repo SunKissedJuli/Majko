@@ -236,8 +236,10 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                         val subtask = uiState.subtask
                         val count = uiState.subtask?.size?:0
                         items(count) { rowIndex ->
-                            TaskCard(navController, viewModel.getPriority(subtask[rowIndex].priority),
-                                viewModel.getStatus(subtask[rowIndex].status), subtask[rowIndex], {}, {})
+                            Column(Modifier.width(200.dp)) {
+                                TaskCard(navController, viewModel.getPriority(subtask[rowIndex].priority),
+                                    viewModel.getStatus(subtask[rowIndex].status), subtask[rowIndex], {}, {})
+                            }
                         }
                     }
                 }

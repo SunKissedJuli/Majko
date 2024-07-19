@@ -18,6 +18,7 @@
     <string name="task_favorites">Избранные</string>
     <string name="task_each">Другие</string>
     <string name="task_search">Искать в задачах</string>
+    <string name="project_search">Искать в проектах</string>
     <string name="project_personal">Личные проекты</string>
     <string name="project_group">Групповые проекты</string>
     <string name="project_name">Название проекта</string>
@@ -39,4 +40,9 @@
     <string name="profile_confirmpassword">Подтвердите пароль</string>
     <string name="profile_save">Сохранить</string>
     <string name="profile_logout">Выход из аккаунта</string>
+    <string name="group_name">Название группы</string>
+    <string name="group_description">Описание группы</string>
+    <string name="group_personal">Личные группы</string>
+    <string name="group_group">Общие группы</string>
+    <string name="group_search">Искать в группах</string>
 </resources>
