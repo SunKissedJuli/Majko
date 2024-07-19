@@ -74,7 +74,7 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
                     if (response.code() == 200 && response.body()!=null) {
                         val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
                         response.body()?.forEach { item ->
-                            if (!item.is_favorite) {
+                            if (!item.is_favorite && item.mainTaskId==null) {
                                 notFavorite.add(item)
                             }
                         }

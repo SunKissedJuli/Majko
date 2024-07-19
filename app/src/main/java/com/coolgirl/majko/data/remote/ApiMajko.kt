@@ -89,6 +89,9 @@ interface ApiMajko{
     @POST("api/project/createInvite")
     fun createInvitetoProject(@Header("Authorization") tocken: String, @Body projectById: ProjectBy_Id) : Call<ProjectCreateInviteResponse>
 
+    @POST("api/project/joinByInvitation")
+    fun joinByInvitation(@Header("Authorization") tocken: String, @Body invite: JoinByInviteProjectData) : Call<MessageData>
+
 
     //записи
     @POST("api/note/create")

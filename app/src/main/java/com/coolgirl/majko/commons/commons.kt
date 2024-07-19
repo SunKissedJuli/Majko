@@ -95,7 +95,8 @@ fun TaskCard(navHostController: NavHostController,
         }
         Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom){
             Column(
-                Modifier.fillMaxWidth(0.8f)
+                Modifier
+                    .fillMaxWidth(0.8f)
                     .padding(0.dp, 0.dp, 0.dp, 8.dp), verticalArrangement = Arrangement.Bottom) {
                 Row(Modifier.padding(10.dp, 5.dp,0.dp,2.dp), horizontalArrangement = Arrangement.Center){
 
@@ -114,7 +115,10 @@ fun TaskCard(navHostController: NavHostController,
                 }
             }
 
-            Row(Modifier.fillMaxSize().padding(0.dp,0.dp,0.dp,10.dp),
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .padding(0.dp, 0.dp, 0.dp, 10.dp),
                 verticalAlignment = Alignment.Bottom){
                 Image(painter = painterResource(R.drawable.icon_subtask),
                     contentDescription = "Favorites",
@@ -143,7 +147,7 @@ fun ProjectCard(navHostController: NavHostController,
     var tapType by remember { mutableStateOf(R.color.gray) }
     Column(modifier = Modifier
         .fillMaxWidth()
-        .height(150.dp)
+        .height(170.dp)
         .padding(10.dp, 10.dp, 10.dp, 0.dp)
         .clip(RoundedCornerShape(20.dp))
         .border(
@@ -185,13 +189,16 @@ fun ProjectCard(navHostController: NavHostController,
                 .fillMaxHeight(0.7f),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top){
-            Text(text= projectData.description?: "Без описания", fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
+            Text(text= projectData.description?: "Без описания", fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 4)
         }
-        Column(Modifier.fillMaxSize()) {
+        Row(Modifier
+            .fillMaxSize()
+            .padding(0.dp, 0.dp, 15.dp, 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End) {
             if (!projectData.is_personal){
-                for(item in projectData.members){
-                    item.name?.let { Text(text = it) }
-                }
+                Icon(imageVector = Icons.Filled.Person, contentDescription = "Favorites", tint = colorResource(R.color.black))
+                Text(text = projectData.members.size.toString())
             }
         }
     }
@@ -210,7 +217,7 @@ fun GroupCard(navHostController: NavHostController,
         .clip(RoundedCornerShape(20.dp))
         .border(3.dp, color = colorResource(tapType), shape = RoundedCornerShape(20.dp))
         .background(color = colorResource(priorityColor))
-        .clickable {  },
+        .clickable { },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
         Row(

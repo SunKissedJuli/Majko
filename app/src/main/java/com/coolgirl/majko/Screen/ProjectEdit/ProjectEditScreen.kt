@@ -87,7 +87,6 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             .clickable { viewModel.createInvite() })
                 }
             }
-            //   Text(text = noteData, fontSize = 18.sp)
         }
 
         Column(

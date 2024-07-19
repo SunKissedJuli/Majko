@@ -6,10 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.ProjectCardUiState
 import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectData
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
+import com.coolgirl.majko.data.remote.dto.MessageData
+import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.di.ApiClient
 import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.flow.*
@@ -33,6 +31,20 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
 
     fun updateProjectDescription(description: String){
         _uiState.update { it.copy(newProjectDescription = description) }
+    }
+
+    fun updateInvite(invite: String){
+        _uiState.update { it.copy(invite = invite) }
+    }
+
+    fun openInviteWindow(){
+        if(uiState.value.is_invite==false){
+            _uiState.update { it.copy(is_adding_background = 0.5f)}
+            _uiState.update { it.copy(is_invite = true)}
+        }else{
+            _uiState.update { it.copy(is_adding_background = 1f)}
+            _uiState.update { it.copy(is_invite = false)}
+        }
     }
 
     fun addingProject(){
@@ -74,6 +86,25 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
                 searchPersonalProject = filteredPersonalProject,
                 searchGroupProject = filteredGroupProject
             )
+        }
+    }
+
+    fun joinByInvite(){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val call: Call<MessageData> = ApiClient().joinByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite))
+            call.enqueue(object : Callback<MessageData> {
+                override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
+                    if (response.code() == 200 && response.body() != null) {
+                        _uiState.update { it.copy(invite_message = response.body()!!.message!!) }
+                        loadData()
+                    }
+                }
+
+                override fun onFailure(call: Call<MessageData>, t: Throwable) {
+                    //дописать
+                }
+            })
         }
     }
 

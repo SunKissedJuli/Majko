@@ -13,5 +13,8 @@ data class ProjectUiState(
     val newProjectName : String = "",
     val newProjectDescription : String = "",
     val is_longtap: Boolean = false,
-    val longtapProjectId: String = ""
+    val longtapProjectId: String = "",
+    val is_invite: Boolean =  false,
+    val invite: String = "",
+    val invite_message: String = "",
 )
