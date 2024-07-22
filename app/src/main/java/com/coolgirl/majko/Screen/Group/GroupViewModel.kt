@@ -1,17 +1,13 @@
 package com.coolgirl.majko.Screen.Group
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.coolgirl.majko.Screen.Project.ProjectUiState
 import com.coolgirl.majko.commons.ProjectCardUiState
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupData
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectData
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
+import com.coolgirl.majko.data.remote.dto.MessageData
+import com.coolgirl.majko.data.remote.dto.ProjectData.JoinByInviteProjectData
 import com.coolgirl.majko.di.ApiClient
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -23,8 +19,8 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
     private val _uiState = MutableStateFlow(GroupUiState())
     val uiState: StateFlow<GroupUiState> = _uiState.asStateFlow()
 
-    val _uiStateCard = MutableStateFlow(ProjectCardUiState())
-    val uiStateCard: StateFlow<ProjectCardUiState> = _uiStateCard.asStateFlow()
+        //val _uiStateCard = MutableStateFlow(ProjectCardUiState())
+   // val uiStateCard: StateFlow<ProjectCardUiState> = _uiStateCard.asStateFlow()
 
     init{loadData()}
 
@@ -36,6 +32,10 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
         _uiState.update { it.copy(newGroupDescription = description) }
     }
 
+    fun updateInvite(invite: String){
+        _uiState.update { it.copy(invite = invite) }
+    }
+
     fun addingGroup(){
         if(uiState.value.is_adding){
             _uiState.update { it.copy(is_adding_background = 1f)}
@@ -45,6 +45,16 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
             _uiState.update { it.copy(is_adding = true)}
         }
 
+    }
+
+    fun openInviteWindow(){
+        if(uiState.value.is_invite==false){
+            _uiState.update { it.copy(is_adding_background = 0.5f)}
+            _uiState.update { it.copy(is_invite = true)}
+        }else{
+            _uiState.update { it.copy(is_adding_background = 1f)}
+            _uiState.update { it.copy(is_invite = false)}
+        }
     }
 
 
@@ -125,6 +135,25 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
                 }
 
                 override fun onFailure(call1: Call<List<GroupResponse>>, t: Throwable) {
+                    //дописать
+                }
+            })
+        }
+    }
+
+    fun joinByInvite(){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val call: Call<MessageData> = ApiClient().joinGroupByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite))
+            call.enqueue(object : Callback<MessageData> {
+                override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
+                    if (response.code() == 200 && response.body() != null) {
+                        _uiState.update { it.copy(invite_message = response.body()!!.message!!) }
+                        loadData()
+                    }
+                }
+
+                override fun onFailure(call: Call<MessageData>, t: Throwable) {
                     //дописать
                 }
             })

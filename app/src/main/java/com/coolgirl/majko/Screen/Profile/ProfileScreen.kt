@@ -1,6 +1,8 @@
 package com.coolgirl.majko.Screen.Profile
 
+import android.net.Uri
 import android.provider.ContactsContract.Profile
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -67,7 +69,7 @@ fun ProfileScreen( navController: NavHostController) {
 }
 
 @Composable
-fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit, onUpdateUserEmail: (String) -> Unit, viewModel: ProfileViewModel, navController: NavHostController) {
+fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit, onUpdateUserEmail: (String) -> Unit, viewModel: ProfileViewModel, navController: NavHostController, launcher: ManagedActivityResultLauncher<String, Uri?> = viewModel.OpenGalery()) {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,7 +80,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
             contentDescription = "image",
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .clickable {}
+                .clickable { launcher.launch("image/*") }
                 .size(200.dp)
                 .clip(CircleShape)
         )

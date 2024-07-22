@@ -34,6 +34,9 @@ interface ApiMajko{
     @POST("api/user/update")
     fun updateUserPassword(@Header("Authorization") tocken: String, @Body user: UserUpdatePassword): Call<CurrentUserDataResponse>
 
+    @POST("api/user/update")
+    fun updateUserImage(@Header("Authorization") tocken: String, @Body user: UserUpdateImage): Call<CurrentUserDataResponse>
+
     //таски
     @POST("api/task/allUserTasks")
     fun getAllUserTask(@Header("Authorization") tocken: String): Call<List<TaskDataResponse>>
@@ -131,6 +134,9 @@ interface ApiMajko{
 
     @POST("api/group/createInvite")
     fun createInvitetoGroup(@Header("Authorization") tocken: String, @Body groupId: GroupBy_Id) : Call<GroupInviteResponse>
+
+    @POST("api/group/joinByInvitation")
+    fun joinGroupByInvitation(@Header("Authorization") tocken: String, @Body invite: JoinByInviteProjectData) : Call<MessageData>
 
 
 }

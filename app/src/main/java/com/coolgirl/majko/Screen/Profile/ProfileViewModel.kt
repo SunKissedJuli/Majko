@@ -1,18 +1,30 @@
 package com.coolgirl.majko.Screen.Profile
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.OpenableColumns
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
-import com.coolgirl.majko.data.remote.dto.UserUpdateEmail
-import com.coolgirl.majko.data.remote.dto.UserUpdateName
-import com.coolgirl.majko.data.remote.dto.UserUpdatePassword
+import com.coolgirl.majko.data.remote.dto.*
 import com.coolgirl.majko.di.ApiClient
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -118,6 +130,61 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
                 override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
                     //дописать
                 } })
+        }
+    }
+
+    @SuppressLint("Range", "SuspiciousIndentation")
+    @Composable
+    fun OpenGalery(context: Context = LocalContext.current): ManagedActivityResultLauncher<String, Uri?> {
+        var file by remember { mutableStateOf<File?>(null) }
+        val coroutineScope = rememberCoroutineScope()
+        val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            val cursor: Cursor? = context.getContentResolver().query(uri!!, null, null, null, null)
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    var fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    val iStream : InputStream = context.contentResolver.openInputStream(uri!!)!!
+                    val outputDir : File = context.cacheDir
+                    val outputFile : File = File(outputDir,fileName)
+                    copyStreamToFile(iStream, outputFile)
+                    file = outputFile
+                    iStream.close()
+
+                }
+            }finally { cursor!!.close()
+                coroutineScope.launch() {
+                    viewModelScope.launch {
+                        val accessToken = dataStore.getAccessToken().first() ?: ""
+                        val call: Call<CurrentUserDataResponse> = ApiClient().updateUserImage("Bearer " + accessToken, UserUpdateImage(uiState.value.userName, file))
+                        call.enqueue(object : Callback<CurrentUserDataResponse> {
+                            override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
+                                if(response.code()==200){
+                                }
+                            }
+                            override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
+                                //дописать
+                            } })
+                    }
+                }
+
+            }
+        }
+        return launcher
+    }
+
+
+    fun copyStreamToFile(inputStream: InputStream, outputFile: File){
+        inputStream.use { input ->
+            val outputStream = FileOutputStream(outputFile)
+            outputStream.use { output ->
+                val buffer = ByteArray(4 * 1024) // buffer size
+                while (true) {
+                    val byteCount = input.read(buffer)
+                    if (byteCount < 0) break
+                    output.write(buffer, 0, byteCount)
+                }
+               output.flush()
+            }
         }
     }
 }

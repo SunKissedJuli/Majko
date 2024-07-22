@@ -13,4 +13,7 @@ data class GroupUiState(
     val is_adding_background : Float = 1f,
     val newGroupName : String = "",
     val newGroupDescription : String = "",
+    val is_invite: Boolean =  false,
+    val invite: String = "",
+    val invite_message: String = "",
 )

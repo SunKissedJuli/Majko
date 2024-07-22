@@ -122,6 +122,10 @@ fun GroupScreen(navController: NavHostController) {
                     }
                 )
             }
+
+            if(uiState.is_invite){
+                JoinByInviteWindow(uiState, viewModel)
+            }
         }
     )
 
@@ -144,15 +148,41 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
         ) {
             BasicTextField(
                 value = uiState.searchString,
-                modifier = Modifier.padding(50.dp, 14.dp, 0.dp,0.dp),
+                modifier = Modifier.fillMaxWidth(0.82f)
+                    .padding(50.dp, 14.dp, 0.dp,0.dp),
                 textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = colorResource(R.color.white)),
                 onValueChange = {viewModel.updateSearchString(it)},
                 decorationBox = { innerTextField ->
                     Row(modifier = Modifier.fillMaxWidth()) {
                         if (uiState.searchString.isEmpty()) {
-                            androidx.compose.material.Text(text = stringResource(R.string.group_search),
+                            Text(text = stringResource(R.string.group_search),
                                 color = Color.DarkGray,fontSize = 17.sp) }
                         innerTextField() } })
+
+            var expanded by remember { mutableStateOf(false) }
+            Box(Modifier.padding(10.dp)) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        Icons.Default.MoreVert,
+                        contentDescription = "Показать меню",
+                        tint = colorResource(R.color.white)
+                    )
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.fillMaxWidth(0.5f)) {
+                    Text(
+                        stringResource(R.string.project_joininvite),
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .clickable {
+                                viewModel.openInviteWindow()
+                            }
+                    )
+                }
+            }
             // строка поиска, бургер и тд и тп
         }
 
@@ -245,6 +275,71 @@ fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel){
                     colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
                     Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
                         fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+
+
+        }
+    }
+}
+
+@Composable
+fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel){
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(0.dp, 100.dp, 0.dp, 0.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top) {
+        Column(
+            Modifier
+                .fillMaxWidth(0.9f)
+                .clip(RoundedCornerShape(20.dp))
+                .background(colorResource(R.color.purple)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center) {
+
+            OutlinedTextField(
+                value = uiState.invite,
+                onValueChange = { viewModel.updateInvite(it) },
+                Modifier.padding(20.dp, 20.dp, 20.dp, 20.dp),
+                shape = RoundedCornerShape(30.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = colorResource(R.color.white),
+                    unfocusedContainerColor = colorResource(R.color.white),
+                    focusedBorderColor = colorResource(R.color.white),
+                    unfocusedBorderColor = colorResource(R.color.white)
+                ),
+            )
+
+            if(uiState.invite_message.equals("")){
+                Button(onClick = { viewModel.joinByInvite() },
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .padding(0.dp, 10.dp),
+                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
+                    Text(text = stringResource(R.string.project_joininvite), color = colorResource(R.color.white),
+                        fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                }
+            }else {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically){
+                    Text(text = uiState.invite_message, color = colorResource(R.color.white))
+                }
+
+                Button(onClick = { viewModel.openInviteWindow() },
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .padding(0.dp, 10.dp),
+                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
+                    Text(text = stringResource(R.string.projectedit_close), color = colorResource(R.color.white),
+                        fontSize = 18.sp, fontWeight = FontWeight.Medium)
                 }
             }
 
