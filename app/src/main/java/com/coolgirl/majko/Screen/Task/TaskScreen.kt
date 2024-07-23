@@ -6,9 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,7 +26,6 @@ import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.plusButton
 import com.coolgirl.majko.navigation.*
-import kotlinx.coroutines.launch
 
 @Composable
 fun TaskScreen(navController: NavHostController) {
@@ -67,13 +65,13 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                 .fillMaxHeight(0.1f)
                 .padding(all = 10.dp)
                 .clip(RoundedCornerShape(30.dp))
-                .background(color = colorResource(R.color.blue)),
+                .background(color = MaterialTheme.colors.primary),
         verticalAlignment = Alignment.CenterVertically) {
 
             BasicTextField(
                 value = uiState.searchString,
                 modifier = Modifier.padding(start = 50.dp),
-                textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = colorResource(R.color.white)),
+                textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = MaterialTheme.colors.background),
                 onValueChange = {viewModel.updateSearchString(it)},
                 decorationBox = { innerTextField ->
                     Row(modifier = Modifier.fillMaxWidth()) {

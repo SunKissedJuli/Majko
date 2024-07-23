@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
@@ -29,8 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.coolgirl.majko.navigation.BottomBar
-import com.coolgirl.majko.navigation.BottomBarScreens
 import com.coolgirl.majko.R
 import com.coolgirl.majko.navigation.Screen
 
@@ -44,7 +43,7 @@ fun ProfileScreen( navController: NavHostController) {
         Modifier
             .fillMaxSize()
             .alpha(uiState.isAddingBackground)
-            .background(colorResource(R.color.white))) {
+            .background(MaterialTheme.colors.background)) {
         Column(
             Modifier
                 .fillMaxWidth()
@@ -86,15 +85,15 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
                     .width(150.dp),
                 onValueChange = onUpdateUserName,
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white),
-                    unfocusedContainerColor = colorResource(R.color.white)
+                    focusedContainerColor = MaterialTheme.colors.background,
+                    unfocusedContainerColor = MaterialTheme.colors.background
                 )
             )
             IconButton(onClick = { viewModel.updateNameData()  }) {
                 Icon(
                     Icons.Default.Check,
                     contentDescription = "",
-                    tint = colorResource(R.color.blue)
+                    tint = MaterialTheme.colors.primary
                 )
             }
         }
@@ -109,17 +108,13 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
                     .width(150.dp),
                 onValueChange = onUpdateUserEmail,
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white),
-                    unfocusedContainerColor = colorResource(R.color.white)
+                    focusedContainerColor = MaterialTheme.colors.background,
+                    unfocusedContainerColor = MaterialTheme.colors.background
                 )
             )
 
             IconButton(onClick = { viewModel.updateEmailData() }) {
-                Icon(
-                    Icons.Default.Check,
-                    contentDescription = "",
-                    tint = colorResource(R.color.blue)
-                )
+                Image(painter = painterResource(R.drawable.icon_check), contentDescription = "")
             }
         }
 
@@ -135,11 +130,11 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
                 modifier = Modifier
                     .fillMaxWidth(0.65f)
                     .padding(vertical = 10.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)
             ) {
                 Text(
                     text = stringResource(R.string.profile_forget),
-                    color = colorResource(R.color.white),
+                    color = MaterialTheme.colors.background,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -154,7 +149,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
             verticalAlignment = Alignment.Bottom) {
 
             Text(text = stringResource(R.string.profile_logout),
-                color = colorResource(R.color.blue),
+                color = MaterialTheme.colors.primary,
                 modifier = Modifier.clickable {
                     viewModel.forgetAccount()
                     navController.navigate(Screen.Login.route)
@@ -184,9 +179,9 @@ fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
                 Modifier.padding(start = 20.dp, top = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(R.color.white)),
-                placeholder = {Text(text = stringResource(R.string.profile_oldpassword), color = colorResource(R.color.gray))})
+                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
+                placeholder = {Text(text = stringResource(R.string.profile_oldpassword), color = MaterialTheme.colors.surface)})
 
             OutlinedTextField(
                 value = uiState.newPassword,
@@ -194,9 +189,9 @@ fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
                 Modifier.padding(start = 20.dp, top = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(R.color.white)),
-                placeholder = {Text(text = stringResource(R.string.profile_newpassword), color = colorResource(R.color.gray))})
+                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
+                placeholder = {Text(text = stringResource(R.string.profile_newpassword), color = MaterialTheme.colors.surface)})
 
             OutlinedTextField(
                 value = uiState.confirmPassword,
@@ -204,9 +199,9 @@ fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
                 Modifier.padding(start = 20.dp, top = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(R.color.white)),
-                placeholder = {Text(text = stringResource(R.string.profile_confirmpassword), color = colorResource(R.color.gray))})
+                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
+                placeholder = {Text(text = stringResource(R.string.profile_confirmpassword), color = MaterialTheme.colors.surface)})
 
 
             Row(Modifier.fillMaxSize(),
@@ -217,13 +212,11 @@ fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
                         .border(3.dp, colorResource(R.color.white), RoundedCornerShape(30.dp)),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                    Text(text = stringResource(R.string.profile_save), color = colorResource(R.color.white),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    Text(text = stringResource(R.string.profile_save), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }
-
-
         }
     }
 }

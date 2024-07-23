@@ -54,19 +54,19 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.08f)
-                .background(colorResource(R.color.blue))
+                .background(MaterialTheme.colors.primary)
                 .padding(horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
             Text(modifier = Modifier.clickable { viewModel.saveTask(navController) }, text = stringResource(R.string.common_back), fontWeight = FontWeight.Medium,
-                color = colorResource(R.color.white), fontSize = 50.sp,
+                color = MaterialTheme.colors.background, fontSize = 50.sp,
             )
 
             var expanded by remember { mutableStateOf(false) }
 
             Box {
                 IconButton(onClick = { expanded = true }) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "", tint = colorResource(R.color.white))
+                    Icon(Icons.Default.MoreVert, contentDescription = "", tint = MaterialTheme.colors.background)
                 }
                 DropdownMenu(
                     expanded = expanded,
@@ -95,7 +95,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     Row(modifier = Modifier.fillMaxWidth()) {
                         if (uiState.taskName.isEmpty()) {
                             Text(text = stringResource(R.string.taskeditor_name),
-                                color = colorResource(R.color.gray),fontSize = 20.sp) }
+                                color = MaterialTheme.colors.surface,fontSize = 20.sp) }
                         innerTextField() } })
             BasicTextField(
                 value = uiState.taskText,
@@ -106,7 +106,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     Row(modifier = Modifier.fillMaxWidth()) {
                         if (uiState.taskText.isEmpty()) {
                             Text(text = stringResource(R.string.taskeditor_hint),
-                                color = colorResource(R.color.gray),fontSize = 18.sp) }
+                                color = MaterialTheme.colors.surface,fontSize = 18.sp) }
                         innerTextField() } })
         }
 
@@ -149,7 +149,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                 Row(modifier = Modifier.fillMaxWidth()) {
                                     if (uiState.noteText.isEmpty()) {
                                         Text(text = stringResource(R.string.taskeditor_hint),
-                                            color = colorResource(R.color.gray),fontSize = 18.sp) }
+                                            color = MaterialTheme.colors.surface,fontSize = 18.sp) }
                                     innerTextField() } })
 
                         Row(
@@ -162,16 +162,15 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                 modifier = Modifier
                                     .fillMaxWidth(0.65f)
                                     .padding(vertical = 10.dp),
-                                colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
+                                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
                                 Text(
                                     text = stringResource(R.string.project_add),
-                                    color = colorResource(R.color.white),
+                                    color = MaterialTheme.colors.background,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Medium
                                 )
                             }
                         }
-
                     }
                 }
 
@@ -185,7 +184,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                     text = stringResource(R.string.common_dash),
                                     fontSize = 55.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = colorResource(R.color.white)
+                                    color = MaterialTheme.colors.background
                                 )
                                 Spacer(modifier = Modifier.width(10.dp))
 
@@ -198,7 +197,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                         Row(modifier = Modifier.fillMaxWidth()) {
                                             if (item.note.isEmpty()) {
                                                 Text(text = stringResource(R.string.taskeditor_hint),
-                                                    color = colorResource(R.color.gray),fontSize = 18.sp) }
+                                                    color = MaterialTheme.colors.surface,fontSize = 18.sp) }
                                             innerTextField() } })
 
                                 Spacer(modifier = Modifier.width(5.dp))
@@ -236,11 +235,11 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     modifier = Modifier
                         .fillMaxWidth(0.65f)
                         .padding(vertical = 10.dp),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)
                 ) {
                     Text(
                         text = stringResource(R.string.taskeditor_addtask),
-                        color = colorResource(R.color.white),
+                        color = MaterialTheme.colors.background,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -253,14 +252,14 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     Modifier
                         .padding(all = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(color = colorResource(R.color.purple)),
+                        .background(color = MaterialTheme.colors.secondary),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top) {
                     Column(
                         Modifier
                             .padding(all = 15.dp)
                             .clip(RoundedCornerShape(20.dp))
-                            .background(color = colorResource(R.color.white)),
+                            .background(color = MaterialTheme.colors.background),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Top) {
 
@@ -276,7 +275,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                 Row(modifier = Modifier.fillMaxWidth()) {
                                     if (uiState.subtaskName.isEmpty()) {
                                         Text(text = stringResource(R.string.taskeditor_name),
-                                            color = colorResource(R.color.gray),fontSize = 20.sp) }
+                                            color = MaterialTheme.colors.surface,fontSize = 20.sp) }
                                     innerTextField() } })
                         BasicTextField(
                             value = uiState.subtaskText,
@@ -287,7 +286,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                 Row(modifier = Modifier.fillMaxWidth()) {
                                     if (uiState.subtaskText.isEmpty()) {
                                         Text(text = stringResource(R.string.taskeditor_hint),
-                                            color = colorResource(R.color.gray),fontSize = 18.sp) }
+                                            color = MaterialTheme.colors.surface,fontSize = 18.sp) }
                                     innerTextField()
                                 }
                             }
@@ -298,7 +297,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                             .fillMaxWidth()
                             .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 15.dp)
                             .clip(RoundedCornerShape(20.dp))
-                            .background(color = colorResource(R.color.white)),
+                            .background(color = MaterialTheme.colors.background),
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.Top) {
                         val mCalendar = Calendar.getInstance()
@@ -365,10 +364,10 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                 .fillMaxWidth(0.65f)
                                 .padding(vertical = 10.dp),
                             colors = ButtonDefaults.buttonColors(
-                                colorResource(R.color.blue))) {
+                                MaterialTheme.colors.primary)) {
                             Text(
                                 text = stringResource(R.string.project_add),
-                                color = colorResource(R.color.white),
+                                color = MaterialTheme.colors.background,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium
                             )
@@ -385,7 +384,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 .fillMaxWidth()
                 .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 15.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(color = colorResource(R.color.white)),
+                .background(color = MaterialTheme.colors.background),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top) {
             val mCalendar = Calendar.getInstance()

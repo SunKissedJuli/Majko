@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -83,14 +84,14 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
                 .fillMaxHeight(0.1f)
                 .padding(all = 10.dp)
                 .clip(RoundedCornerShape(30.dp))
-                .background(color = colorResource(R.color.blue)),
+                .background(color = MaterialTheme.colors.primary),
             verticalAlignment = Alignment.CenterVertically) {
             BasicTextField(
                 value = uiState.searchString,
                 modifier = Modifier
                     .fillMaxWidth(0.82f)
                     .padding(start = 50.dp),
-                textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = colorResource(R.color.white)),
+                textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = MaterialTheme.colors.background),
                 onValueChange = {viewModel.updateSearchString(it)},
                 decorationBox = { innerTextField ->
                     Row(modifier = Modifier.fillMaxWidth()) {
@@ -135,7 +136,7 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
             if (!groupGroup.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.group_group),
-                        color = colorResource(R.color.gray),
+                        color = MaterialTheme.colors.surface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(groupGroup) { group ->
@@ -146,7 +147,7 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
             if (!personalGroup.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.group_personal),
-                        color = colorResource(R.color.gray),
+                        color = MaterialTheme.colors.surface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(personalGroup) { group ->
@@ -177,14 +178,9 @@ fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel){
                 Modifier.padding(start = 20.dp, top = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(
-                        R.color.white),
-                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(
-                        R.color.white)
-                ),
-                placeholder = {Text(text = stringResource(R.string.group_name), color = colorResource(
-                    R.color.gray)
-                )})
+                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
+                placeholder = {Text(text = stringResource(R.string.group_name), color = MaterialTheme.colors.surface)})
 
             OutlinedTextField(value = uiState.newGroupDescription,
                 onValueChange = {viewModel.updateGroupDescription(it)},
@@ -193,14 +189,9 @@ fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel){
                     .padding(start = 20.dp, top = 20.dp, bottom = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(
-                        R.color.white),
-                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(
-                        R.color.white)
-                ),
-                placeholder = {Text(text = stringResource(R.string.group_description), color = colorResource(
-                    R.color.gray)
-                )})
+                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
+                placeholder = {Text(text = stringResource(R.string.group_description), color = MaterialTheme.colors.surface)})
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){
@@ -209,8 +200,8 @@ fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel){
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
                         .border(3.dp, colorResource(R.color.white), RoundedCornerShape(30.dp)),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                    Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }
@@ -242,10 +233,10 @@ fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel){
                 Modifier.padding(all = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white),
-                    unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white),
-                    unfocusedBorderColor = colorResource(R.color.white)
+                    focusedContainerColor = MaterialTheme.colors.background,
+                    unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background,
+                    unfocusedBorderColor = MaterialTheme.colors.background
                 ),
             )
 
@@ -255,8 +246,8 @@ fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel){
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .padding(vertical = 10.dp),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                    Text(text = stringResource(R.string.project_joininvite), color = colorResource(R.color.white),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    Text(text = stringResource(R.string.project_joininvite), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Medium)
                 }
             }else {
@@ -266,7 +257,7 @@ fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel){
                         .padding(all = 10.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically){
-                    Text(text = uiState.invite_message, color = colorResource(R.color.white))
+                    Text(text = uiState.invite_message, color = MaterialTheme.colors.background)
                 }
 
                 Button(onClick = { viewModel.openInviteWindow() },
@@ -274,8 +265,8 @@ fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel){
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .padding(vertical = 10.dp),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                    Text(text = stringResource(R.string.projectedit_close), color = colorResource(R.color.white),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    Text(text = stringResource(R.string.projectedit_close), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Medium)
                 }
             }

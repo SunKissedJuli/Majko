@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
@@ -45,25 +46,25 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(colorResource(R.color.white))
+            .background(MaterialTheme.colors.background)
             .alpha(uiState.is_invite_backgroun)) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.08f)
-                .background(colorResource(R.color.blue))
+                .background(MaterialTheme.colors.primary)
                 .padding(horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 modifier = Modifier.clickable { viewModel.saveGroup(navController) },
                 text = stringResource(R.string.common_back), fontWeight = FontWeight.Medium,
-                color = colorResource(R.color.white), fontSize = 50.sp,)
+                color = MaterialTheme.colors.background, fontSize = 50.sp,)
 
             var expanded by remember { mutableStateOf(false) }
 
             Box() { IconButton(onClick = { expanded = true }) {
-                Icon(Icons.Default.MoreVert, tint = colorResource(R.color.white), contentDescription = "") }
+                Icon(Icons.Default.MoreVert, tint = MaterialTheme.colors.background, contentDescription = "") }
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
@@ -98,7 +99,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                             if (uiState.groupData!!.title.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.group_name),
-                                    color = colorResource(R.color.gray), fontSize = 20.sp)
+                                    color = MaterialTheme.colors.surface, fontSize = 20.sp)
                             }
                             innerTextField()
                         }
@@ -118,7 +119,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                         Row(modifier = Modifier.fillMaxWidth()) {
                             if (uiState.groupData!!.description.isEmpty()) {
                                 Text(text = stringResource(R.string.group_description),
-                                    color = colorResource(R.color.gray), fontSize = 18.sp)
+                                    color = MaterialTheme.colors.surface, fontSize = 18.sp)
                             }
                             innerTextField()
                         }
@@ -149,8 +150,8 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 modifier = Modifier
                     .fillMaxWidth(0.65f)
                     .padding(vertical = 10.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                Text(text = stringResource(R.string.groupeditor_addproject), color = colorResource(R.color.white),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                Text(text = stringResource(R.string.groupeditor_addproject), color = MaterialTheme.colors.background,
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)
             }
         }
@@ -174,8 +175,8 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                                     modifier = Modifier
                                         .fillMaxWidth(0.8f)
                                         .padding(vertical = 10.dp),
-                                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                                    Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
+                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                                    Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
                                         fontSize = 18.sp, fontWeight = FontWeight.Medium)
                                 }
                             }
@@ -192,7 +193,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                     .fillMaxSize()
                     .padding(top = 20.dp)
                     .clip(RoundedCornerShape(25.dp, 25.dp))
-                    .background(color = colorResource(R.color.purple)),
+                    .background(color = MaterialTheme.colors.secondary),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top) {
 
@@ -215,7 +216,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                                     text = stringResource(R.string.common_dash),
                                     fontSize = 55.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = colorResource(R.color.white)
+                                    color = MaterialTheme.colors.background
                                 )
                             }
                             Spacer(modifier = Modifier.width(10.dp))
@@ -262,10 +263,10 @@ fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditorViewMode
                 enabled = true,
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white),
-                    unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white),
-                    unfocusedBorderColor = colorResource(R.color.white)
+                    focusedContainerColor = MaterialTheme.colors.background,
+                    unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background,
+                    unfocusedBorderColor = MaterialTheme.colors.background
                 ),
             )
 
@@ -274,8 +275,8 @@ fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditorViewMode
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
                     .padding(vertical = 10.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                Text(text = stringResource(R.string.projectedit_close), color = colorResource(R.color.white),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                Text(text = stringResource(R.string.projectedit_close), color = MaterialTheme.colors.background,
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)
             }
 

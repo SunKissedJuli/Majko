@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
@@ -68,7 +69,7 @@ fun ProjectScreen(navController: NavHostController){
             Row(Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.1f)
-                    .background(color = colorResource(R.color.purple)),
+                    .background(color = MaterialTheme.colors.secondary),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
                 var expanded by remember { mutableStateOf(false) }
 
@@ -119,14 +120,14 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
                 .fillMaxHeight(0.1f)
                 .padding(all = 10.dp)
                 .clip(RoundedCornerShape(30.dp))
-                .background(color = colorResource(R.color.blue)),
+                .background(color = MaterialTheme.colors.primary),
             verticalAlignment = Alignment.CenterVertically) {
             BasicTextField(
                 value = uiState.searchString,
                 modifier = Modifier
                     .fillMaxWidth(0.82f)
                     .padding(start = 50.dp),
-                textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = colorResource(R.color.white)),
+                textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = MaterialTheme.colors.background),
                 onValueChange = {viewModel.updateSearchString(it)},
                 decorationBox = { innerTextField ->
                     Row(modifier = Modifier.fillMaxWidth()) {
@@ -185,7 +186,7 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
             if (!personalProject.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.project_personal),
-                        color = colorResource(R.color.gray),
+                        color = MaterialTheme.colors.surface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(personalProject) { project ->
@@ -218,10 +219,10 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel){
                 Modifier.padding(all = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white),
-                    unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white),
-                    unfocusedBorderColor = colorResource(R.color.white)
+                    focusedContainerColor = MaterialTheme.colors.background,
+                    unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background,
+                    unfocusedBorderColor = MaterialTheme.colors.background
                 ),
             )
 
@@ -231,8 +232,8 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel){
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .padding(vertical = 10.dp),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                    Text(text = stringResource(R.string.project_joininvite), color = colorResource(R.color.white),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    Text(text = stringResource(R.string.project_joininvite), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Medium)
                 }
             }else {
@@ -242,7 +243,7 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel){
                         .padding(all = 10.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically){
-                    Text(text = uiState.invite_message, color = colorResource(R.color.white))
+                    Text(text = uiState.invite_message, color = MaterialTheme.colors.background)
                 }
 
                 Button(onClick = { viewModel.openInviteWindow() },
@@ -250,8 +251,8 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel){
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .padding(vertical = 10.dp),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                    Text(text = stringResource(R.string.projectedit_close), color = colorResource(R.color.white),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    Text(text = stringResource(R.string.projectedit_close), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Medium)
                 }
             }
@@ -271,7 +272,7 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel){
                 .fillMaxWidth(0.9f)
                 .fillMaxHeight(0.5f)
                 .clip(RoundedCornerShape(25.dp))
-                .background(colorResource(R.color.blue)),
+                .background(MaterialTheme.colors.primary),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start) {
 
@@ -281,9 +282,9 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel){
                 Modifier.padding(start = 20.dp, top = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(R.color.white)),
-                placeholder = {Text(text = stringResource(R.string.project_name), color = colorResource(R.color.gray))})
+                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
+                placeholder = {Text(text = stringResource(R.string.project_name), color = MaterialTheme.colors.surface)})
 
             OutlinedTextField(value = uiState.newProjectDescription,
                 onValueChange = {viewModel.updateProjectDescription(it)},
@@ -292,9 +293,9 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel){
                     .padding(start = 20.dp, top = 20.dp, bottom = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white), unfocusedBorderColor = colorResource(R.color.white)),
-                placeholder = {Text(text = stringResource(R.string.project_description), color = colorResource(R.color.gray))})
+                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
+                placeholder = {Text(text = stringResource(R.string.project_description), color = MaterialTheme.colors.surface)})
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){
@@ -302,9 +303,9 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel){
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier
                         .fillMaxWidth(0.7f)
-                        .border(3.dp, colorResource(R.color.white), RoundedCornerShape(30.dp)),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                    Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
+                        .border(3.dp, MaterialTheme.colors.background, RoundedCornerShape(30.dp)),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }

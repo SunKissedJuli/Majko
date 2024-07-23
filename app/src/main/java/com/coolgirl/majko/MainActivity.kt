@@ -16,6 +16,7 @@ import com.coolgirl.majko.navigation.AppNavHost
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
 import com.coolgirl.majko.navigation.Screen
+import com.coolgirl.majko.ui.theme.MajkoTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -23,44 +24,46 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
-            val dataStore: UserDataStore = UserDataStore(LocalContext.current)
-            val coroutineScope = rememberCoroutineScope()
-            var accessToken by remember { mutableStateOf("") }
+            MajkoTheme {
+                val navController = rememberNavController()
+                val dataStore: UserDataStore = UserDataStore(LocalContext.current)
+                val coroutineScope = rememberCoroutineScope()
+                var accessToken by remember { mutableStateOf("") }
 
-            LaunchedEffect(Unit) {
-                coroutineScope.launch {
-                    accessToken = dataStore.getAccessToken().first() ?: ""
+                LaunchedEffect(Unit) {
+                    coroutineScope.launch {
+                        accessToken = dataStore.getAccessToken().first() ?: ""
+                    }
                 }
-            }
 
-            val startDestination = if (accessToken.isNotEmpty()) {
-                Screen.Profile.route
-            } else {
-                Screen.Login.route
-            }
+                val startDestination = if (accessToken.isNotEmpty()) {
+                    Screen.Profile.route
+                } else {
+                    Screen.Login.route
+                }
 
-            val currentBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = currentBackStackEntry?.destination
+                val currentBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = currentBackStackEntry?.destination
 
-            Scaffold(
-                bottomBar = {
-                    if (currentDestination != null) {
-                        if(currentDestination.route!="login"&&currentDestination.route!="task_editor/{task_id}"&&currentDestination.route!="group_editor/{group_id}"&&currentDestination.route!="project_editor/{project_id}"){
-                            Column(Modifier.fillMaxHeight(0.07f)) {
-                                BottomBar(navController,
-                                    listOf(BottomBarScreens.Group,
-                                    BottomBarScreens.Project,
-                                    BottomBarScreens.Task,
-                                    BottomBarScreens.Archive,
-                                    BottomBarScreens.Profile))
+                Scaffold(
+                    bottomBar = {
+                        if (currentDestination != null) {
+                            if(currentDestination.route!="login"&&currentDestination.route!="task_editor/{task_id}"&&currentDestination.route!="group_editor/{group_id}"&&currentDestination.route!="project_editor/{project_id}"){
+                                Column(Modifier.fillMaxHeight(0.07f)) {
+                                    BottomBar(navController,
+                                        listOf(BottomBarScreens.Group,
+                                            BottomBarScreens.Project,
+                                            BottomBarScreens.Task,
+                                            BottomBarScreens.Archive,
+                                            BottomBarScreens.Profile))
+                                }
                             }
                         }
-                    }
 
+                    }
+                ) {
+                    AppNavHost(navController, startDestination)
                 }
-            ) {
-                AppNavHost(navController, startDestination)
             }
         }
     }

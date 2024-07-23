@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -32,6 +33,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
+import com.coolgirl.majko.ui.theme.Blue
+import com.coolgirl.majko.ui.theme.MajkoTheme
 
 @Composable
 fun plusButton(onClick: (String) -> Unit, id: String){
@@ -41,7 +44,7 @@ fun plusButton(onClick: (String) -> Unit, id: String){
         modifier = Modifier
             .padding(horizontal = 20.dp, vertical = 65.dp)
             .size(56.dp),
-        colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
         Image(painter = painterResource(R.drawable.icon_plus), contentDescription = "")
     }
 }
@@ -50,9 +53,9 @@ fun plusButton(onClick: (String) -> Unit, id: String){
 fun HorizontalLine(){
     Box(modifier = Modifier
         .fillMaxWidth()
-        .padding(top = 5.dp, bottom =  12.dp)
+        .padding(top = 5.dp, bottom = 12.dp)
         .height(1.dp)
-        .background(color = colorResource(R.color.gray))
+        .background(color = MaterialTheme.colors.surface)
     )
 }
 
@@ -206,7 +209,7 @@ fun ProjectCard(navHostController: NavHostController,
         Row(
             Modifier
                 .fillMaxSize()
-                .padding(end = 15.dp, bottom =  10.dp),
+                .padding(end = 15.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End) {
             if (!projectData.is_personal){
@@ -235,7 +238,7 @@ fun GroupCard(navHostController: NavHostController,
         verticalArrangement = Arrangement.Top) {
         Row(
             Modifier
-                .padding(start = 15.dp,top = 10.dp, end = 10.dp)
+                .padding(start = 15.dp, top = 10.dp, end = 10.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(0.27f),
             horizontalArrangement = Arrangement.Start,
@@ -262,7 +265,7 @@ fun GroupCard(navHostController: NavHostController,
         Row(
             Modifier
                 .fillMaxSize()
-                .padding(end =  15.dp, bottom = 10.dp),
+                .padding(end = 15.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End) {
             if (!groupData.is_personal){
@@ -284,9 +287,7 @@ fun SpinnerSample(
     var currentSelectedItem by remember { mutableStateOf(selectedItem) }
 
     Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-        androidx.compose.material.Text(
-            text = name + " " + currentSelectedItem,
-            fontSize = 18.sp)
+        Text(text = name + " " + currentSelectedItem, fontSize = 18.sp)
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },

@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -53,25 +54,25 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(colorResource(R.color.white))
+            .background(MaterialTheme.colors.background)
             .alpha(uiState.isInviteBackground)) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.08f)
-                .background(colorResource(R.color.blue))
+                .background(MaterialTheme.colors.primary)
                 .padding(horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 modifier = Modifier.clickable { viewModel.saveProject(navController) },
                 text = stringResource(R.string.common_back), fontWeight = FontWeight.Medium,
-                color = colorResource(R.color.white), fontSize = 50.sp,)
+                color = MaterialTheme.colors.background, fontSize = 50.sp,)
 
             var expanded by remember { mutableStateOf(false) }
 
             Box() { IconButton(onClick = { expanded = true }) {
-                Icon(Icons.Default.MoreVert, tint = colorResource(R.color.white), contentDescription = "") }
+                Icon(Icons.Default.MoreVert, tint = MaterialTheme.colors.background, contentDescription = "") }
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
@@ -106,7 +107,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             if (uiState.projectData!!.name.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.project_name),
-                                    color = colorResource(R.color.gray), fontSize = 20.sp)
+                                    color = MaterialTheme.colors.surface, fontSize = 20.sp)
                             }
                             innerTextField()
                         }
@@ -126,7 +127,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                         Row(modifier = Modifier.fillMaxWidth()) {
                             if (uiState.projectData!!.description.isEmpty()) {
                                 Text(text = stringResource(R.string.project_description),
-                                    color = colorResource(R.color.gray), fontSize = 18.sp)
+                                    color = MaterialTheme.colors.surface, fontSize = 18.sp)
                             }
                             innerTextField()
                         }
@@ -160,8 +161,8 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 modifier = Modifier
                     .fillMaxWidth(0.65f)
                     .padding(vertical = 10.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                Text(text = stringResource(R.string.projectedit_addtask), color = colorResource(R.color.white),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                Text(text = stringResource(R.string.projectedit_addtask), color = MaterialTheme.colors.background,
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)
             }
         }
@@ -194,7 +195,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.taskName.isEmpty()) {
                                     Text(text = stringResource(R.string.taskeditor_name),
-                                        color = colorResource(R.color.gray),fontSize = 20.sp) }
+                                        color = MaterialTheme.colors.surface,fontSize = 20.sp) }
                                 innerTextField() } })
                     BasicTextField(
                         value = uiState.taskText,
@@ -205,7 +206,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.taskText.isEmpty()) {
                                     Text(text = stringResource(R.string.taskeditor_hint),
-                                        color = colorResource(R.color.gray),fontSize = 18.sp) }
+                                        color = MaterialTheme.colors.surface,fontSize = 18.sp) }
                                 innerTextField()
                             }
                         }
@@ -281,8 +282,8 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                         modifier = Modifier
                             .fillMaxWidth(0.65f)
                             .padding(vertical = 10.dp),
-                        colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                        Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                        Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
                             fontSize = 18.sp, fontWeight = FontWeight.Medium)
                     }
                 }
@@ -320,7 +321,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                                     text = stringResource(R.string.common_dash),
                                     fontSize = 55.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = colorResource(R.color.white)
+                                    color = MaterialTheme.colors.background
                                 )
                             }
                             Spacer(modifier = Modifier.width(10.dp))
@@ -329,9 +330,6 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                                 Text(text = stringResource(R.string.groupeditor_name) + " " + item.user.name)
                                 Text(text = stringResource(R.string.groupeditor_role) + " " + item.role_id.name)
                             }
-
-
-
                         }
                     Spacer(modifier = Modifier.height(10.dp))
                 }
@@ -356,7 +354,7 @@ fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewMode
             Modifier
                 .fillMaxWidth(0.9f)
                 .clip(RoundedCornerShape(20.dp))
-                .background(colorResource(R.color.purple)),
+                .background(MaterialTheme.colors.secondary),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center) {
 
@@ -367,10 +365,10 @@ fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewMode
                 enabled = true,
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = colorResource(R.color.white),
-                    unfocusedContainerColor = colorResource(R.color.white),
-                    focusedBorderColor = colorResource(R.color.white),
-                    unfocusedBorderColor = colorResource(R.color.white)
+                    focusedContainerColor = MaterialTheme.colors.background,
+                    unfocusedContainerColor = MaterialTheme.colors.background,
+                    focusedBorderColor = MaterialTheme.colors.background,
+                    unfocusedBorderColor = MaterialTheme.colors.background
                 ),
             )
 
@@ -379,8 +377,8 @@ fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewMode
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
                     .padding(vertical = 10.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                Text(text = stringResource(R.string.projectedit_close), color = colorResource(R.color.white),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                Text(text = stringResource(R.string.projectedit_close), color = MaterialTheme.colors.background,
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)
             }
 

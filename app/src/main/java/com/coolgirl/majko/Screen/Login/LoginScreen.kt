@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -31,7 +32,7 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel){
     Column(
         Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.white)),
+            .background(MaterialTheme.colors.background),
     horizontalAlignment = Alignment.Start,
     verticalArrangement = Arrangement.Top){
         Column(
@@ -55,7 +56,7 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel){
             Modifier
                 .fillMaxSize()
                 .background(
-                    color = colorResource(R.color.purple),
+                    color = MaterialTheme.colors.secondary,
                     shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,7 +67,7 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel){
                 Modifier
                     .fillMaxHeight(0.65f)
                     .fillMaxWidth(0.8f)
-                    .background(color = colorResource(R.color.white), shape = RoundedCornerShape(30.dp)),
+                    .background(color = MaterialTheme.colors.background, shape = RoundedCornerShape(30.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -81,38 +82,38 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel){
                             TextField(
                                 value = viewModel.userName,
                                 modifier = Modifier.height(55.dp),
-                                placeholder = { Text(text = stringResource(id = R.string.login_username), color = colorResource(R.color.gray)) },
+                                placeholder = { Text(text = stringResource(id = R.string.login_username), color = MaterialTheme.colors.surface) },
                                 onValueChange = { viewModel.updateUserName(it) },
-                                colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
-                                    unfocusedContainerColor = colorResource(R.color.white))
+                                colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
+                                    unfocusedContainerColor = MaterialTheme.colors.background)
                             )
                         }
                     }
                     TextField(
                         value = viewModel.userLogin,
                         modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_login), color = colorResource(R.color.gray)) },
+                        placeholder = { Text(text = stringResource(id = R.string.login_login), color = MaterialTheme.colors.surface) },
                         onValueChange = { viewModel.updateUserLogin(it) },
-                        colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
-                            unfocusedContainerColor = colorResource(R.color.white))
+                        colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
+                            unfocusedContainerColor = MaterialTheme.colors.background)
                     )
                     TextField(
                         value = viewModel.userPassword,
                         modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_password), color = colorResource(R.color.gray)) },
+                        placeholder = { Text(text = stringResource(id = R.string.login_password), color = MaterialTheme.colors.surface) },
                         onValueChange = { viewModel.updateUserPassword(it) },
                         colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
-                            unfocusedContainerColor = colorResource(R.color.white))
+                            unfocusedContainerColor = MaterialTheme.colors.background)
                     )
                     key(viewModel.change){
                         if(!viewModel.isThisSignIn()){
                             TextField(
                             value = viewModel.userPasswordRepeat,
                             modifier = Modifier.height(55.dp),
-                            placeholder = { Text(text = stringResource(id = R.string.login_passwordrepeat), color = colorResource(R.color.gray)) },
+                            placeholder = { Text(text = stringResource(id = R.string.login_passwordrepeat), color = MaterialTheme.colors.surface) },
                             onValueChange = { viewModel.updateUserPasswordRepeat(it) },
-                            colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
-                                unfocusedContainerColor = colorResource(R.color.white))
+                            colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
+                                unfocusedContainerColor = MaterialTheme.colors.background)
                            )
                         }
                     }
@@ -123,8 +124,9 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel){
                     modifier = Modifier
                         .fillMaxWidth(0.73f),
                     shape = RoundedCornerShape(15.dp),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                    Text(text = stringResource(viewModel.enterButtonText()), color = colorResource(R.color.white), fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    Text(text = stringResource(viewModel.enterButtonText()), color = MaterialTheme.colors.background,
+                        fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 }
                 Text(text = stringResource(viewModel.bottomText()),
                     modifier = Modifier.clickable { viewModel.changeScreen() })
