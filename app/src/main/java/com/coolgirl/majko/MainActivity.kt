@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
             Scaffold(
                 bottomBar = {
                     if (currentDestination != null) {
-                        if(currentDestination.route!="login"){
+                        if(currentDestination.route!="login"&&currentDestination.route!="task_editor/{task_id}"&&currentDestination.route!="group_editor/{group_id}"&&currentDestination.route!="project_editor/{project_id}"){
                             Column(Modifier.fillMaxHeight(0.07f)) {
                                 BottomBar(navController,
                                     listOf(BottomBarScreens.Group,
