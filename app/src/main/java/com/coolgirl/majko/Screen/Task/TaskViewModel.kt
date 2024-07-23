@@ -71,17 +71,14 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
             val call: Call<List<TaskDataResponse>> = ApiClient().getAllUserTask("Bearer " + accessToken)
             call.enqueue(object : Callback<List<TaskDataResponse>> {
                 override fun onResponse(call: Call<List<TaskDataResponse>>, response: Response<List<TaskDataResponse>>) {
-                    if (response.code() == 200 && response.body()!=null) {
-                        val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
-                        response.body()?.forEach { item ->
-                            if (!item.is_favorite && item.mainTaskId==null) {
-                                notFavorite.add(item)
-                            }
+                    val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
+                    response.body()?.forEach { item ->
+                        if (!item.is_favorite && item.mainTaskId==null) {
+                            notFavorite.add(item)
                         }
-                        _uiState.update { it.copy(allTaskList = notFavorite)}
-                        _uiState.update { it.copy(searchAllTaskList = notFavorite)}
-                        Log.d("tag", "Taskeditor all = " + uiState.value.allTaskList)
                     }
+                    _uiState.update { it.copy(allTaskList = notFavorite)}
+                    _uiState.update { it.copy(searchAllTaskList = notFavorite)}
                 }
 
                 override fun onFailure(call: Call<List<TaskDataResponse>>, t: Throwable) {
@@ -91,11 +88,8 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
             val call1: Call<List<TaskDataResponse>> = ApiClient().getAllFavorites("Bearer " + accessToken)
             call1.enqueue(object : Callback<List<TaskDataResponse>> {
                 override fun onResponse(call1: Call<List<TaskDataResponse>>, response: Response<List<TaskDataResponse>>) {
-                    if (response.code() == 200 && response.body()!=null) {
-                        _uiState.update { it.copy(favoritesTaskList = response.body())}
-                        _uiState.update { it.copy(searchFavoritesTaskList =  response.body())}
-                        Log.d("tag", "Taskeditor fav = " + uiState.value.favoritesTaskList)
-                    }
+                    _uiState.update { it.copy(favoritesTaskList = response.body())}
+                    _uiState.update { it.copy(searchFavoritesTaskList =  response.body())}
                 }
 
                 override fun onFailure(call1: Call<List<TaskDataResponse>>, t: Throwable) {
@@ -111,9 +105,7 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
             val call: Call<MessageData> = ApiClient().addToFavorite("Bearer " + accessToken, TaskById(task_id))
             call.enqueue(object : Callback<MessageData> {
                 override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
-                    if (response.code() == 200 && response.body() != null) {
-                        loadData()
-                    }
+                    loadData()
                 }
 
                 override fun onFailure(call: Call<MessageData>, t: Throwable) {
@@ -129,9 +121,7 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
             val call: Call<MessageData> = ApiClient().removeFavotire("Bearer " + accessToken, TaskById(task_id))
             call.enqueue(object : Callback<MessageData> {
                 override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
-                    if (response.code() == 200 && response.body() != null) {
-                        loadData()
-                    }
+                    loadData()
                 }
 
                 override fun onFailure(call: Call<MessageData>, t: Throwable) {

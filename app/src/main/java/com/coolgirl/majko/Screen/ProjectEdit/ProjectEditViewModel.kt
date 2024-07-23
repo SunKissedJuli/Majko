@@ -5,9 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.SpinnerItems
+import com.coolgirl.majko.components.SpinnerItems
 import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
@@ -44,12 +43,12 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
     }
 
     fun newInvite(){
-        if(uiState.value.is_invite){
-            _uiState.update { it.copy(is_invite = false) }
-            _uiState.update { it.copy(is_invite_backgroun = 1f) }
+        if(uiState.value.isInvite){
+            _uiState.update { it.copy(isInvite = false) }
+            _uiState.update { it.copy(isInviteBackground = 1f) }
         }else{
-            _uiState.update { it.copy(is_invite = true) }
-            _uiState.update { it.copy(is_invite_backgroun = 0.5f) }
+            _uiState.update { it.copy(isInvite = true) }
+            _uiState.update { it.copy(isInviteBackground = 0.5f) }
         }
     }
 
@@ -139,12 +138,9 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
             val call: Call<ProjectCurrentResponse> = ApiClient().getProjectById("Bearer " + accessToken, ProjectById(uiState.value.projectId))
             call.enqueue(object : Callback<ProjectCurrentResponse> {
                 override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        _uiState.update { it.copy(projectData = response.body()!!) }
-                        if(response.body()!!.members.isNotEmpty()){
-                            _uiState.update { it.copy(members = response.body()!!.members) }
-                        }
-
+                    _uiState.update { it.copy(projectData = response.body()!!) }
+                    if(response.body()!!.members.isNotEmpty()){
+                        _uiState.update { it.copy(members = response.body()!!.members) }
                     }
                 }
 
@@ -162,10 +158,9 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
             val call: Call<ProjectCurrentResponse> = ApiClient().updateProject("Bearer " + accessToken, updateProject)
             call.enqueue(object : Callback<ProjectCurrentResponse> {
                 override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
-                    if (response.code() == 200||response.code()==201) {
                        navHostController.navigate(Screen.Project.route)
-                    }
                 }
+
                 override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
                     Log.d("tag", "Projectedit response t" + t.message)
                 }
@@ -179,10 +174,9 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
             val call: Call<Unit> = ApiClient().removeProject("Bearer " + accessToken, ProjectById(uiState.value.projectId))
             call.enqueue(object : Callback<Unit> {
                 override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    if (response.code() == 200||response.code()==201) {
-                        navHostController.navigate(Screen.Project.route)
-                    }
+                    navHostController.navigate(Screen.Project.route)
                 }
+
                 override fun onFailure(call: Call<Unit>, t: Throwable) {
                     Log.d("tag", "Projectedit response t" + t.message)
                 }
@@ -199,11 +193,10 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
             val call: Call<TaskDataResponse> = ApiClient().postNewTask("Bearer " + accessToken, newTask)
             call.enqueue(object : Callback<TaskDataResponse> {
                 override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        addingTask()
-                        loadData()
-                    }
+                    addingTask()
+                    loadData()
                 }
+
                 override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
                     Log.d("tag", "Projectedit response t" + t.message)
                 }
@@ -217,11 +210,10 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
             val call: Call<ProjectCreateInviteResponse> = ApiClient().createInvitetoProject("Bearer " + accessToken, ProjectBy_Id(uiState.value.projectId))
             call.enqueue(object : Callback<ProjectCreateInviteResponse> {
                 override fun onResponse(call: Call<ProjectCreateInviteResponse>, response: Response<ProjectCreateInviteResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        _uiState.update { it.copy(invite = response.body()!!.invite) }
-                        newInvite()
-                    }
+                    _uiState.update { it.copy(invite = response.body()!!.invite) }
+                    newInvite()
                 }
+
                 override fun onFailure(call: Call<ProjectCreateInviteResponse>, t: Throwable) {
                     Log.d("tag", "Projectedit response t" + t.message)
                 }

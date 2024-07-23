@@ -4,14 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.coolgirl.majko.R
-import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditUiState
-import com.coolgirl.majko.commons.SpinnerItems
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.GroupData.*
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.di.ApiClient
 import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.flow.*
@@ -72,12 +67,8 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val gro
             val call: Call<GroupResponse> = ApiClient().getGroupById("Bearer " + accessToken, GroupById(uiState.value.group_id))
             call.enqueue(object : Callback<GroupResponse> {
                 override fun onResponse(call: Call<GroupResponse>, response: Response<GroupResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        _uiState.update { it.copy(groupData = response.body()!!) }
-                     //   if(response.body()!!.members.isNotEmpty()){
-                     //       _uiState.update { it.copy(members = response.body()!!.members) }
-                     //   }
-                    }
+                    _uiState.update { it.copy(groupData = response.body()!!) }
+
                 }
 
                 override fun onFailure(call: Call<GroupResponse>, t: Throwable) {
@@ -94,10 +85,9 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val gro
                 uiState.value.groupData!!.title, uiState.value.groupData!!.description))
             call.enqueue(object : Callback<GroupResponse> {
                 override fun onResponse(call: Call<GroupResponse>, response: Response<GroupResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        navHostController.navigate(Screen.Group.route)
-                    }
+                    navHostController.navigate(Screen.Group.route)
                 }
+
                 override fun onFailure(call: Call<GroupResponse>, t: Throwable) {
                     Log.d("tag", "Projectedit response t" + t.message)
                 }
@@ -111,10 +101,9 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val gro
             val call: Call<Unit> = ApiClient().removeGroup("Bearer " + accessToken, GroupById(uiState.value.group_id))
             call.enqueue(object : Callback<Unit> {
                 override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    if (response.code() == 200||response.code()==201) {
-                        navHostController.navigate(Screen.Group.route)
-                    }
+                    navHostController.navigate(Screen.Group.route)
                 }
+
                 override fun onFailure(call: Call<Unit>, t: Throwable) {
                     Log.d("tag", "Projectedit response t" + t.message)
                 }
@@ -129,11 +118,10 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val gro
             val call: Call<ProjectDataResponse> = ApiClient().addProjectInGroup("Bearer " + accessToken, ProjectInGroup(project_id, uiState.value.group_id))
             call.enqueue(object : Callback<ProjectDataResponse> {
                 override fun onResponse(call: Call<ProjectDataResponse>, response: Response<ProjectDataResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        addingProject()
-                        loadData()
-                    }
+                    addingProject()
+                    loadData()
                 }
+
                 override fun onFailure(call: Call<ProjectDataResponse>, t: Throwable) {
                     Log.d("tag", "Projectedit response t" + t.message)
                 }
@@ -147,17 +135,14 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val gro
             val call: Call<List<ProjectDataResponse>> =
                 ApiClient().getPersonalProject("Bearer " + accessToken)
             call.enqueue(object : Callback<List<ProjectDataResponse>> {
-                override fun onResponse(call: Call<List<ProjectDataResponse>>, response: Response<List<ProjectDataResponse>>
-                ) {
-                    if (response.code() == 200 && response.body() != null) {
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
-                        response.body()?.forEach { item ->
-                            if (item.is_personal && item.is_archive == 0) {
-                                validData.add(item)
-                            }
+                override fun onResponse(call: Call<List<ProjectDataResponse>>, response: Response<List<ProjectDataResponse>>) {
+                    val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                    response.body()?.forEach { item ->
+                        if (item.is_personal && item.is_archive == 0) {
+                            validData.add(item)
                         }
-                        _uiState.update { it.copy(projectData = validData) }
                     }
+                    _uiState.update { it.copy(projectData = validData) }
                 }
 
                 override fun onFailure(call: Call<List<ProjectDataResponse>>, t: Throwable) {
@@ -173,11 +158,10 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val gro
             val call: Call<GroupInviteResponse> = ApiClient().createInvitetoGroup("Bearer " + accessToken, GroupBy_Id(uiState.value.group_id))
             call.enqueue(object : Callback<GroupInviteResponse> {
                 override fun onResponse(call: Call<GroupInviteResponse>, response: Response<GroupInviteResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        _uiState.update { it.copy(invite = response.body()!!.invite) }
-                        newInvite()
-                    }
+                    _uiState.update { it.copy(invite = response.body()!!.invite) }
+                    newInvite()
                 }
+
                 override fun onFailure(call: Call<GroupInviteResponse>, t: Throwable) {
                     Log.d("tag", "Projectedit response t" + t.message)
                 }

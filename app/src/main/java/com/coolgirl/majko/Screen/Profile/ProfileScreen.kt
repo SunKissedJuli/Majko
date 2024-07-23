@@ -1,7 +1,6 @@
 package com.coolgirl.majko.Screen.Profile
 
 import android.net.Uri
-import android.provider.ContactsContract.Profile
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,16 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
 import com.coolgirl.majko.R
-import com.coolgirl.majko.Screen.Project.ProjectUiState
-import com.coolgirl.majko.Screen.Project.ProjectViewModel
 import com.coolgirl.majko.navigation.Screen
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen( navController: NavHostController) {
@@ -48,7 +43,7 @@ fun ProfileScreen( navController: NavHostController) {
     Column(
         Modifier
             .fillMaxSize()
-            .alpha(uiState.is_adding_background)
+            .alpha(uiState.isAddingBackground)
             .background(colorResource(R.color.white))) {
         Column(
             Modifier
@@ -56,13 +51,9 @@ fun ProfileScreen( navController: NavHostController) {
                 .fillMaxHeight(0.93f)) {
             SetProfileScreen(uiState, {viewModel.updateUserName(it)}, {viewModel.updateUserEmail(it)}, viewModel, navController)
         }
-        BottomBar(navController, listOf(
-            BottomBarScreens.Notifications,
-            BottomBarScreens.Task,
-            BottomBarScreens.Profile))
     }
 
-    if (uiState.is_adding){
+    if (uiState.isAdding){
         ChangePassword(uiState, viewModel)
     }
 
@@ -102,7 +93,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
             IconButton(onClick = { viewModel.updateNameData()  }) {
                 Icon(
                     Icons.Default.Check,
-                    contentDescription = "Сохранить",
+                    contentDescription = "",
                     tint = colorResource(R.color.blue)
                 )
             }
@@ -126,7 +117,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
             IconButton(onClick = { viewModel.updateEmailData() }) {
                 Icon(
                     Icons.Default.Check,
-                    contentDescription = "Сохранить",
+                    contentDescription = "",
                     tint = colorResource(R.color.blue)
                 )
             }
@@ -143,7 +134,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
                 shape = CircleShape,
                 modifier = Modifier
                     .fillMaxWidth(0.65f)
-                    .padding(0.dp, 10.dp),
+                    .padding(vertical = 10.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))
             ) {
                 Text(
@@ -190,7 +181,7 @@ fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
             OutlinedTextField(
                 value = uiState.oldPassword,
                 onValueChange = {viewModel.updateOldPassword(it)},
-                Modifier.padding(20.dp, 20.dp, 0.dp, 0.dp),
+                Modifier.padding(start = 20.dp, top = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),
@@ -200,7 +191,7 @@ fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
             OutlinedTextField(
                 value = uiState.newPassword,
                 onValueChange = {viewModel.updateNewPassword(it)},
-                Modifier.padding(20.dp, 20.dp, 0.dp, 0.dp),
+                Modifier.padding(start = 20.dp, top = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),
@@ -210,7 +201,7 @@ fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
             OutlinedTextField(
                 value = uiState.confirmPassword,
                 onValueChange = {viewModel.updateConfirmPassword(it)},
-                Modifier.padding(20.dp, 20.dp, 0.dp, 0.dp),
+                Modifier.padding(start = 20.dp, top = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = colorResource(R.color.white), unfocusedContainerColor = colorResource(R.color.white),

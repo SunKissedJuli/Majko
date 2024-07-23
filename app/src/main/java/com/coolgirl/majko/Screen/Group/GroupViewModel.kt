@@ -2,7 +2,6 @@ package com.coolgirl.majko.Screen.Group
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.coolgirl.majko.commons.ProjectCardUiState
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupData
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
@@ -19,9 +18,6 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
     private val _uiState = MutableStateFlow(GroupUiState())
     val uiState: StateFlow<GroupUiState> = _uiState.asStateFlow()
 
-        //val _uiStateCard = MutableStateFlow(ProjectCardUiState())
-   // val uiStateCard: StateFlow<ProjectCardUiState> = _uiStateCard.asStateFlow()
-
     init{loadData()}
 
     fun updateGroupName(name: String){
@@ -37,23 +33,23 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
     }
 
     fun addingGroup(){
-        if(uiState.value.is_adding){
-            _uiState.update { it.copy(is_adding_background = 1f)}
-            _uiState.update { it.copy(is_adding = false)}
+        if(uiState.value.isAdding){
+            _uiState.update { it.copy(isAddingBackground = 1f)}
+            _uiState.update { it.copy(isAdding = false)}
         }else{
-            _uiState.update { it.copy(is_adding_background = 0.5f)}
-            _uiState.update { it.copy(is_adding = true)}
+            _uiState.update { it.copy(isAddingBackground = 0.5f)}
+            _uiState.update { it.copy(isAdding = true)}
         }
 
     }
 
     fun openInviteWindow(){
-        if(uiState.value.is_invite==false){
-            _uiState.update { it.copy(is_adding_background = 0.5f)}
-            _uiState.update { it.copy(is_invite = true)}
+        if(uiState.value.isInvite==false){
+            _uiState.update { it.copy(isAddingBackground = 0.5f)}
+            _uiState.update { it.copy(isInvite = true)}
         }else{
-            _uiState.update { it.copy(is_adding_background = 1f)}
-            _uiState.update { it.copy(is_invite = false)}
+            _uiState.update { it.copy(isAddingBackground = 1f)}
+            _uiState.update { it.copy(isInvite = false)}
         }
     }
 
@@ -85,10 +81,8 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
             val call: Call<GroupResponse> = ApiClient().addGroup("Bearer " + accessToken, GroupData(uiState.value.newGroupName, uiState.value.newGroupDescription))
             call.enqueue(object : Callback<GroupResponse> {
                 override fun onResponse(call: Call<GroupResponse>, response: Response<GroupResponse>) {
-                    if (response.code() == 200 || response.code() == 201) {
-                        addingGroup()
-                        loadData()
-                    }
+                    addingGroup()
+                    loadData()
                 }
                 override fun onFailure(call: Call<GroupResponse>, t: Throwable) {
                     //дописать
@@ -103,16 +97,14 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
             val call: Call<List<GroupResponse>> = ApiClient().getPersonalGroup("Bearer " + accessToken)
             call.enqueue(object : Callback<List<GroupResponse>> {
                 override fun onResponse(call: Call<List<GroupResponse>>, response: Response<List<GroupResponse>>) {
-                    if (response.code() == 200 && response.body()!=null) {
-                        val validData: MutableList<GroupResponse> = mutableListOf()
-                        response.body()?.forEach { item ->
-                            if (item.is_personal ) {
-                                validData.add(item)
-                            }
+                    val validData: MutableList<GroupResponse> = mutableListOf()
+                    response.body()?.forEach { item ->
+                        if (item.is_personal ) {
+                            validData.add(item)
                         }
-                        _uiState.update { it.copy(personalGroup = validData)}
-                        _uiState.update { it.copy(searchPersonalGroup = validData)}
                     }
+                    _uiState.update { it.copy(personalGroup = validData)}
+                    _uiState.update { it.copy(searchPersonalGroup = validData)}
                 }
 
                 override fun onFailure(call: Call<List<GroupResponse>>, t: Throwable) {
@@ -122,16 +114,15 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
             val call1: Call<List<GroupResponse>> = ApiClient().getGroupGroup("Bearer " + accessToken)
             call1.enqueue(object : Callback<List<GroupResponse>> {
                 override fun onResponse(call1: Call<List<GroupResponse>>, response: Response<List<GroupResponse>>) {
-                    if (response.code() == 200 && response.body()!=null) {
-                        val validData: MutableList<GroupResponse> = mutableListOf()
-                        response.body()?.forEach { item ->
-                            if (!item.is_personal) {
-                                validData.add(item)
-                            }
+                    val validData: MutableList<GroupResponse> = mutableListOf()
+                    response.body()?.forEach { item ->
+                        if (!item.is_personal) {
+                            validData.add(item)
                         }
-                        _uiState.update { it.copy(groupGroup = validData)}
-                        _uiState.update { it.copy(searchGroupGroup = validData)}
                     }
+                    _uiState.update { it.copy(groupGroup = validData)}
+                    _uiState.update { it.copy(searchGroupGroup = validData)}
+
                 }
 
                 override fun onFailure(call1: Call<List<GroupResponse>>, t: Throwable) {
@@ -147,10 +138,8 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
             val call: Call<MessageData> = ApiClient().joinGroupByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite))
             call.enqueue(object : Callback<MessageData> {
                 override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
-                    if (response.code() == 200 && response.body() != null) {
-                        _uiState.update { it.copy(invite_message = response.body()!!.message!!) }
-                        loadData()
-                    }
+                    _uiState.update { it.copy(invite_message = response.body()!!.message!!) }
+                    loadData()
                 }
 
                 override fun onFailure(call: Call<MessageData>, t: Throwable) {

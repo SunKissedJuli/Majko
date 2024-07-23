@@ -31,9 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.coolgirl.majko.commons.HorizontalLine
-import com.coolgirl.majko.commons.SpinnerSample
-import com.coolgirl.majko.commons.TaskCard
+import com.coolgirl.majko.components.HorizontalLine
+import com.coolgirl.majko.components.SpinnerSample
+import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -54,36 +54,36 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(colorResource(R.color.white))
-            .alpha(uiState.is_invite_backgroun)) {
+            .alpha(uiState.isInviteBackground)) {
         Row(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.08f)
                 .background(colorResource(R.color.blue))
-                .padding(10.dp, 0.dp),
+                .padding(horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 modifier = Modifier.clickable { viewModel.saveProject(navController) },
-                text = "←", fontWeight = FontWeight.Medium,
+                text = stringResource(R.string.common_back), fontWeight = FontWeight.Medium,
                 color = colorResource(R.color.white), fontSize = 50.sp,)
 
             var expanded by remember { mutableStateOf(false) }
 
             Box() { IconButton(onClick = { expanded = true }) {
-                Icon(Icons.Default.MoreVert, tint = colorResource(R.color.white), contentDescription = "Показать меню") }
+                Icon(Icons.Default.MoreVert, tint = colorResource(R.color.white), contentDescription = "") }
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier.fillMaxWidth(0.5f)) {
                     Text(  stringResource(R.string.project_delite), fontSize=18.sp,
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(all = 10.dp)
                             .clickable { viewModel.removeProject(navController) })
                     Text(
                         stringResource(R.string.project_createinvite), fontSize=18.sp,
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(all = 10.dp)
                             .clickable { viewModel.createInvite() })
                 }
             }
@@ -97,7 +97,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 BasicTextField(
                     value = it.name,
                     modifier = Modifier
-                        .padding(20.dp, 15.dp),
+                        .padding(horizontal = 20.dp, vertical = 15.dp),
                     textStyle = TextStyle.Default.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                     onValueChange = { viewModel.updateProjectName(it) },
                     maxLines = 2,
@@ -118,7 +118,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 BasicTextField(
                     value = it.description,
                     modifier = Modifier
-                        .padding(20.dp, 0.dp)
+                        .padding(horizontal = 20.dp)
                         .fillMaxHeight(),
                     textStyle = TextStyle.Default.copy(fontSize = 18.sp),
                     onValueChange = { viewModel.updateProjectDescription(it) },
@@ -138,7 +138,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
         LazyRow(
             Modifier
                 .fillMaxWidth()
-                .padding(5.dp)) {
+                .padding(all = 5.dp)) {
             if(uiState.projectData!=null){
                 if(uiState.projectData.tasks!=null){
                     val projectData = uiState.projectData.tasks
@@ -159,7 +159,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 shape = CircleShape,
                 modifier = Modifier
                     .fillMaxWidth(0.65f)
-                    .padding(0.dp, 10.dp),
+                    .padding(vertical = 10.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
                 Text(text = stringResource(R.string.projectedit_addtask), color = colorResource(R.color.white),
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -169,14 +169,14 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
         if(uiState.is_adding){
             Column(
                 Modifier
-                    .padding(15.dp)
+                    .padding(all = 15.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(color = colorResource(R.color.purple)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top) {
                 Column(
                     Modifier
-                        .padding(15.dp)
+                        .padding(all = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = colorResource(R.color.white)),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -185,7 +185,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                     BasicTextField(
                         value = uiState.taskName,
                         modifier = Modifier
-                            .padding(20.dp, 15.dp)
+                            .padding(horizontal = 20.dp, vertical = 15.dp)
                             .fillMaxHeight(0.09f),
                         textStyle = TextStyle.Default.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                         onValueChange = {viewModel.updateTaskName(it)},
@@ -198,7 +198,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                                 innerTextField() } })
                     BasicTextField(
                         value = uiState.taskText,
-                        modifier = Modifier.padding(20.dp, 0.dp),
+                        modifier = Modifier  .padding(horizontal = 20.dp),
                         textStyle = TextStyle.Default.copy(fontSize = 18.sp),
                         onValueChange = {viewModel.updateTaskText(it)},
                         decorationBox = { innerTextField ->
@@ -214,7 +214,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 Column(
                     Modifier
                         .fillMaxWidth()
-                        .padding(15.dp, 5.dp, 15.dp, 15.dp)
+                        .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = colorResource(R.color.white)),
                     horizontalAlignment = Alignment.Start,
@@ -236,7 +236,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             viewModel.updateTaskDeadlie(formattedData)
                         }, mYear, mMonth, mDay)
 
-                    Column(Modifier.padding(20.dp,10.dp)) {
+                    Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
 
                         var formattedData : String = ""
                         if(uiState.taskDeadline!="") {
@@ -258,7 +258,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             {viewModel.updateTaskPriority(it)}
                         )
                         HorizontalLine()
-                        Text(text= stringResource(R.string.taskeditor_project) + (" ") + (uiState.projectData?.name ?: ""), fontSize = 18.sp)
+                        Text(text= stringResource(R.string.taskeditor_project) + (" ") + (uiState.projectData?.name ?: stringResource(R.string.common_no)), fontSize = 18.sp)
                         HorizontalLine()
                         SpinnerSample(
                             name = stringResource(R.string.taskeditor_status),
@@ -274,12 +274,13 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(0.dp, 0.dp, 0.dp, 30.dp), horizontalArrangement = Arrangement.Center){
+                        .padding(bottom = 30.dp),
+                    horizontalArrangement = Arrangement.Center){
                     Button(onClick = { viewModel.saveTask()},
                         shape = CircleShape,
                         modifier = Modifier
                             .fillMaxWidth(0.65f)
-                            .padding(0.dp, 10.dp),
+                            .padding(vertical = 10.dp),
                         colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
                         Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
                             fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -294,7 +295,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                    .padding(top = 20.dp)
                     .clip(RoundedCornerShape(25.dp, 25.dp))
                     .background(color = colorResource(R.color.purple)),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -310,13 +311,13 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 Column(
                     Modifier
                         .fillMaxSize()
-                        .padding(20.dp, 0.dp)) {
+                        .padding(horizontal = 20.dp)) {
                     for(item in uiState.members!!)
                         Row(verticalAlignment = Alignment.CenterVertically){
 
                             Column() {
                                 Text(
-                                    text = "-",
+                                    text = stringResource(R.string.common_dash),
                                     fontSize = 55.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = colorResource(R.color.white)
@@ -325,8 +326,8 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             Spacer(modifier = Modifier.width(10.dp))
 
                             Column() {
-                                Text(text = "Имя: " + item.user.name)
-                                Text(text = "Роль: " + item.role_id.name)
+                                Text(text = stringResource(R.string.groupeditor_name) + " " + item.user.name)
+                                Text(text = stringResource(R.string.groupeditor_role) + " " + item.role_id.name)
                             }
 
 
@@ -338,7 +339,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
         }
     }
 
-    if(uiState.is_invite){
+    if(uiState.isInvite){
         SetInviteWindow(uiState, viewModel)
     }
 }
@@ -348,7 +349,7 @@ fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewMode
     Column(
         Modifier
             .fillMaxSize()
-            .padding(0.dp, 100.dp, 0.dp, 0.dp),
+            .padding(top = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top) {
         Column(
@@ -362,7 +363,7 @@ fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewMode
             OutlinedTextField(
                 value = uiState.invite,
                 onValueChange = { },
-                Modifier.padding(20.dp, 20.dp, 20.dp, 20.dp),
+                Modifier.padding(all = 20.dp),
                 enabled = true,
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -377,7 +378,7 @@ fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewMode
                 shape = CircleShape,
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
-                    .padding(0.dp, 10.dp),
+                    .padding(vertical = 10.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
                 Text(text = stringResource(R.string.projectedit_close), color = colorResource(R.color.white),
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)

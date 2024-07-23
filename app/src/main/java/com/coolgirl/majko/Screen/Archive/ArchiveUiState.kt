@@ -8,6 +8,6 @@ data class ArchiveUiState(
     val searchPersonalProject : List<ProjectDataResponse>? = null,
     val searchGroupProject : List<ProjectDataResponse>? = null,
     val searchString: String = "",
-    val is_longtap: Boolean = false,
+    val isLongtap: Boolean = false,
     val longtapProjectId: String = ""
 )

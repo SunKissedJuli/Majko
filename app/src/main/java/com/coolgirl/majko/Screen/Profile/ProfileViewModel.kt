@@ -58,9 +58,8 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
             val call: Call<CurrentUserDataResponse> = ApiClient().updateUserName("Bearer " + accessToken, UserUpdateName(uiState.value.userName))
             call.enqueue(object : Callback<CurrentUserDataResponse> {
                 override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
-                    if(response.code()==200){
-                    }
                 }
+
                 override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
                     //дописать
                 } })
@@ -73,9 +72,8 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
             val call: Call<CurrentUserDataResponse> = ApiClient().updateUserEmail("Bearer " + accessToken, UserUpdateEmail(uiState.value.userName, uiState.value.userEmail))
             call.enqueue(object : Callback<CurrentUserDataResponse> {
                 override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
-                    if(response.code()==200){
-                    }
                 }
+
                 override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
                     //дописать
                 } })
@@ -83,12 +81,12 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
     }
 
     fun changePasswordScreen(){
-        if(uiState.value.is_adding){
-            _uiState.update { it.copy(is_adding_background = 1f)}
-            _uiState.update { it.copy(is_adding = false)}
+        if(uiState.value.isAdding){
+            _uiState.update { it.copy(isAddingBackground = 1f)}
+            _uiState.update { it.copy(isAdding = false)}
         }else{
-            _uiState.update { it.copy(is_adding_background = 0.5f)}
-            _uiState.update { it.copy(is_adding = true)}
+            _uiState.update { it.copy(isAddingBackground = 0.5f)}
+            _uiState.update { it.copy(isAdding = true)}
         }
 
     }
@@ -105,11 +103,10 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
             val call: Call<CurrentUserDataResponse> = ApiClient().currentUser("Bearer " + accessToken)
             call.enqueue(object : Callback<CurrentUserDataResponse> {
                 override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
-                    if(response.code()==200){
-                        updateUserEmail(response.body()?.email.toString())
-                        updateUserName(response.body()?.name.toString())
-                    }
+                    updateUserEmail(response.body()?.email.toString())
+                    updateUserName(response.body()?.name.toString())
                 }
+
                 override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
                     //дописать
                 } })
@@ -123,10 +120,9 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
                 uiState.value.newPassword,uiState.value.confirmPassword, uiState.value.oldPassword))
             call.enqueue(object : Callback<CurrentUserDataResponse> {
                 override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
-                    if(response.code()==200){
-                        changePasswordScreen()
-                    }
+                    changePasswordScreen()
                 }
+
                 override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
                     //дописать
                 } })
@@ -158,8 +154,7 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
                         val call: Call<CurrentUserDataResponse> = ApiClient().updateUserImage("Bearer " + accessToken, UserUpdateImage(uiState.value.userName, file))
                         call.enqueue(object : Callback<CurrentUserDataResponse> {
                             override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
-                                if(response.code()==200){
-                                }
+
                             }
                             override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
                                 //дописать

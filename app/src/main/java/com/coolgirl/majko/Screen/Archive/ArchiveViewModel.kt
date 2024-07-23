@@ -3,9 +3,7 @@ package com.coolgirl.majko.Screen.Archive
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.coolgirl.majko.R
-import com.coolgirl.majko.Screen.Project.ProjectUiState
-import com.coolgirl.majko.commons.ProjectCardUiState
+import com.coolgirl.majko.components.ProjectCardUiState
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
@@ -29,10 +27,10 @@ class ArchiveViewModel(private val dataStore:UserDataStore) : ViewModel(){
     fun openPanel(id: String){
         Log.d("tag", "хуй = " + id)
         if(id!=""){
-            _uiState.update { it.copy(is_longtap = true) }
+            _uiState.update { it.copy(isLongtap = true) }
             _uiState.update { it.copy(longtapProjectId = uiState.value.longtapProjectId + id) }
         }else{
-            _uiState.update { it.copy(is_longtap = false) }
+            _uiState.update { it.copy(isLongtap = false) }
             _uiState.update { it.copy(longtapProjectId = "") }
         }
 
@@ -78,10 +76,8 @@ class ArchiveViewModel(private val dataStore:UserDataStore) : ViewModel(){
                     val call: Call<ProjectCurrentResponse> = ApiClient().updateProject("Bearer " + accessToken, updateProject)
                     call.enqueue(object : Callback<ProjectCurrentResponse> {
                         override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
-                            if (response.code() == 200||response.code()==201) {
-                                openPanel("")
-                                loadData()
-                            }
+                            openPanel("")
+                            loadData()
                         }
                         override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
                             Log.d("tag", "response t" + t.message)
@@ -98,16 +94,14 @@ class ArchiveViewModel(private val dataStore:UserDataStore) : ViewModel(){
             val call: Call<List<ProjectDataResponse>> = ApiClient().getPersonalProject("Bearer " + accessToken)
             call.enqueue(object : Callback<List<ProjectDataResponse>> {
                 override fun onResponse(call: Call<List<ProjectDataResponse>>, response: Response<List<ProjectDataResponse>>) {
-                    if (response.code() == 200 && response.body()!=null) {
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
-                        response.body()?.forEach { item ->
-                            if (item.is_personal && item.is_archive==1) {
-                                validData.add(item)
-                            }
+                    val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                    response.body()?.forEach { item ->
+                        if (item.is_personal && item.is_archive==1) {
+                            validData.add(item)
                         }
-                        _uiState.update { it.copy(personalProject = validData)}
-                        _uiState.update { it.copy(searchPersonalProject = validData)}
                     }
+                    _uiState.update { it.copy(personalProject = validData)}
+                    _uiState.update { it.copy(searchPersonalProject = validData)}
                 }
 
                 override fun onFailure(call: Call<List<ProjectDataResponse>>, t: Throwable) {
@@ -117,17 +111,14 @@ class ArchiveViewModel(private val dataStore:UserDataStore) : ViewModel(){
             val call1: Call<List<ProjectDataResponse>> = ApiClient().getGroupProject("Bearer " + accessToken)
             call1.enqueue(object : Callback<List<ProjectDataResponse>> {
                 override fun onResponse(call1: Call<List<ProjectDataResponse>>, response: Response<List<ProjectDataResponse>>) {
-                    if (response.code() == 200 && response.body()!=null) {
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
-                        response.body()?.forEach { item ->
-                            if (!item.is_personal && item.is_archive==1) {
-                                validData.add(item)
-                            }
+                    val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                    response.body()?.forEach { item ->
+                        if (!item.is_personal && item.is_archive==1) {
+                            validData.add(item)
                         }
-                        _uiState.update { it.copy(groupProject = validData)}
-                        _uiState.update { it.copy(searchGroupProject = validData)}
-
                     }
+                    _uiState.update { it.copy(groupProject = validData)}
+                    _uiState.update { it.copy(searchGroupProject = validData)}
                 }
 
                 override fun onFailure(call1: Call<List<ProjectDataResponse>>, t: Throwable) {

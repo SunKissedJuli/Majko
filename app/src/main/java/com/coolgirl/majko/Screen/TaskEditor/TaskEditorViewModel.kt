@@ -3,7 +3,7 @@ package com.coolgirl.majko.Screen.TaskEditor
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.coolgirl.majko.commons.SpinnerItems
+import com.coolgirl.majko.components.SpinnerItems
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.di.ApiClient
 import kotlinx.coroutines.flow.*
@@ -67,7 +67,6 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
 
     fun updateSubtaskDeadlie(deadline:String){
         _uiState.update { it.copy(subtaskDeadline = deadline) }
-        Log.d("tag", "Taskeditor updateTaskDeadlie = " + _uiState.value.taskDeadline)
     }
 
     fun updateSubtaskPriority(prioryti:String){
@@ -95,10 +94,10 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
     }
 
     fun addingTask(){
-        if(uiState.value.is_adding){
-            _uiState.update { it.copy(is_adding = false) }
+        if(uiState.value.isAdding){
+            _uiState.update { it.copy(isAdding = false) }
         }else{
-            _uiState.update { it.copy(is_adding = true) }
+            _uiState.update { it.copy(isAdding = true) }
         }
 
     }
@@ -187,9 +186,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
             val call: Call<NoteDataResponse> = ApiClient().updateNote("Bearer " + accessToken, NoteUpdate(noteId,uiState.value.taskId, noteText))
             call.enqueue(  object :Callback<NoteDataResponse>{
                 override fun onResponse(call: Call<NoteDataResponse>, response: Response<NoteDataResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        loadNotesData()
-                    }
+                    loadNotesData()
                 }
 
                 override fun onFailure(call: Call<NoteDataResponse>, t: Throwable) {
@@ -205,9 +202,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
             val call: Call<Unit> = ApiClient().removeNote("Bearer " + accessToken, NoteById(noteId))
             call.enqueue(  object :Callback<Unit>{
                 override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    if (response.code() == 200||response.code()==201) {
-                        loadNotesData()
-                    }
+                    loadNotesData()
                 }
 
                 override fun onFailure(call: Call<Unit>, t: Throwable) {
@@ -226,10 +221,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                 val call: Call<TaskDataResponse> = ApiClient().updateTask("Bearer " + accessToken, newTask)
                 call.enqueue(object : Callback<TaskDataResponse> {
                     override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                        if (response.code() == 200||response.code()==201) {
-                            navHostController.navigate(Screen.Task.route)
-                        }
-
+                        navHostController.navigate(Screen.Task.route)
                     }
 
                     override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
@@ -245,10 +237,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                 val call: Call<TaskDataResponse> = ApiClient().postNewTask("Bearer " + accessToken, newTask)
                 call.enqueue(object : Callback<TaskDataResponse> {
                     override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                        if (response.code() == 200||response.code()==201) {
-                            navHostController.navigate(Screen.Task.route)
-                        }
-
+                        navHostController.navigate(Screen.Task.route)
                     }
 
                     override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
@@ -268,10 +257,8 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
             val call: Call<TaskDataResponse> = ApiClient().postNewTask("Bearer " + accessToken, newTask)
             call.enqueue(object : Callback<TaskDataResponse> {
                 override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        addingTask()
-                        loadSubtaskData()
-                    }
+                    addingTask()
+                    loadSubtaskData()
                 }
                 override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
                     Log.d("tag", "Taskeditor response t" + t.message)
@@ -287,10 +274,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                val call: Call<Unit> = ApiClient().removeTask("Bearer " + accessToken, TaskBy_Id(task_id))
                call.enqueue(object : Callback<Unit> {
                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                       if (response.code() == 200 || response.code() == 201) {
-                           navHostController.navigate(Screen.Task.route)
-
-                       }
+                       navHostController.navigate(Screen.Task.route)
                    }
 
                    override fun onFailure(call: Call<Unit>, t: Throwable) {
@@ -309,26 +293,24 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                 val call: Call<TaskDataResponse> = ApiClient().getTaskById("Bearer " + accessToken, TaskById(uiState.value.taskId))
                 call.enqueue(object : Callback<TaskDataResponse> {
                     override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                        if (response.code() == 200||response.code()==201) {
-                            _uiState.update { it.copy(taskId = task_id) }
-                            _uiState.update { it.copy(taskDeadline = response.body()!!.deadline) }
-                            if(response.body()?.project !=null){
-                                _uiState.update { it.copy(taskProject = response.body()!!.project!!.id) }
-                            }
-                            updateTaskPriority(response.body()!!.priority!!.toString())
-                            _uiState.update { it.copy(taskName = response.body()!!.title!!) }
-                            _uiState.update { it.copy(taskText = response.body()!!.text!!) }
-                            _uiState.update { it.copy(taskStatus = response.body()!!.status!!) }
-                            if(response.body()!!.project!=null){
-                                _uiState.update { it.copy(taskProjectObj = response.body()!!.project!!) }
-                            }
+                        _uiState.update { it.copy(taskId = task_id) }
+                        _uiState.update { it.copy(taskDeadline = response.body()!!.deadline) }
+                        if(response.body()?.project !=null){
+                            _uiState.update { it.copy(taskProject = response.body()!!.project!!.id) }
+                        }
+                        updateTaskPriority(response.body()!!.priority!!.toString())
+                        _uiState.update { it.copy(taskName = response.body()!!.title!!) }
+                        _uiState.update { it.copy(taskText = response.body()!!.text!!) }
+                        _uiState.update { it.copy(taskStatus = response.body()!!.status!!) }
+                        if(response.body()!!.project!=null){
+                            _uiState.update { it.copy(taskProjectObj = response.body()!!.project!!) }
+                        }
 
-                            if(response.body()!!.count_notes!=0){
-                                loadNotesData()
-                            }
-                            if(response.body()!!.count_subtasks!=0){
-                                loadSubtaskData()
-                            }
+                        if(response.body()!!.count_notes!=0){
+                            loadNotesData()
+                        }
+                        if(response.body()!!.count_subtasks!=0){
+                            loadSubtaskData()
                         }
                     }
 
@@ -346,10 +328,8 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
             val call: Call<NoteDataResponse> = ApiClient().addNote("Bearer " + accessToken, NoteData(uiState.value.taskId, uiState.value.noteText))
             call.enqueue(object : Callback<NoteDataResponse> {
                 override fun onResponse(call: Call<NoteDataResponse>, response: Response<NoteDataResponse>) {
-                    if (response.code() == 200||response.code()==201) {
-                        addNewNote()
-                        loadNotesData()
-                    }
+                    addNewNote()
+                    loadNotesData()
                 }
 
                 override fun onFailure(call: Call<NoteDataResponse>, t: Throwable) {
@@ -367,9 +347,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                 val call: Call<List<TaskDataResponse>> = ApiClient().getSubtask("Bearer " + accessToken, TaskById(uiState.value.taskId))
                 call.enqueue(object : Callback<List<TaskDataResponse>> {
                     override fun onResponse(call: Call<List<TaskDataResponse>>, response: Response<List<TaskDataResponse>>) {
-                        if (response.code() == 200||response.code()==201) {
-                            _uiState.update { it.copy(subtask = response.body()!!) }
-                        }
+                        _uiState.update { it.copy(subtask = response.body()!!) }
                     }
 
                     override fun onFailure(call: Call<List<TaskDataResponse>>, t: Throwable) {
@@ -386,10 +364,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
             val call: Call<List<NoteDataResponse>> = ApiClient().getNotes("Bearer " + accessToken, TaskById(uiState.value.taskId))
             call.enqueue(object : Callback<List<NoteDataResponse>> {
                 override fun onResponse(call: Call<List<NoteDataResponse>>, response: Response<List<NoteDataResponse>>) {
-                    if (response.code() == 200||response.code()==201) {
-                        Log.d("tag", "Taskeditor response t" + response.body())
-                        _uiState.update { it.copy(notes = response.body()) }
-                    }
+                    _uiState.update { it.copy(notes = response.body()) }
                 }
 
                 override fun onFailure(call: Call<List<NoteDataResponse>>, t: Throwable) {

@@ -1,14 +1,11 @@
 package com.coolgirl.majko.Screen.Task
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -22,16 +19,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.coolgirl.majko.commons.TaskCard
+import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.R
+import com.coolgirl.majko.components.plusButton
 import com.coolgirl.majko.navigation.*
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @Composable
 fun TaskScreen(navController: NavHostController) {
@@ -42,71 +38,23 @@ fun TaskScreen(navController: NavHostController) {
 
     val uiState by viewModel.uiState.collectAsState()
 
-    val items = listOf(ModalNavigationDrawerScreens.Task, ModalNavigationDrawerScreens.Project, ModalNavigationDrawerScreens.Group, ModalNavigationDrawerScreens.Profile, ModalNavigationDrawerScreens.Archive)
-    val (selectedItem, setSelectedItem) = remember { mutableStateOf(items[0]) }
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                Modifier.fillMaxWidth(0.7f),
-                drawerContainerColor = colorResource(R.color.purple)) {
-                items.forEach { item ->
-                    NavigationDrawerItem(
-                        label = { androidx.compose.material3.Text(item.title, fontSize = 22.sp) },
-                        selected = selectedItem == item,
-                        onClick = {
-                            setSelectedItem(item)
-                            navController.navigate(item.route)
-                            scope.launch { drawerState.close() } },
-                        colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = Color.Transparent, unselectedContainerColor = Color.Transparent,
-                            selectedTextColor = Color.Black, unselectedTextColor = Color.White)
-                    )
-                }
-            }
-        },
-        content = {
-            Box(Modifier.fillMaxSize()) {
-                Column(Modifier.fillMaxSize()) {
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.93f)) {
-                        SetTaskScreen(navController, viewModel, uiState)
-                    }
-                    BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
-                }
-
-                Button(onClick = { navController.navigate(Screen.TaskEditor.task_id("0"))},
-                    shape = CircleShape,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(20.dp, 65.dp)
-                        .size(56.dp),
-                    colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
-                    Text(text = "+", color = colorResource(R.color.white),
-                        fontSize = 34.sp, fontWeight = FontWeight.Bold)
-                }
-            }
-
-            Row(Modifier.padding(10.dp)) {
-                IconButton(
-                    onClick = { scope.launch { drawerState.open() } },
-                    content = {
-                        Icon(
-                            Icons.Filled.Menu,
-                            contentDescription = "Menu",
-                            tint = colorResource(R.color.white))
-                    }
-                )
+    Box(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.93f)) {
+                SetTaskScreen(navController, viewModel, uiState)
             }
         }
-    )
+
+        Box(Modifier.align(Alignment.BottomEnd)){
+            plusButton(onClick = {navController.navigate(Screen.TaskEditor.task_id(it))}, id = "0")
+        }
+    }
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, uiState: TaskUiState) {
     Column(Modifier
@@ -117,13 +65,14 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.1f)
-                .padding(10.dp)
+                .padding(all = 10.dp)
                 .clip(RoundedCornerShape(30.dp))
-                .background(color = colorResource(R.color.blue))) {
+                .background(color = colorResource(R.color.blue)),
+        verticalAlignment = Alignment.CenterVertically) {
 
             BasicTextField(
                 value = uiState.searchString,
-                modifier = Modifier.padding(50.dp, 14.dp, 0.dp,0.dp),
+                modifier = Modifier.padding(start = 50.dp),
                 textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = colorResource(R.color.white)),
                 onValueChange = {viewModel.updateSearchString(it)},
                 decorationBox = { innerTextField ->
@@ -150,7 +99,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                         Text(
                             text = stringResource(R.string.task_favorites),
                             color = colorResource(R.color.gray),
-                            modifier = Modifier.padding(15.dp, 10.dp, 0.dp, 10.dp)
+                            modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp)
                         )
                     }
                     items(favoritesTaskList.size / 2 + favoritesTaskList.size % 2) { rowIndex ->
@@ -185,7 +134,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                         Text(
                             text = stringResource(R.string.task_each),
                             color = colorResource(R.color.gray),
-                            modifier = Modifier.padding(15.dp, 10.dp, 0.dp, 10.dp)
+                            modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp)
                         )
                     }
                     items(allTaskList.size / 2 + allTaskList.size % 2) { rowIndex ->

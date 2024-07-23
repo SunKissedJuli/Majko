@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.ProjectCard
+import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
 
 @Composable
@@ -52,30 +52,30 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 .fillMaxWidth()
                 .fillMaxHeight(0.08f)
                 .background(colorResource(R.color.blue))
-                .padding(10.dp, 0.dp),
+                .padding(horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 modifier = Modifier.clickable { viewModel.saveGroup(navController) },
-                text = "←", fontWeight = FontWeight.Medium,
+                text = stringResource(R.string.common_back), fontWeight = FontWeight.Medium,
                 color = colorResource(R.color.white), fontSize = 50.sp,)
 
             var expanded by remember { mutableStateOf(false) }
 
             Box() { IconButton(onClick = { expanded = true }) {
-                Icon(Icons.Default.MoreVert, tint = colorResource(R.color.white), contentDescription = "Показать меню") }
+                Icon(Icons.Default.MoreVert, tint = colorResource(R.color.white), contentDescription = "") }
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier.fillMaxWidth(0.5f)) {
                     Text(  stringResource(R.string.project_delite), fontSize=18.sp,
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(all = 10.dp)
                             .clickable { viewModel.removeGroup(navController) })
                     Text(
                         stringResource(R.string.project_createinvite), fontSize=18.sp,
                         modifier = Modifier
-                            .padding(10.dp)
+                            .padding(all = 10.dp)
                             .clickable { viewModel.createInvite() })
                 }
             }
@@ -89,7 +89,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 BasicTextField(
                     value = it.title,
                     modifier = Modifier
-                        .padding(20.dp, 15.dp),
+                        .padding(horizontal = 20.dp, vertical = 15.dp),
                     textStyle = TextStyle.Default.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                     onValueChange = { viewModel.updateGroupName(it) },
                     maxLines = 2,
@@ -110,7 +110,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 BasicTextField(
                     value = it.description,
                     modifier = Modifier
-                        .padding(20.dp, 0.dp)
+                        .padding(horizontal = 20.dp)
                         .fillMaxHeight(),
                     textStyle = TextStyle.Default.copy(fontSize = 18.sp),
                     onValueChange = { viewModel.updateGroupDescription(it) },
@@ -131,7 +131,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(5.dp)) {
+                .padding(all = 5.dp)) {
             if(uiState.groupData!=null){
                 if(uiState.groupData.projects_group!=null){
                     val projectData = uiState.groupData.projects_group
@@ -148,7 +148,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 shape = RoundedCornerShape(15.dp),
                 modifier = Modifier
                     .fillMaxWidth(0.65f)
-                    .padding(0.dp, 10.dp),
+                    .padding(vertical = 10.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
                 Text(text = stringResource(R.string.groupeditor_addproject), color = colorResource(R.color.white),
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -160,7 +160,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
             LazyRow(
                 Modifier
                     .fillMaxWidth()
-                    .padding(5.dp)) {
+                    .padding(all = 5.dp)) {
                 if(uiState.projectData!=null){
                     val projectData = uiState.projectData
                     val count = uiState.projectData.size?:0
@@ -173,7 +173,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                                     shape = RoundedCornerShape(15.dp),
                                     modifier = Modifier
                                         .fillMaxWidth(0.8f)
-                                        .padding(0.dp, 10.dp),
+                                        .padding(vertical = 10.dp),
                                     colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
                                     Text(text = stringResource(R.string.project_add), color = colorResource(R.color.white),
                                         fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -190,7 +190,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(0.dp, 20.dp, 0.dp, 0.dp)
+                    .padding(top = 20.dp)
                     .clip(RoundedCornerShape(25.dp, 25.dp))
                     .background(color = colorResource(R.color.purple)),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -206,13 +206,13 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 Column(
                     Modifier
                         .fillMaxSize()
-                        .padding(20.dp, 0.dp)) {
+                        .padding(horizontal = 20.dp)) {
                     for(item in uiState.members!!)
                         Row(verticalAlignment = Alignment.CenterVertically){
 
                             Column() {
                                 Text(
-                                    text = "-",
+                                    text = stringResource(R.string.common_dash),
                                     fontSize = 55.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = colorResource(R.color.white)
@@ -221,8 +221,8 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                             Spacer(modifier = Modifier.width(10.dp))
 
                             Column() {
-                                Text(text = "Имя: " + item.user.name)
-                                Text(text = "Роль: " + item.role_id.name)
+                                Text(text = stringResource(R.string.groupeditor_name) + " " + item.user.name)
+                                Text(text = stringResource(R.string.groupeditor_role) + " " + item.role_id.name)
                             }
 
 
@@ -244,7 +244,7 @@ fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditorViewMode
     Column(
         Modifier
             .fillMaxSize()
-            .padding(0.dp, 100.dp, 0.dp, 0.dp),
+            .padding(top = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top) {
         Column(
@@ -258,7 +258,7 @@ fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditorViewMode
             OutlinedTextField(
                 value = uiState.invite,
                 onValueChange = { },
-                Modifier.padding(20.dp, 20.dp, 20.dp, 20.dp),
+                Modifier.padding(all = 20.dp),
                 enabled = true,
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -273,7 +273,7 @@ fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditorViewMode
                 shape = CircleShape,
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
-                    .padding(0.dp, 10.dp),
+                    .padding(vertical = 10.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.blue))) {
                 Text(text = stringResource(R.string.projectedit_close), color = colorResource(R.color.white),
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)

@@ -3,13 +3,11 @@ package com.coolgirl.majko.Screen.Project
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.ProjectCardUiState
+import com.coolgirl.majko.components.ProjectCardUiState
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.di.ApiClient
-import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -38,31 +36,31 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
     }
 
     fun openInviteWindow(){
-        if(uiState.value.is_invite==false){
-            _uiState.update { it.copy(is_adding_background = 0.5f)}
-            _uiState.update { it.copy(is_invite = true)}
+        if(uiState.value.isInvite==false){
+            _uiState.update { it.copy(isAddingBackground = 0.5f)}
+            _uiState.update { it.copy(isInvite = true)}
         }else{
-            _uiState.update { it.copy(is_adding_background = 1f)}
-            _uiState.update { it.copy(is_invite = false)}
+            _uiState.update { it.copy(isAddingBackground = 1f)}
+            _uiState.update { it.copy(isInvite = false)}
         }
     }
 
     fun addingProject(){
-        _uiState.update { it.copy(is_adding_background = 0.5f)}
-        _uiState.update { it.copy(is_adding = true)}
+        _uiState.update { it.copy(isAddingBackground = 0.5f)}
+        _uiState.update { it.copy(isAdding = true)}
     }
 
     fun notAddingProjectYet(){
-        _uiState.update { it.copy(is_adding_background = 1f)}
-        _uiState.update { it.copy(is_adding = false)}
+        _uiState.update { it.copy(isAddingBackground = 1f)}
+        _uiState.update { it.copy(isAdding = false)}
     }
 
     fun openPanel(id: String){
         if(id!=""){
-            _uiState.update { it.copy(is_longtap = true) }
+            _uiState.update { it.copy(isLongtap = true) }
             _uiState.update { it.copy(longtapProjectId = uiState.value.longtapProjectId + id) }
         }else{
-            _uiState.update { it.copy(is_longtap = false) }
+            _uiState.update { it.copy(isLongtap = false) }
             _uiState.update { it.copy(longtapProjectId = "") }
         }
 
@@ -94,10 +92,8 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
             val call: Call<MessageData> = ApiClient().joinByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite))
             call.enqueue(object : Callback<MessageData> {
                 override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
-                    if (response.code() == 200 && response.body() != null) {
-                        _uiState.update { it.copy(invite_message = response.body()!!.message!!) }
-                        loadData()
-                    }
+                    _uiState.update { it.copy(invite_message = response.body()!!.message!!) }
+                    loadData()
                 }
 
                 override fun onFailure(call: Call<MessageData>, t: Throwable) {
@@ -127,11 +123,10 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
                     val call: Call<ProjectCurrentResponse> = ApiClient().updateProject("Bearer " + accessToken, updateProject)
                     call.enqueue(object : Callback<ProjectCurrentResponse> {
                         override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
-                            if (response.code() == 200||response.code()==201) {
-                                openPanel("")
-                                loadData()
-                            }
+                            openPanel("")
+                            loadData()
                         }
+
                         override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
                             Log.d("tag", "response t" + t.message)
                         }
@@ -147,11 +142,10 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
             val call: Call<ProjectDataResponse> = ApiClient().postNewProject("Bearer " + accessToken, ProjectData(uiState.value.newProjectName, uiState.value.newProjectDescription))
             call.enqueue(object : Callback<ProjectDataResponse> {
                 override fun onResponse(call: Call<ProjectDataResponse>, response: Response<ProjectDataResponse>) {
-                    if (response.code() == 200 || response.code() == 201) {
-                        notAddingProjectYet()
-                        loadData()
-                    }
+                    notAddingProjectYet()
+                    loadData()
                 }
+
                 override fun onFailure(call: Call<ProjectDataResponse>, t: Throwable) {
                     //дописать
                 }
@@ -165,16 +159,14 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
             val call: Call<List<ProjectDataResponse>> = ApiClient().getPersonalProject("Bearer " + accessToken)
             call.enqueue(object : Callback<List<ProjectDataResponse>> {
                 override fun onResponse(call: Call<List<ProjectDataResponse>>, response: Response<List<ProjectDataResponse>>) {
-                    if (response.code() == 200 && response.body()!=null) {
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
-                        response.body()?.forEach { item ->
-                            if (item.is_personal && item.is_archive==0) {
-                                validData.add(item)
-                            }
+                    val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                    response.body()?.forEach { item ->
+                        if (item.is_personal && item.is_archive==0) {
+                            validData.add(item)
                         }
-                        _uiState.update { it.copy(personalProject = validData)}
-                        _uiState.update { it.copy(searchPersonalProject = validData)}
                     }
+                    _uiState.update { it.copy(personalProject = validData)}
+                    _uiState.update { it.copy(searchPersonalProject = validData)}
                 }
 
                 override fun onFailure(call: Call<List<ProjectDataResponse>>, t: Throwable) {
@@ -184,16 +176,15 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
             val call1: Call<List<ProjectDataResponse>> = ApiClient().getGroupProject("Bearer " + accessToken)
             call1.enqueue(object : Callback<List<ProjectDataResponse>> {
                 override fun onResponse(call1: Call<List<ProjectDataResponse>>, response: Response<List<ProjectDataResponse>>) {
-                    if (response.code() == 200 && response.body()!=null) {
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
-                        response.body()?.forEach { item ->
-                            if (!item.is_personal && item.is_archive==0) {
-                                validData.add(item)
-                            }
+                    val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                    response.body()?.forEach { item ->
+                        if (!item.is_personal && item.is_archive==0) {
+                            validData.add(item)
                         }
-                        _uiState.update { it.copy(groupProject = validData)}
-                        _uiState.update { it.copy(searchGroupProject = validData)}
                     }
+                    _uiState.update { it.copy(groupProject = validData)}
+                    _uiState.update { it.copy(searchGroupProject = validData)}
+
                 }
 
                 override fun onFailure(call1: Call<List<ProjectDataResponse>>, t: Throwable) {

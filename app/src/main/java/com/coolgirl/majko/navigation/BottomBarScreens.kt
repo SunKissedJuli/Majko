@@ -25,4 +25,16 @@ sealed class BottomBarScreens(
         title = "Профиль",
         icon = R.drawable.icon_profile
     )
+
+    object Archive : BottomBarScreens(
+        route = "archive",
+        title = "Архив",
+        icon = R.drawable.icon_task
+    )
+
+    object Group : BottomBarScreens(
+        route = "group",
+        title = "Группа",
+        icon = R.drawable.icon_task
+    )
 }

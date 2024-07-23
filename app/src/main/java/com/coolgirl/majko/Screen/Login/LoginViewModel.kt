@@ -1,17 +1,12 @@
 package com.coolgirl.majko.Screen.Login
 
-import android.util.Log
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.RandomString
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.UserSignInData
 import com.coolgirl.majko.data.remote.dto.UserSignInDataResponse
@@ -23,6 +18,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.random.Random
 
 class LoginViewModel(userdataStore : UserDataStore) : ViewModel() {
     val dataStore : UserDataStore = userdataStore
@@ -77,11 +73,10 @@ class LoginViewModel(userdataStore : UserDataStore) : ViewModel() {
                 val call: Call<UserSignInDataResponse> = ApiClient().signIn(UserSignInData(userLogin, userPassword))
                 call.enqueue(object : Callback<UserSignInDataResponse> {
                     override fun onResponse(call: Call<UserSignInDataResponse>, response: Response<UserSignInDataResponse>) {
-                        if(response.code()==200){
-                            setAccesToken(response.body()!!.accessToken!!)
-                            navController.navigate(Screen.Task.route)
-                        }
+                        setAccesToken(response.body()!!.accessToken!!)
+                        navController.navigate(Screen.Task.route)
                     }
+
                     override fun onFailure(call: Call<UserSignInDataResponse>, t: Throwable) {
                         //дописать
                     } })
@@ -91,16 +86,24 @@ class LoginViewModel(userdataStore : UserDataStore) : ViewModel() {
                 val call: Call<UserSignUpDataResponse> = ApiClient().signUp(UserSignUpData(userLogin, userPassword, userName))
                 call.enqueue(object : Callback<UserSignUpDataResponse> {
                     override fun onResponse(call: Call<UserSignUpDataResponse>, response: Response<UserSignUpDataResponse>) {
-                        if(response.code()==200){
-                            setAccesToken(response.body()!!.accessToken!!)
-                            navController.navigate(Screen.Task.route)
-                        }
+                        setAccesToken(response.body()!!.accessToken!!)
+                        navController.navigate(Screen.Task.route)
                     }
+
                     override fun onFailure(call: Call<UserSignUpDataResponse>, t: Throwable) {
                         //дописать
-                    } })
+                    }
+                })
             }
         }
+    }
+
+    fun RandomString() : String{
+        val length = Random.nextInt(2, 4 + 1)
+        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        return (1..length)
+            .map { charPool[Random.nextInt(0, charPool.size)] }
+            .joinToString("")
     }
 
 }

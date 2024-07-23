@@ -15,6 +15,7 @@
     <string name="taskeditor_priority">Приоритет:</string>
     <string name="taskeditor_status">Статус:</string>
     <string name="taskeditor_project">Проект:</string>
+    <string name="taskeditor_add">Добавить запись</string>
     <string name="task_favorites">Избранные</string>
     <string name="task_each">Другие</string>
     <string name="task_search">Искать в задачах</string>
@@ -50,4 +51,12 @@
     <string name="groupeditor_groupname">Название группы</string>
     <string name="groupeditor_groupdescription">Описание группы</string>
     <string name="groupeditor_addproject">Добавить проект</string>
+    <string name="groupeditor_name">Имя:</string>
+    <string name="groupeditor_role">Роль:</string>
+    <string name="common_noname">Без названия</string>
+    <string name="common_nonote">Без записей</string>
+    <string name="common_nodescription">Без описания</string>
+    <string name="common_dash">-</string>
+    <string name="common_back">←</string>
+    <string name="common_no">нет</string>
 </resources>
