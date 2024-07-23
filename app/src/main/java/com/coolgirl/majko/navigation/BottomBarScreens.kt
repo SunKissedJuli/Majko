@@ -8,7 +8,7 @@ sealed class BottomBarScreens(
     val icon: Int
 ) {
 
-    object Notifications : BottomBarScreens(
+    object Project : BottomBarScreens(
         route = "project",
         title = "Проекты",
         icon = R.drawable.icon_project
@@ -29,12 +29,12 @@ sealed class BottomBarScreens(
     object Archive : BottomBarScreens(
         route = "archive",
         title = "Архив",
-        icon = R.drawable.icon_task
+        icon = R.drawable.icon_archive
     )
 
     object Group : BottomBarScreens(
         route = "group",
-        title = "Группа",
-        icon = R.drawable.icon_task
+        title = "Группы",
+        icon = R.drawable.icon_group
     )
 }

@@ -48,7 +48,12 @@ class MainActivity : ComponentActivity() {
                     if (currentDestination != null) {
                         if(currentDestination.route!="login"){
                             Column(Modifier.fillMaxHeight(0.07f)) {
-                                BottomBar(navController, listOf(BottomBarScreens.Notifications, BottomBarScreens.Task, BottomBarScreens.Profile))
+                                BottomBar(navController,
+                                    listOf(BottomBarScreens.Group,
+                                    BottomBarScreens.Project,
+                                    BottomBarScreens.Task,
+                                    BottomBarScreens.Archive,
+                                    BottomBarScreens.Profile))
                             }
                         }
                     }
