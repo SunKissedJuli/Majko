@@ -28,7 +28,7 @@ sealed class BottomBarScreens(
 
     object Archive : BottomBarScreens(
         route = "archive",
-        title = "Архив",
+        title = "Готовые",
         icon = R.drawable.icon_archive
     )
 

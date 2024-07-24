@@ -43,10 +43,8 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val gro
     fun newInvite(){
         if(uiState.value.is_invite){
             _uiState.update { it.copy(is_invite = false) }
-            _uiState.update { it.copy(is_invite_backgroun = 1f) }
         }else{
             _uiState.update { it.copy(is_invite = true) }
-            _uiState.update { it.copy(is_invite_backgroun = 0.5f) }
         }
     }
 

@@ -26,10 +26,10 @@
     <string name="project_description">Описание проекта</string>
     <string name="project_add">Добавить</string>
     <string name="project_createinvite">Создать инвайт</string>
-    <string name="project_joininvite">Вступить по инвайту</string>
+    <string name="project_joininvite">Вступить</string>
     <string name="project_delite">Удалить</string>
-    <string name="project_to_archive">В архив</string>
-    <string name="archive_to_project">Разархивировать</string>
+    <string name="project_to_archive">Завершить проект</string>
+    <string name="archive_to_project">Убрать из завершённых</string>
     <string name="projectedit_project">Проект:</string>
     <string name="projectedit_close">Закрыть</string>
     <string name="projectedit_members">Мемберы:</string>

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
@@ -48,8 +49,7 @@ fun ProjectScreen(navController: NavHostController){
 
     Box(
         Modifier
-            .fillMaxSize()
-            .alpha(uiState.isAddingBackground)) {
+            .fillMaxSize()    ) {
         Column(Modifier.fillMaxSize()) {
 
             Column(
@@ -99,11 +99,11 @@ fun ProjectScreen(navController: NavHostController){
 
     //экран добавления проекта
     if(uiState.isAdding){
-        AddProject(uiState, viewModel)
+        AddProject(uiState, viewModel, { viewModel.notAddingProjectYet()})
     }
 
     if(uiState.isInvite){
-        JoinByInviteWindow(uiState, viewModel)
+        JoinByInviteWindow(uiState, viewModel, { viewModel.openInviteWindow()})
     }
 }
 
@@ -198,20 +198,14 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
 }
 
 @Composable
-fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel){
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 100.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top) {
-        Column(
-            Modifier
-                .fillMaxWidth(0.9f)
-                .clip(RoundedCornerShape(20.dp))
-                .background(colorResource(R.color.purple)),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
+fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRequest: () -> Unit){
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(25.dp))
+                .background(MaterialTheme.colors.secondary)) {
 
             OutlinedTextField(
                 value = uiState.invite,
@@ -230,8 +224,9 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel){
                 Button(onClick = { viewModel.joinByInvite() },
                     shape = CircleShape,
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(vertical = 10.dp),
+                        .fillMaxWidth(0.6f)
+                        .padding(vertical = 10.dp)
+                        .align(Alignment.CenterHorizontally),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
                     Text(text = stringResource(R.string.project_joininvite), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -249,8 +244,9 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel){
                 Button(onClick = { viewModel.openInviteWindow() },
                     shape = CircleShape,
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(vertical = 10.dp),
+                        .fillMaxWidth(0.6f)
+                        .padding(vertical = 10.dp)
+                        .align(Alignment.CenterHorizontally),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
                     Text(text = stringResource(R.string.projectedit_close), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -263,23 +259,20 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel){
 }
 
 @Composable
-fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel){
-    Column(Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Column(
-            Modifier
-                .fillMaxWidth(0.9f)
-                .fillMaxHeight(0.5f)
+fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRequest: () -> Unit){
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(380.dp)
+                .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colors.primary),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start) {
+                .background(MaterialTheme.colors.secondary)) {
 
             OutlinedTextField(
                 value = uiState.newProjectName,
                 onValueChange = {viewModel.updateProjectName(it)},
-                Modifier.padding(start = 20.dp, top = 20.dp),
+                Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
@@ -290,7 +283,7 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel){
                 onValueChange = {viewModel.updateProjectDescription(it)},
                 Modifier
                     .fillMaxHeight(0.75f)
-                    .padding(start = 20.dp, top = 20.dp, bottom = 20.dp),
+                    .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,

@@ -31,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.components.HorizontalLine
 import com.coolgirl.majko.components.SpinnerSample
@@ -54,8 +55,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colors.background)
-            .alpha(uiState.isInviteBackground)) {
+            .background(MaterialTheme.colors.background)) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -298,7 +298,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                     .fillMaxSize()
                     .padding(top = 20.dp)
                     .clip(RoundedCornerShape(25.dp, 25.dp))
-                    .background(color = colorResource(R.color.purple)),
+                    .background(color = MaterialTheme.colors.secondary),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top) {
 
@@ -338,25 +338,19 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
     }
 
     if(uiState.isInvite){
-        SetInviteWindow(uiState, viewModel)
+        SetInviteWindow(uiState, viewModel, { viewModel.newInvite()})
     }
 }
 
 @Composable
-fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewModel){
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 100.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top) {
-        Column(
-            Modifier
-                .fillMaxWidth(0.9f)
-                .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colors.secondary),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
+fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewModel, onDismissRequest: () -> Unit){
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(25.dp))
+                .background(MaterialTheme.colors.secondary)) {
 
             OutlinedTextField(
                 value = uiState.invite,
@@ -376,7 +370,8 @@ fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewMode
                 shape = CircleShape,
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
-                    .padding(vertical = 10.dp),
+                    .padding(vertical = 10.dp)
+                    .align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
                 Text(text = stringResource(R.string.projectedit_close), color = MaterialTheme.colors.background,
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)

@@ -45,10 +45,8 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
     fun newInvite(){
         if(uiState.value.isInvite){
             _uiState.update { it.copy(isInvite = false) }
-            _uiState.update { it.copy(isInviteBackground = 1f) }
         }else{
             _uiState.update { it.copy(isInvite = true) }
-            _uiState.update { it.copy(isInviteBackground = 0.5f) }
         }
     }
 

@@ -37,21 +37,17 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
 
     fun openInviteWindow(){
         if(uiState.value.isInvite==false){
-            _uiState.update { it.copy(isAddingBackground = 0.5f)}
             _uiState.update { it.copy(isInvite = true)}
         }else{
-            _uiState.update { it.copy(isAddingBackground = 1f)}
             _uiState.update { it.copy(isInvite = false)}
         }
     }
 
     fun addingProject(){
-        _uiState.update { it.copy(isAddingBackground = 0.5f)}
         _uiState.update { it.copy(isAdding = true)}
     }
 
     fun notAddingProjectYet(){
-        _uiState.update { it.copy(isAddingBackground = 1f)}
         _uiState.update { it.copy(isAdding = false)}
     }
 

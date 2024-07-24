@@ -74,7 +74,12 @@ class LoginViewModel(userdataStore : UserDataStore) : ViewModel() {
                 call.enqueue(object : Callback<UserSignInDataResponse> {
                     override fun onResponse(call: Call<UserSignInDataResponse>, response: Response<UserSignInDataResponse>) {
                         setAccesToken(response.body()!!.accessToken!!)
-                        navController.navigate(Screen.Task.route)
+                        navController.navigate(Screen.Task.route){
+                            launchSingleTop = true
+                            popUpTo(navController.graph.id){
+                                inclusive = true
+                            }
+                        }
                     }
 
                     override fun onFailure(call: Call<UserSignInDataResponse>, t: Throwable) {
@@ -87,7 +92,12 @@ class LoginViewModel(userdataStore : UserDataStore) : ViewModel() {
                 call.enqueue(object : Callback<UserSignUpDataResponse> {
                     override fun onResponse(call: Call<UserSignUpDataResponse>, response: Response<UserSignUpDataResponse>) {
                         setAccesToken(response.body()!!.accessToken!!)
-                        navController.navigate(Screen.Task.route)
+                        navController.navigate(Screen.Task.route){
+                            launchSingleTop = true
+                            popUpTo(navController.graph.id){
+                                inclusive = true
+                            }
+                        }
                     }
 
                     override fun onFailure(call: Call<UserSignUpDataResponse>, t: Throwable) {

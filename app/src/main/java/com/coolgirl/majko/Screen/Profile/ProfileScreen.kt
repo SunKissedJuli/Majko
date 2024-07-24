@@ -26,8 +26,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
@@ -53,7 +55,7 @@ fun ProfileScreen( navController: NavHostController) {
     }
 
     if (uiState.isAdding){
-        ChangePassword(uiState, viewModel)
+        ChangePassword(uiState, viewModel, {viewModel.changePasswordScreen()})
     }
 
 }
@@ -152,7 +154,12 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
                 color = MaterialTheme.colors.primary,
                 modifier = Modifier.clickable {
                     viewModel.forgetAccount()
-                    navController.navigate(Screen.Login.route)
+                    navController.navigate(Screen.Login.route){
+                        launchSingleTop = true
+                        popUpTo(navController.graph.id){
+                            inclusive = true
+                        }
+                    }
                 })
 
         }
@@ -160,23 +167,19 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
 }
 
 @Composable
-fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
-    Column(Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Column(
-            Modifier
-                .fillMaxWidth(0.9f)
-                .fillMaxHeight(0.45f)
+fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel, onDismissRequest: () -> Unit){
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(380.dp)
+                .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
-                .background(colorResource(R.color.purple)),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start) {
-
+                .background(MaterialTheme.colors.secondary)) {
             OutlinedTextField(
                 value = uiState.oldPassword,
                 onValueChange = {viewModel.updateOldPassword(it)},
-                Modifier.padding(start = 20.dp, top = 20.dp),
+                Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
@@ -186,7 +189,7 @@ fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
             OutlinedTextField(
                 value = uiState.newPassword,
                 onValueChange = {viewModel.updateNewPassword(it)},
-                Modifier.padding(start = 20.dp, top = 20.dp),
+                Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
@@ -196,7 +199,7 @@ fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel){
             OutlinedTextField(
                 value = uiState.confirmPassword,
                 onValueChange = {viewModel.updateConfirmPassword(it)},
-                Modifier.padding(start = 20.dp, top = 20.dp),
+                Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,

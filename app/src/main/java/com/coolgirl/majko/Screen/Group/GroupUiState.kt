@@ -10,7 +10,6 @@ data class GroupUiState(
     val searchGroupGroup : List<GroupResponse>? = null,
     val searchString: String = "",
     val isAdding: Boolean = false,
-    val isAddingBackground : Float = 1f,
     val newGroupName : String = "",
     val newGroupDescription : String = "",
     val isInvite: Boolean =  false,

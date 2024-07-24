@@ -27,6 +27,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.ProjectCard
@@ -46,8 +47,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colors.background)
-            .alpha(uiState.is_invite_backgroun)) {
+            .background(MaterialTheme.colors.background)) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -236,25 +236,19 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
     }
 
     if(uiState.is_invite){
-        SetInviteWindow(uiState, viewModel)
+        SetInviteWindow(uiState, viewModel, { viewModel.newInvite()})
     }
 }
 
 @Composable
-fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditorViewModel){
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 100.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top) {
-        Column(
-            Modifier
-                .fillMaxWidth(0.9f)
-                .clip(RoundedCornerShape(20.dp))
-                .background(colorResource(R.color.purple)),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
+fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditorViewModel, onDismissRequest: () -> Unit){
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(RoundedCornerShape(25.dp))
+                .background(MaterialTheme.colors.secondary)) {
 
             OutlinedTextField(
                 value = uiState.invite,
@@ -274,12 +268,12 @@ fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditorViewMode
                 shape = CircleShape,
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
-                    .padding(vertical = 10.dp),
+                    .padding(vertical = 10.dp)
+                    .align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
                 Text(text = stringResource(R.string.projectedit_close), color = MaterialTheme.colors.background,
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)
             }
-
         }
     }
 }

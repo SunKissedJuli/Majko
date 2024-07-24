@@ -9,7 +9,6 @@ data class ProjectUiState(
     val searchGroupProject : List<ProjectDataResponse>? = null,
     val searchString: String = "",
     val isAdding: Boolean = false,
-    val isAddingBackground : Float = 1f,
     val newProjectName : String = "",
     val newProjectDescription : String = "",
     val isLongtap: Boolean = false,
