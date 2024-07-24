@@ -25,18 +25,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.components.ProjectCardUiState
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun ArchiveScreen(navController: NavHostController){
 
-    val viewModel: ArchiveViewModel = viewModel(
-        key = "archiveViewModel",
-        factory = ArchiveViewModelProvider.getInstance(LocalContext.current)
-    )
+    val viewModel = getViewModel<ArchiveViewModel>()
 
     val uiState by viewModel.uiState.collectAsState()
     val uiStateCard by viewModel.uiStateCard.collectAsState()

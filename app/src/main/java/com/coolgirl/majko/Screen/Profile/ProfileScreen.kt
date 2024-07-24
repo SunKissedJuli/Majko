@@ -21,24 +21,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.navigation.Screen
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
+
 
 @Composable
 fun ProfileScreen( navController: NavHostController) {
-    val viewModel: ProfileViewModel = viewModel(key = "profileViewModel",
-        factory = ProfileViewModelProvider.getInstance(LocalContext.current))
+    val viewModel = getViewModel<ProfileViewModel>()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit){
+        coroutineScope.launch {
+            viewModel.loadData()
+        }
+    }
 
     val uiState by viewModel.uiState.collectAsState()
     Column(

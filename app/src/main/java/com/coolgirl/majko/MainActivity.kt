@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.navigation.AppNavHost
 import com.coolgirl.majko.navigation.BottomBar

@@ -11,13 +11,14 @@ import com.coolgirl.majko.data.remote.dto.TaskData.*
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiMajko{
 
     //юзер и авторизация
     @POST("api/auth/local/signin")
-    fun signIn(@Body user: UserSignInData?): Call<UserSignInDataResponse>
+    suspend fun signIn(@Body user: UserSignInData?): Response<UserSignInDataResponse>
 
     @POST("api/auth/local/signup")
     fun signUp(@Body user: UserSignUpData?): Call<UserSignUpDataResponse>
@@ -137,6 +138,5 @@ interface ApiMajko{
 
     @POST("api/group/joinByInvitation")
     fun joinGroupByInvitation(@Header("Authorization") tocken: String, @Body invite: JoinByInviteProjectData) : Call<MessageData>
-
 
 }

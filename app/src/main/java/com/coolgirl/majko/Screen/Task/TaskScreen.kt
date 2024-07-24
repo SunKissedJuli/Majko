@@ -24,15 +24,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.R
+import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.components.plusButton
 import com.coolgirl.majko.navigation.*
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun TaskScreen(navController: NavHostController) {
-    val viewModel: TaskViewModel = viewModel(
-        key = "taskViewModel",
-        factory = TaskViewModelProvider.getInstance(LocalContext.current)
-    )
+    val viewModel = getViewModel<TaskViewModel>()
 
     val uiState by viewModel.uiState.collectAsState()
 

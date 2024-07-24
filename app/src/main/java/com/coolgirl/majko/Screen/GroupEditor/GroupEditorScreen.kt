@@ -32,7 +32,8 @@ import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
-
+import org.koin.androidx.compose.getKoin
+import org.koin.java.KoinJavaComponent.inject
 @Composable
 fun GroupEditorScreen(navController: NavHostController, group_id: String){
     val cont = LocalContext.current

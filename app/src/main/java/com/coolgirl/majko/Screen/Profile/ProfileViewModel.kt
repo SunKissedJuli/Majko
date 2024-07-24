@@ -30,8 +30,6 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    init { loadData() }
-
     fun updateUserName(username: String) {
         _uiState.update { it.copy(userName = username) }
     }
@@ -97,7 +95,7 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
         }
     }
 
-    private fun loadData() {
+    fun loadData() {
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
             val call: Call<CurrentUserDataResponse> = ApiClient().currentUser("Bearer " + accessToken)

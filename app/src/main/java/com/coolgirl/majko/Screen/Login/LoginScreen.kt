@@ -18,12 +18,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun LoginScreen(navController: NavController){
-    val dataStore : UserDataStore = UserDataStore(LocalContext.current)
-    val viewModel:LoginViewModel = LoginViewModel(dataStore)
+    val viewModel = getViewModel<LoginViewModel>()
+
     SetLoginScreen(navController, viewModel)
 }
 

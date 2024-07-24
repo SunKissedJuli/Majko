@@ -30,17 +30,17 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.components.GroupCard
 import com.coolgirl.majko.components.plusButton
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun GroupScreen(navController: NavHostController) {
-    val viewModel: GroupViewModel = viewModel(
-        key = "groupViewModel",
-        factory = GroupViewModelProvider.getInstance(LocalContext.current)
-    )
+    val viewModel = getViewModel<GroupViewModel>()
+
     val uiState by viewModel.uiState.collectAsState()
 
     Box(
