@@ -3,8 +3,10 @@ package com.coolgirl.majko
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -30,6 +32,8 @@ class MainActivity : ComponentActivity() {
                 val dataStore: UserDataStore = UserDataStore(LocalContext.current)
                 val coroutineScope = rememberCoroutineScope()
                 var accessToken by remember { mutableStateOf("") }
+                val currentBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = currentBackStackEntry?.destination
 
                 LaunchedEffect(Unit) {
                     coroutineScope.launch {
@@ -43,27 +47,32 @@ class MainActivity : ComponentActivity() {
                     Screen.Login.route
                 }
 
-                val currentBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = currentBackStackEntry?.destination
+
 
                 Scaffold(
                     bottomBar = {
                         if (currentDestination != null) {
-                            if(currentDestination.route!="login"&&currentDestination.route!="register"&&currentDestination.route!="taskEditor/{taskId}"&&currentDestination.route!="groupEditor/{groupId}"&&currentDestination.route!="projectEditor/{projectId}"){
-                                Column(Modifier.fillMaxHeight(0.07f)) {
+                            if(currentDestination.route!=Screen.Login.route&&currentDestination.route!=Screen.Register.route
+                                &&currentDestination.route!=Screen.TaskEditor.createRoute()
+                                &&currentDestination.route!=Screen.GroupEditor.createRoute()
+                                &&currentDestination.route!=Screen.ProjectEditor.createRoute()){
+                             //   Column(Modifier.fillMaxHeight(0.07f)) {
                                     BottomBar(navController,
                                         listOf(BottomBarScreens.Group,
                                             BottomBarScreens.Project,
                                             BottomBarScreens.Task,
                                             BottomBarScreens.Archive,
                                             BottomBarScreens.Profile))
-                                }
+                              //  }
                             }
                         }
 
                     }
                 ) {
-                    AppNavHost(navController, startDestination)
+                    Box(Modifier.padding(it)){
+                        AppNavHost(navController, startDestination)
+                    }
+
                 }
             }
         }

@@ -50,7 +50,6 @@ fun ProfileScreen( navController: NavHostController) {
     Column(
         Modifier
             .fillMaxSize()
-            .alpha(uiState.isAddingBackground)
             .background(MaterialTheme.colors.background)) {
         Column(
             Modifier
@@ -60,7 +59,7 @@ fun ProfileScreen( navController: NavHostController) {
         }
     }
 
-    if (uiState.isAdding){
+    if (uiState.isChangePassword){
         ChangePassword(uiState, viewModel, {viewModel.changePasswordScreen()})
     }
 
@@ -172,7 +171,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
 }
 
 @Composable
-fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel, onDismissRequest: () -> Unit){
+private fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel, onDismissRequest: () -> Unit){
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier

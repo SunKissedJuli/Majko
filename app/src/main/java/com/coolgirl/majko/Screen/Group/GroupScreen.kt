@@ -55,13 +55,7 @@ fun GroupScreen(navController: NavHostController) {
         Modifier
             .fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.93f)) {
-                SetGroupScreen(uiState, navController, viewModel)
-            }
+            SetGroupScreen(uiState, navController, viewModel)
         }
 
         Box(Modifier.align(Alignment.BottomEnd)){
@@ -167,7 +161,7 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
 }
 
 @Composable
-fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel, onDismissRequest: () -> Unit){
+private fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel, onDismissRequest: () -> Unit){
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -215,7 +209,7 @@ fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel, onDismissRequest:
 }
 
 @Composable
-fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel, onDismissRequest: () -> Unit){
+private fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel, onDismissRequest: () -> Unit){
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier

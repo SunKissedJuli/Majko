@@ -82,12 +82,10 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
     }
 
     fun changePasswordScreen(){
-        if(uiState.value.isAdding){
-            _uiState.update { it.copy(isAddingBackground = 1f)}
-            _uiState.update { it.copy(isAdding = false)}
+        if(uiState.value.isChangePassword){
+            _uiState.update { it.copy(isChangePassword = false)}
         }else{
-            _uiState.update { it.copy(isAddingBackground = 0.5f)}
-            _uiState.update { it.copy(isAdding = true)}
+            _uiState.update { it.copy(isChangePassword = true)}
         }
 
     }

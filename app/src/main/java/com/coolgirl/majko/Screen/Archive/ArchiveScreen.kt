@@ -48,19 +48,12 @@ fun ArchiveScreen(navController: NavHostController){
     val uiState by viewModel.uiState.collectAsState()
     val uiStateCard by viewModel.uiStateCard.collectAsState()
 
-    Box(
-        Modifier
-            .fillMaxSize()) {
-        Column(Modifier.fillMaxSize()) {
 
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.93f)) {
-                SetArchiveScreen(uiState, navController, viewModel, uiStateCard)
-            }
-        }
+    Column(Modifier.fillMaxSize()) {
+        SetArchiveScreen(uiState, navController, viewModel, uiStateCard)
+
     }
+
 
     //панель при длинном нажатии
     if(uiState.isLongtap){

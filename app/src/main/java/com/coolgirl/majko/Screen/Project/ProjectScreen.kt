@@ -57,13 +57,7 @@ fun ProjectScreen(navController: NavHostController){
         Modifier
             .fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.93f)) {
-                SetProjectScreen(uiState, navController, viewModel, uiStateCard)
-            }
+            SetProjectScreen(uiState, navController, viewModel, uiStateCard)
         }
 
         Box(Modifier.align(Alignment.BottomEnd)){

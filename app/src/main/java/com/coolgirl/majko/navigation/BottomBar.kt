@@ -1,5 +1,6 @@
 package com.coolgirl.majko.navigation
 
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -22,7 +23,9 @@ fun BottomBar(navHostController: NavHostController, screensBottomBar: List<Botto
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar(containerColor = colorResource(R.color.white)) {
+    NavigationBar(containerColor = colorResource(R.color.white)
+      //  , modifier = Modifier.fillMaxHeight(0.07f)
+    ) {
         screens.forEachIndexed { index, bottomBarScreens ->
             if (currentDestination != null){
                 NavigationBarItem(
