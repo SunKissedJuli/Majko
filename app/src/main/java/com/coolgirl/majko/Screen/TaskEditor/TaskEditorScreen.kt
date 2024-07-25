@@ -30,6 +30,7 @@ import com.coolgirl.majko.components.HorizontalLine
 import com.coolgirl.majko.components.SpinnerSample
 import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import java.time.LocalDateTime
@@ -37,10 +38,17 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Composable
-fun TaskEditorScreen(navController: NavHostController, task_id : String){
+fun TaskEditorScreen(navController: NavHostController, taskId : String){
     val viewModel = getViewModel<TaskEditorViewModel>(
-        parameters = { parametersOf(task_id) }
+        parameters = { parametersOf(taskId) }
     )
+
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit){
+        coroutineScope.launch {
+            viewModel.loadData()
+        }
+    }
 
     val uiState by viewModel.uiState.collectAsState()
     SetTaskEditorScreen(uiState, {viewModel.updateTaskText(it)},
@@ -424,20 +432,26 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 )
 
                 HorizontalLine()
-                SpinnerSample(name = stringResource(R.string.taskeditor_priority),
-                    items = viewModel.getPriority(),
-                    selectedItem = viewModel.getPriorityName(uiState.taskPriority),
-                    {viewModel.updateTaskPriority(it)}
-                )
+                if(uiState.taskPriorityName!=""){
+                    SpinnerSample(name = stringResource(R.string.taskeditor_priority),
+                        items = viewModel.getPriority(),
+                        selectedItem = uiState.taskPriorityName,
+                        {viewModel.updateTaskPriority(it)}
+                    )
+                }
+
                 HorizontalLine()
                 Text(text= stringResource(R.string.taskeditor_project) + (" ") + (uiState.taskProjectObj?.name ?: stringResource(R.string.common_no)), fontSize = 18.sp)
                 HorizontalLine()
-                SpinnerSample(
-                    name = stringResource(R.string.taskeditor_status),
-                    items = viewModel.getStatus(),
-                    selectedItem = viewModel.getStatusName(uiState.taskStatus),
-                    {viewModel.updateTaskStatus(it) }
-                )
+                if(uiState.taskStatusName!=""){
+                    SpinnerSample(
+                        name = stringResource(R.string.taskeditor_status),
+                        items = viewModel.getStatus(),
+                        selectedItem = uiState.taskStatusName,
+                        {viewModel.updateTaskStatus(it) }
+                    )
+                }
+
                 HorizontalLine()
             }
         }

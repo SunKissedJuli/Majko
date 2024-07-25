@@ -38,6 +38,7 @@ import com.coolgirl.majko.components.HorizontalLine
 import com.coolgirl.majko.components.SpinnerSample
 import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import java.time.LocalDateTime
@@ -45,11 +46,19 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Composable
-fun ProjectEditScreen(navController: NavHostController, project_id : String){
+fun ProjectEditScreen(navController: NavHostController, projectId : String){
 
     val viewModel = getViewModel<ProjectEditViewModel>(
-        parameters = { parametersOf(project_id) }
+        parameters = { parametersOf(projectId) }
     )
+
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit){
+        coroutineScope.launch {
+            viewModel.loadData()
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsState()
     SetProjectEditScreen(uiState, viewModel, navController)
 }
@@ -172,12 +181,12 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
             }
         }
 
-        if(uiState.is_adding){
+        if(uiState.isAdding){
             Column(
                 Modifier
                     .padding(all = 15.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(color = colorResource(R.color.purple)),
+                    .background(MaterialTheme.colors.secondary),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top) {
                 Column(

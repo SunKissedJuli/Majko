@@ -33,15 +33,24 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorViewModel
 import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getKoin
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.inject
 @Composable
-fun GroupEditorScreen(navController: NavHostController, group_id: String){
+fun GroupEditorScreen(navController: NavHostController, groupId: String){
     val viewModel = getViewModel<GroupEditorViewModel>(
-        parameters = { parametersOf(group_id) }
+        parameters = { parametersOf(groupId) }
     )
+
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit){
+        coroutineScope.launch {
+            viewModel.loadData()
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsState()
     SetGroupEditorScreen(uiState, viewModel, navController)
 }
@@ -162,7 +171,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
         }
 
         //добавление проекта в группу
-        if(uiState.is_adding){
+        if(uiState.isAdding){
             LazyRow(
                 Modifier
                     .fillMaxWidth()
@@ -240,7 +249,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
         }
     }
 
-    if(uiState.is_invite){
+    if(uiState.isInvite){
         SetInviteWindow(uiState, viewModel, { viewModel.newInvite()})
     }
 }

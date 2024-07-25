@@ -19,11 +19,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GroupEditorViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository, private val group_id: String) : ViewModel() {
+class GroupEditorViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository, private val groupId: String) : ViewModel() {
     private val _uiState = MutableStateFlow(GroupEditorUiState())
     val uiState: StateFlow<GroupEditorUiState> = _uiState.asStateFlow()
-
-    init { loadData() }
 
     fun updateGroupName(name: String){
         _uiState.update { currentState ->
@@ -36,19 +34,19 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
     }
 
     fun addingProject(){
-        if(uiState.value.is_adding){
-            _uiState.update { it.copy(is_adding = false) }
+        if(uiState.value.isAdding){
+            _uiState.update { it.copy(isAdding = false) }
         }else{
             getProjectData()
-            _uiState.update { it.copy(is_adding = true) }
+            _uiState.update { it.copy(isAdding = true) }
         }
     }
 
     fun newInvite(){
-        if(uiState.value.is_invite){
-            _uiState.update { it.copy(is_invite = false) }
+        if(uiState.value.isInvite){
+            _uiState.update { it.copy(isInvite = false) }
         }else{
-            _uiState.update { it.copy(is_invite = true) }
+            _uiState.update { it.copy(isInvite = true) }
         }
     }
 
@@ -63,10 +61,10 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
     }
 
     fun loadData(){
-        _uiState.update { it.copy(group_id = group_id) }
+        _uiState.update { it.copy(groupId = groupId) }
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getGroupById("Bearer " + accessToken,  GroupById(uiState.value.group_id)).collect() { response ->
+            majkoRepository.getGroupById("Bearer " + accessToken,  GroupById(uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(groupData = response.data!!) }
@@ -81,7 +79,7 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
     fun saveGroup(navHostController: NavHostController){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.updateGroup("Bearer " + accessToken,  GroupUpdate(uiState.value.group_id,
+            majkoRepository.updateGroup("Bearer " + accessToken,  GroupUpdate(uiState.value.groupId,
                 uiState.value.groupData!!.title, uiState.value.groupData!!.description)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ navHostController.navigate(Screen.Group.route) }
@@ -95,7 +93,7 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
     fun removeGroup(navHostController: NavHostController){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.removeGroup("Bearer " + accessToken,  GroupById(uiState.value.group_id)).collect() { response ->
+            majkoRepository.removeGroup("Bearer " + accessToken,  GroupById(uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ navHostController.navigate(Screen.Group.route) }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -106,10 +104,10 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
     }
 
     fun saveProject(project_id: String){
-        _uiState.update { it.copy(group_id = group_id) }
+        _uiState.update { it.copy(groupId = groupId) }
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.addProjectInGroup("Bearer " + accessToken, ProjectInGroup(project_id, uiState.value.group_id)).collect() { response ->
+            majkoRepository.addProjectInGroup("Bearer " + accessToken, ProjectInGroup(project_id, uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         addingProject()
@@ -144,7 +142,7 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
     fun createInvite(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.createInvitetoGroup("Bearer " + accessToken, GroupBy_Id(uiState.value.group_id)).collect() { response ->
+            majkoRepository.createInvitetoGroup("Bearer " + accessToken, GroupBy_Id(uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(invite = response.data!!.invite) }

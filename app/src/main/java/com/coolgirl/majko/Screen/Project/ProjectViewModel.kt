@@ -25,8 +25,6 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
     val _uiStateCard = MutableStateFlow(ProjectCardUiState())
     val uiStateCard: StateFlow<ProjectCardUiState> = _uiStateCard.asStateFlow()
 
-    init{loadData()}
-
     fun updateProjectName(name: String){
         _uiState.update { it.copy(newProjectName = name) }
     }
@@ -40,7 +38,7 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
     }
 
     fun openInviteWindow(){
-        if(uiState.value.isInvite==false){
+        if(!uiState.value.isInvite){
             _uiState.update { it.copy(isInvite = true)}
         }else{
             _uiState.update { it.copy(isInvite = false)}
@@ -56,7 +54,7 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
     }
 
     fun openPanel(id: String){
-        if(id!=""){
+        if(id.isNotEmpty()){
             _uiState.update { it.copy(isLongtap = true) }
             _uiState.update { it.copy(longtapProjectId = uiState.value.longtapProjectId + id) }
         }else{

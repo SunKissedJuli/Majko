@@ -2,6 +2,7 @@ package com.coolgirl.majko.data.remote
 
 import com.coolgirl.majko.data.remote.dto.*
 import com.coolgirl.majko.data.remote.dto.GroupData.*
+import com.coolgirl.majko.data.remote.dto.Info.Info
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
@@ -136,5 +137,16 @@ interface ApiMajko{
 
     @POST("api/group/joinByInvitation")
     suspend fun joinGroupByInvitation(@Header("Authorization") token: String, @Body invite: JoinByInviteProjectData) : Response<MessageData>
+
+
+    //инфо
+    @GET("api/get_statuses")
+    suspend fun getStatuses() : Response<List<Info>>
+
+    @GET("api/get_priorities")
+    suspend fun getPriorities() : Response<List<Info>>
+
+
+
 
 }

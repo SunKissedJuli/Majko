@@ -1,62 +1,32 @@
 package com.coolgirl.majko.Screen.Login
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.UserSignInData
-import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.navigation.Screen
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class LoginViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel() {
-    private var isThisSignIn : Boolean = true
-    var userName by mutableStateOf("")
-    var userLogin by mutableStateOf("")
-    var userPassword by mutableStateOf("")
-    var userPasswordRepeat by mutableStateOf("")
-    var change by mutableStateOf("")
+    private val _uiState =  MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    fun updateUserName(username : String) {
-        userName = username
-    }
     fun updateUserPassword(password: String) {
-        userPassword = password
+        _uiState.update { it.copy(userPassword = password) }
     }
-    fun updateUserPasswordRepeat(passwordRepeat: String) {
-        userPasswordRepeat = passwordRepeat
-    }
+
     fun updateUserLogin(login : String) {
-        userLogin= login
-    }
-    fun isThisSignIn() : Boolean{
-        return isThisSignIn
-    }
-    fun changeScreen(){
-        isThisSignIn = !isThisSignIn
-        change = RandomString()
-    }
-    fun bottomText() : Int{
-        if(isThisSignIn)
-            return  R.string.login_registrationoffer
-        else
-            return R.string.login_enteroffer
-    }
-    fun enterButtonText() : Int{
-        if(isThisSignIn)
-            return R.string.login_enter
-        else
-            return  R.string.login_registration
+        _uiState.update { it.copy(userLogin = login) }
     }
 
     fun setAccesToken(token : String){
@@ -66,30 +36,9 @@ class LoginViewModel(private val dataStore : UserDataStore, private val majkoRep
     }
 
     fun signIn(navController: NavController){
-        if(isThisSignIn){
-            if(!userPassword.equals("")&&!userLogin.equals("")){
-                viewModelScope.launch {
-                    majkoRepository.signIn(UserSignInData(userLogin, userPassword))
-                        .collect() { response ->
-                            when (response) {
-                                is ApiSuccess -> {
-                                    setAccesToken(response.data!!.accessToken!!)
-                                    navController.navigate(Screen.Task.route) {
-                                        launchSingleTop = true
-                                        popUpTo(navController.graph.id) {
-                                            inclusive = true
-                                        }
-                                    }
-                                }
-                                is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                                is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
-                            }
-                        }
-                }
-            }
-        }else{
+        if(!uiState.value.userPassword.equals("")&&!uiState.value.userLogin.equals("")){
             viewModelScope.launch {
-                majkoRepository.signUp(UserSignUpData(userLogin, userPassword, userName))
+                majkoRepository.signIn(UserSignInData(uiState.value.userLogin, uiState.value.userPassword))
                     .collect() { response ->
                         when (response) {
                             is ApiSuccess -> {
@@ -108,13 +57,4 @@ class LoginViewModel(private val dataStore : UserDataStore, private val majkoRep
             }
         }
     }
-
-    fun RandomString() : String{
-        val length = Random.nextInt(2, 4 + 1)
-        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        return (1..length)
-            .map { charPool[Random.nextInt(0, charPool.size)] }
-            .joinToString("")
-    }
-
 }

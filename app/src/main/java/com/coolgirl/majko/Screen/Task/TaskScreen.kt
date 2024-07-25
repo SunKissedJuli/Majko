@@ -27,12 +27,19 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.components.plusButton
 import com.coolgirl.majko.navigation.*
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun TaskScreen(navController: NavHostController) {
     val viewModel = getViewModel<TaskViewModel>()
 
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit){
+        coroutineScope.launch {
+            viewModel.loadData()
+        }
+    }
     val uiState by viewModel.uiState.collectAsState()
 
     Box(Modifier.fillMaxSize()) {
@@ -46,7 +53,7 @@ fun TaskScreen(navController: NavHostController) {
         }
 
         Box(Modifier.align(Alignment.BottomEnd)){
-            plusButton(onClick = {navController.navigate(Screen.TaskEditor.task_id(it))}, id = "0")
+            plusButton(onClick = {navController.navigate(Screen.TaskEditor.createRoute(it))}, id = "0")
         }
     }
 }

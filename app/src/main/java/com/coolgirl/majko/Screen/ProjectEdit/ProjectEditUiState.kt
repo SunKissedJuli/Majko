@@ -1,5 +1,6 @@
 package com.coolgirl.majko.Screen.ProjectEdit
 
+import com.coolgirl.majko.data.remote.dto.Info.Info
 import com.coolgirl.majko.data.remote.dto.ProjectData.Member
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
 
@@ -12,9 +13,11 @@ data class ProjectEditUiState(
     val taskPriority: Int = 1,
     val taskStatus: Int = 1,
     val taskProject: String = "",
-    val is_adding: Boolean = false,
+    val isAdding: Boolean = false,
     val taskProjectName: String = "",
     val isInvite: Boolean = false,
     val invite: String = "",
-    val members: List<Member>? = null
+    val members: List<Member>? = null,
+    val statuses: List<Info>? = null,
+    val proprieties: List<Info>? = null
 )

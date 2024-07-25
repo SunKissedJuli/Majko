@@ -69,7 +69,7 @@ fun TaskCard(navHostController: NavHostController,
         .padding(5.dp)
         .clip(RoundedCornerShape(20.dp))
         .background(color = colorResource(priorityColor))
-        .clickable { navHostController.navigate(Screen.TaskEditor.task_id(taskData.id)) },
+        .clickable { navHostController.navigate(Screen.TaskEditor.createRoute(taskData.id)) },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
         Row(
@@ -169,7 +169,7 @@ fun ProjectCard(navHostController: NavHostController,
         )
         .background(color = colorResource(priorityColor))
         .combinedClickable(
-            onClick = { navHostController.navigate(Screen.ProjectEditor.project_id(projectData.id)) },
+            onClick = { navHostController.navigate(Screen.ProjectEditor.createRoute(projectData.id)) },
             onLongClick = {
                 tapType = R.color.purple
                 onLongTap(projectData.id)
@@ -230,7 +230,7 @@ fun GroupCard(navHostController: NavHostController,
         .clip(RoundedCornerShape(20.dp))
         .border(3.dp, color = colorResource(tapType), shape = RoundedCornerShape(20.dp))
         .background(color = colorResource(priorityColor))
-        .clickable { navHostController.navigate(Screen.GroupEditor.group_id(groupData.id)) },
+        .clickable { navHostController.navigate(Screen.GroupEditor.createRoute(groupData.id)) },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
         Row(
@@ -283,7 +283,9 @@ fun SpinnerSample(
     var expanded by remember { mutableStateOf(false) }
     var currentSelectedItem by remember { mutableStateOf(selectedItem) }
 
-    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically) {
         Text(text = name + " " + currentSelectedItem, fontSize = 18.sp)
         DropdownMenu(
             expanded = expanded,
@@ -291,6 +293,7 @@ fun SpinnerSample(
             modifier = Modifier.fillMaxWidth()) {
             items.forEach { item ->
                 DropdownMenuItem(
+                    modifier = Modifier.background(MaterialTheme.colors.secondary),
                     onClick = {
                         expanded = false
                         currentSelectedItem = item.Name

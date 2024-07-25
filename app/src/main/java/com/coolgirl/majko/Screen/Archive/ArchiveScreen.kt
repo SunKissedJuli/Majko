@@ -30,12 +30,20 @@ import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.components.ProjectCardUiState
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun ArchiveScreen(navController: NavHostController){
 
     val viewModel = getViewModel<ArchiveViewModel>()
+
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit){
+        coroutineScope.launch {
+            viewModel.loadData()
+        }
+    }
 
     val uiState by viewModel.uiState.collectAsState()
     val uiStateCard by viewModel.uiStateCard.collectAsState()

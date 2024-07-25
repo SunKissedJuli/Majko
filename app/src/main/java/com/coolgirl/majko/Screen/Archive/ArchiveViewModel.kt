@@ -26,11 +26,8 @@ class ArchiveViewModel(private val dataStore:UserDataStore, private val majkoRep
     val _uiStateCard = MutableStateFlow(ProjectCardUiState())
     val uiStateCard: StateFlow<ProjectCardUiState> = _uiStateCard.asStateFlow()
 
-    init{ loadData() }
-
     fun openPanel(id: String){
-        Log.d("tag", "хуй = " + id)
-        if(id!=""){
+        if(id.isNotEmpty()){
             _uiState.update { it.copy(isLongtap = true) }
             _uiState.update { it.copy(longtapProjectId = uiState.value.longtapProjectId + id) }
         }else{

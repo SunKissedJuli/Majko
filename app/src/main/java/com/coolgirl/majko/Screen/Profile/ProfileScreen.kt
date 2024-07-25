@@ -38,8 +38,8 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun ProfileScreen( navController: NavHostController) {
     val viewModel = getViewModel<ProfileViewModel>()
-    val coroutineScope = rememberCoroutineScope()
 
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit){
         coroutineScope.launch {
             viewModel.loadData()

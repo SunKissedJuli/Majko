@@ -35,11 +35,19 @@ import com.coolgirl.majko.components.GroupCard
 import com.coolgirl.majko.components.plusButton
 import com.coolgirl.majko.navigation.BottomBar
 import com.coolgirl.majko.navigation.BottomBarScreens
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun GroupScreen(navController: NavHostController) {
     val viewModel = getViewModel<GroupViewModel>()
+
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit){
+        coroutineScope.launch {
+            viewModel.loadData()
+        }
+    }
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -230,7 +238,7 @@ fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel, onDismi
                 ),
             )
 
-            if(uiState.invite_message.equals("")){
+            if(uiState.inviteMessage.equals("")){
                 Button(onClick = { viewModel.joinByInvite() },
                     shape = CircleShape,
                     modifier = Modifier
@@ -248,7 +256,7 @@ fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel, onDismi
                         .padding(all = 10.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically){
-                    Text(text = uiState.invite_message, color = MaterialTheme.colors.background)
+                    Text(text = uiState.inviteMessage, color = MaterialTheme.colors.background)
                 }
 
                 Button(onClick = { viewModel.openInviteWindow() },

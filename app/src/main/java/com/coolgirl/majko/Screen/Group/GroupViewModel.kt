@@ -24,8 +24,6 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
     private val _uiState = MutableStateFlow(GroupUiState())
     val uiState: StateFlow<GroupUiState> = _uiState.asStateFlow()
 
-    init{loadData()}
-
     fun updateGroupName(name: String){
         _uiState.update { it.copy(newGroupName = name) }
     }
@@ -48,7 +46,7 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
     }
 
     fun openInviteWindow(){
-        if(uiState.value.isInvite==false){
+        if(!uiState.value.isInvite){
             _uiState.update { it.copy(isInvite = true)}
         }else{
             _uiState.update { it.copy(isInvite = false)}
@@ -136,7 +134,7 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
             majkoRepository.joinGroupByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        _uiState.update { it.copy(invite_message = response.data!!.message!!) }
+                        _uiState.update { it.copy(inviteMessage = response.data!!.message!!) }
                         loadData()
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }

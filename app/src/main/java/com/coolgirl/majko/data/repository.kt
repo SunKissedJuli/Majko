@@ -4,6 +4,7 @@ import com.coolgirl.majko.commons.ApiResult
 import com.coolgirl.majko.data.remote.ApiMajko
 import com.coolgirl.majko.data.remote.dto.*
 import com.coolgirl.majko.data.remote.dto.GroupData.*
+import com.coolgirl.majko.data.remote.dto.Info.Info
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
@@ -175,6 +176,16 @@ class MajkoRepository @Inject constructor(
 
     override fun joinGroupByInvitation(token: String, invite: JoinByInviteProjectData): Flow<ApiResult<MessageData>> = flow {
         emit(handler { api.joinGroupByInvitation(token, invite)})
+    }
+
+
+    //инфо
+    override fun getPriorities(): Flow<ApiResult<List<Info>>> = flow {
+        emit(handler { api.getPriorities()})
+    }
+
+    override fun getStatuses(): Flow<ApiResult<List<Info>>> = flow {
+        emit(handler { api.getStatuses()})
     }
 
 }

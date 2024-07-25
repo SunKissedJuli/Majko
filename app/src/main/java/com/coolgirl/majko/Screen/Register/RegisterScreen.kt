@@ -1,4 +1,4 @@
-package com.coolgirl.majko.Screen.Login
+package com.coolgirl.majko.Screen.Register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,28 +22,28 @@ import com.coolgirl.majko.navigation.Screen
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun LoginScreen(navController: NavController){
-    val viewModel = getViewModel<LoginViewModel>()
+fun RegisterScreen(navController: NavController){
+    val viewModel = getViewModel<RegisterViewModel>()
 
     val uiState by viewModel.uiState.collectAsState()
 
-    SetLoginScreen(navController, viewModel, uiState)
+    SetRegisterScreen(navController, viewModel, uiState)
 }
 
 @Composable
-fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiState: LoginUiState){
+fun SetRegisterScreen(navController: NavController, viewModel: RegisterViewModel, uiState: RegisterUiState){
     Column(
         Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background),
-    horizontalAlignment = Alignment.Start,
-    verticalArrangement = Arrangement.Top){
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top){
         Column(
             Modifier
                 .fillMaxHeight(0.3f)
                 .fillMaxWidth(),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Center) {
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center) {
             Row(){
                 Spacer(modifier = Modifier.width(60.dp))
                 Text(text = stringResource(R.string.app_name), fontSize = 35.sp, fontWeight = FontWeight.Bold)
@@ -63,12 +63,11 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
                     shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+            verticalArrangement = Arrangement.Center) {
             Spacer(modifier = Modifier.height(1.dp))
             Column(
                 Modifier
-                    .fillMaxHeight(0.55f)
+                    .fillMaxHeight(0.75f)
                     .fillMaxWidth(0.8f)
                     .padding(bottom = 60.dp)
                     .background(
@@ -76,13 +75,23 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
                         shape = RoundedCornerShape(30.dp)
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center) {
+                verticalArrangement = Arrangement.Center
+            ) {
 
                 Column(modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly){
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly){
+
+                    TextField(
+                        value = uiState.userName,
+                        modifier = Modifier.height(55.dp),
+                        placeholder = { Text(text = stringResource(id = R.string.login_username), color = MaterialTheme.colors.surface) },
+                        onValueChange = { viewModel.updateUserName(it) },
+                        colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
+                            unfocusedContainerColor = MaterialTheme.colors.background)
+                    )
 
                     TextField(
                         value = uiState.userLogin,
@@ -100,10 +109,18 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
                         colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
                             unfocusedContainerColor = MaterialTheme.colors.background)
                     )
+
+                    TextField(
+                        value = uiState.userPasswordRepeat,
+                        modifier = Modifier.height(55.dp),
+                        placeholder = { Text(text = stringResource(id = R.string.login_passwordrepeat), color = MaterialTheme.colors.surface) },
+                        onValueChange = { viewModel.updateUserPasswordRepeat(it) },
+                        colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
+                            unfocusedContainerColor = MaterialTheme.colors.background)
+                    )
                 }
             }
         }
-
     }
 
     Column(
@@ -113,16 +130,16 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom) {
 
-        Button(onClick = { viewModel.signIn(navController) },
+        Button(onClick = { viewModel.signUp(navController) },
             modifier = Modifier
                 .fillMaxWidth(0.73f),
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-            Text(text = stringResource(R.string.login_enter), color = MaterialTheme.colors.background,
+            Text(text = stringResource(R.string.login_registration), color = MaterialTheme.colors.background,
                 fontSize = 20.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(modifier = Modifier.height(10.dp))
-        Text(text = stringResource(R.string.login_registrationoffer),
-            modifier = Modifier.clickable { navController.navigate(Screen.Register.route) })
+        Text(text = stringResource(R.string.login_enteroffer),
+            modifier = Modifier.clickable { navController.navigate(Screen.Login.route) })
     }
 }

@@ -14,5 +14,5 @@ data class GroupUiState(
     val newGroupDescription : String = "",
     val isInvite: Boolean =  false,
     val invite: String = "",
-    val invite_message: String = "",
+    val inviteMessage: String = "",
 )

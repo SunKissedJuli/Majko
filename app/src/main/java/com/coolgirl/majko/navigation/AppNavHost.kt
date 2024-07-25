@@ -13,8 +13,10 @@ import com.coolgirl.majko.Screen.Login.LoginScreen
 import com.coolgirl.majko.Screen.Profile.ProfileScreen
 import com.coolgirl.majko.Screen.Project.ProjectScreen
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditScreen
+import com.coolgirl.majko.Screen.Register.RegisterScreen
 import com.coolgirl.majko.Screen.Task.TaskScreen
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorScreen
+import com.coolgirl.majko.navigation.Screen.Archive.createStringArgument
 
 @Composable
 fun AppNavHost(
@@ -49,28 +51,34 @@ fun AppNavHost(
             ArchiveScreen(navController)
         }
 
-        composable(Screen.ProjectEditor.route,
-            arguments = listOf(navArgument("project_id"){
-                type = NavType.StringType
-            })){
-            val project_id : String = it.arguments?.getString("project_id")!!
-            ProjectEditScreen(navController, project_id)
+        composable(Screen.Register.route) {
+            RegisterScreen(navController)
         }
 
-        composable(Screen.GroupEditor.route,
-            arguments = listOf(navArgument("group_id"){
-                type = NavType.StringType
-            })){
-            val group_id : String = it.arguments?.getString("group_id")!!
-            GroupEditorScreen(navController, group_id)
+        composable(
+            route = Screen.ProjectEditor.route,
+            arguments = listOf(createStringArgument(Screen.NavArgs.PROJECT_ID))
+        ) { backStackEntry ->
+            val projectId = backStackEntry.arguments?.getString(Screen.NavArgs.PROJECT_ID) ?: ""
+            ProjectEditScreen(navController, projectId)
         }
 
-        composable(Screen.TaskEditor.route,
-            arguments = listOf(navArgument("task_id"){
-                type = NavType.StringType
-            })){
-            val task_id : String = it.arguments?.getString("task_id")!!
-            TaskEditorScreen(navController, task_id)
+        composable(
+            route = Screen.GroupEditor.route,
+            arguments = listOf(createStringArgument(Screen.NavArgs.GROUP_ID))
+        ) { backStackEntry ->
+            val groupId = backStackEntry.arguments?.getString(Screen.NavArgs.GROUP_ID) ?: ""
+            GroupEditorScreen(navController, groupId)
         }
+
+        composable(
+            route = Screen.TaskEditor.route,
+            arguments = listOf(createStringArgument(Screen.NavArgs.TASK_ID))
+        ) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getString(Screen.NavArgs.TASK_ID) ?: ""
+            TaskEditorScreen(navController, taskId)
+        }
+
+
     }
 }

@@ -13,6 +13,7 @@ import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.MessageData
+import com.coolgirl.majko.data.remote.dto.ProjectData.JoinByInviteProjectData
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.data.remote.dto.UserUpdateEmail
@@ -28,8 +29,6 @@ import retrofit2.Response
 class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskUiState())
     val uiState:StateFlow<TaskUiState> = _uiState.asStateFlow()
-
-    init{ loadData() }
 
     fun updateSearchString(newSearchString:String){
         _uiState.update { currentState ->
@@ -60,15 +59,15 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
         }
     }
 
-    fun getStatus(priorityId: Int): String{
-        return when (priorityId) {
-            1 -> "Не выбрано"
-            2 -> "Обсуждается"
-            3 -> "Ожидает"
-            4 -> "В процессе"
-            5 -> "Завершена"
-            else -> "Нет статуса"
+    fun getStatus(statusId: Int): String{
+        if(!uiState.value.statuses.isNullOrEmpty()){
+            for(item in uiState.value.statuses!!){
+                if(item.id==statusId){
+                    return item.name
+                }
+            }
         }
+        return "Нет"
     }
 
     fun loadData() {
@@ -96,6 +95,15 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
                     is ApiSuccess ->{
                         _uiState.update { it.copy(favoritesTaskList = response.data)}
                         _uiState.update { it.copy(searchFavoritesTaskList =  response.data)}
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                }
+            }
+            majkoRepository.getStatuses().collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(statuses = response.data!!) }
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

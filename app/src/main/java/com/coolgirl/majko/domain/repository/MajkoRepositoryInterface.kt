@@ -3,6 +3,7 @@ package com.coolgirl.majko.domain.repository
 import com.coolgirl.majko.commons.ApiResult
 import com.coolgirl.majko.data.remote.dto.*
 import com.coolgirl.majko.data.remote.dto.GroupData.*
+import com.coolgirl.majko.data.remote.dto.Info.Info
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
@@ -100,7 +101,10 @@ interface MajkoRepositoryInterface {
    fun joinGroupByInvitation(token: String,  invite: JoinByInviteProjectData) : Flow<ApiResult<MessageData>>
 
 
+   //инфо
+   fun getStatuses(): Flow<ApiResult<List<Info>>>
 
+   fun getPriorities(): Flow<ApiResult<List<Info>>>
 
 
 }

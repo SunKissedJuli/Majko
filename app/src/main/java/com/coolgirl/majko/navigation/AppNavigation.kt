@@ -1,8 +1,13 @@
 package com.coolgirl.majko.navigation
 
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+
 sealed class Screen(val route: String) {
 
     object Login : Screen("login")
+
+    object Register : Screen("register")
 
     object Task : Screen("tasks")
 
@@ -14,23 +19,29 @@ sealed class Screen(val route: String) {
 
     object Archive : Screen("archive")
 
-    object ProjectEditor : Screen("project_editor/{project_id}"){
-        fun project_id(project_id: String): String{
-            return "project_editor/$project_id"
+    object ProjectEditor : Screen("projectEditor/{${NavArgs.PROJECT_ID}}")
+    object GroupEditor : Screen("groupEditor/{${NavArgs.GROUP_ID}}")
+    object TaskEditor : Screen("taskEditor/{${NavArgs.TASK_ID}}")
+
+    fun createRoute(vararg args: String): String {
+        return buildString {
+            var currentRoute = route
+            args.forEach { arg ->
+                val placeholder = currentRoute.substringBefore('}').substringAfterLast('{')
+                currentRoute = currentRoute.replaceFirst("{$placeholder}", arg)
+            }
+            append(currentRoute)
         }
     }
 
-    object GroupEditor : Screen("group_editor/{group_id}"){
-        fun group_id(group_id: String): String{
-            return "group_editor/$group_id"
-        }
+    fun createStringArgument(name: String) = navArgument(name) {
+        type = NavType.StringType
     }
 
-
-    object TaskEditor : Screen("task_editor/{task_id}"){
-        fun task_id(task_id: String): String{
-            return "task_editor/$task_id"
-        }
+    object NavArgs {
+        const val PROJECT_ID = "projectId"
+        const val GROUP_ID = "groupId"
+        const val TASK_ID = "taskId"
     }
 
 }

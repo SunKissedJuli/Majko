@@ -35,12 +35,20 @@ import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.components.ProjectCardUiState
 import com.coolgirl.majko.components.plusButton
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun ProjectScreen(navController: NavHostController){
 
     val viewModel = getViewModel<ProjectViewModel>()
+
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit){
+        coroutineScope.launch {
+            viewModel.loadData()
+        }
+    }
 
     val uiState by viewModel.uiState.collectAsState()
     val uiStateCard by viewModel.uiStateCard.collectAsState()
@@ -64,7 +72,8 @@ fun ProjectScreen(navController: NavHostController){
 
         //панель при длинном нажатии
         if(uiState.isLongtap){
-            Row(Modifier
+            Row(
+                Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.1f)
                     .background(color = MaterialTheme.colors.secondary),

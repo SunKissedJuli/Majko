@@ -1,5 +1,6 @@
 package com.coolgirl.majko.Screen.Task
 
+import com.coolgirl.majko.data.remote.dto.Info.Info
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 
 data class TaskUiState(
@@ -7,5 +8,6 @@ data class TaskUiState(
     val favoritesTaskList: List<TaskDataResponse>? = null,
     val searchAllTaskList: List<TaskDataResponse>? = null,
     val searchFavoritesTaskList: List<TaskDataResponse>? = null,
-    val searchString: String = ""
+    val searchString: String = "",
+    val statuses: List<Info>? = null
 )

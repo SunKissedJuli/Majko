@@ -23,11 +23,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProjectEditViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository, private val project_id : String) : ViewModel() {
+class ProjectEditViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository, private val projectId : String) : ViewModel() {
     private val _uiState = MutableStateFlow(ProjectEditUiState())
     val uiState: StateFlow<ProjectEditUiState> = _uiState.asStateFlow()
-
-    init { loadData() }
 
     fun updateProjectName(name: String){
         _uiState.update { currentState ->
@@ -40,10 +38,10 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
     }
 
     fun addingTask(){
-        if(uiState.value.is_adding){
-            _uiState.update { it.copy(is_adding = false) }
+        if(uiState.value.isAdding){
+            _uiState.update { it.copy(isAdding = false) }
         }else{
-            _uiState.update { it.copy(is_adding = true) }
+            _uiState.update { it.copy(isAdding = true) }
         }
     }
 
@@ -79,7 +77,6 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
 
     fun updateTaskDeadlie(deadline:String){
         _uiState.update { it.copy(taskDeadline = deadline) }
-        Log.d("tag", "Taskeditor updateTaskDeadlie = " + _uiState.value.taskDeadline)
     }
 
     fun updateTaskPriority(prioryti:String){
@@ -97,45 +94,49 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
 
 
     fun getStatus() : List<SpinnerItems>{
-        return listOf(
-            SpinnerItems("1", "Не выбрано"),
-            SpinnerItems("2", "Обсуждается"),
-            SpinnerItems("3", "Ожидает"),
-            SpinnerItems("4", "В процессе"),
-            SpinnerItems("5", "Завершена")
-        )
+        val list = mutableListOf<SpinnerItems>()
+        if (!uiState.value.statuses.isNullOrEmpty()) {
+            for (status in uiState.value.statuses!!) {
+                list.add(SpinnerItems(status.id.toString(), status.name))
+            }
+        }
+        return list
     }
 
     fun getPriority() : List<SpinnerItems>{
-        return listOf(
-            SpinnerItems("1", "Низкий"),
-            SpinnerItems("2", "Средний"),
-            SpinnerItems("3", "Высокий")
-        )
+        val list = mutableListOf<SpinnerItems>()
+        if (!uiState.value.proprieties.isNullOrEmpty()) {
+            for (propriety in uiState.value.proprieties!!) {
+                list.add(SpinnerItems(propriety.id.toString(), propriety.name))
+            }
+        }
+        return list
     }
 
-    fun getStatusName(status: Int) : String{
-        return when (status) {
-            1 -> "Не выбрано"
-            2 -> "Обсуждается"
-            3 -> "Ожидает"
-            4 -> "В процессе"
-            5 -> "Завершена"
-            else -> "Нет"
+    fun getStatusName(statusId: Int) : String{
+        if(!uiState.value.statuses.isNullOrEmpty()){
+            for(item in uiState.value.statuses!!){
+                if(item.id==statusId){
+                    return item.name
+                }
+            }
         }
+        return "Нет"
     }
 
-    fun getPriorityName(priority: Int) : String{
-        return when (priority) {
-            1 -> "Низкий"
-            2 -> "Средний"
-            3 -> "Высокий"
-            else -> "Нет"
+    fun getPriorityName(priorityId: Int) : String{
+        if(!uiState.value.proprieties.isNullOrEmpty()){
+            for(item in uiState.value.proprieties!!){
+                if(item.id==priorityId){
+                    return item.name
+                }
+            }
         }
+        return "Нет"
     }
 
     fun loadData(){
-        _uiState.update { it.copy(projectId = project_id) }
+        _uiState.update { it.copy(projectId = projectId) }
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
             majkoRepository.getProjectById("Bearer " + accessToken, ProjectById(uiState.value.projectId)).collect() { response ->
@@ -145,6 +146,24 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
                         if(response.data!!.members.isNotEmpty()){
                             _uiState.update { it.copy(members = response.data!!.members) }
                         }
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                }
+            }
+            majkoRepository.getStatuses().collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(statuses = response.data!!) }
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                }
+            }
+            majkoRepository.getPriorities().collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(proprieties = response.data!!) }
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
@@ -181,7 +200,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
     }
 
     fun saveTask(){
-        _uiState.update { it.copy(projectId = project_id) }
+        _uiState.update { it.copy(projectId = projectId) }
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
             val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
