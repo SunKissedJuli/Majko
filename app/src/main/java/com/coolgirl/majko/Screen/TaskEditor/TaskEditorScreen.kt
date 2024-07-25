@@ -432,7 +432,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 )
 
                 HorizontalLine()
-                if(uiState.taskPriorityName!=""){
+                if(uiState.taskPriorityName!=""||uiState.taskId=="0"){
                     SpinnerSample(name = stringResource(R.string.taskeditor_priority),
                         items = viewModel.getPriority(),
                         selectedItem = uiState.taskPriorityName,
@@ -443,7 +443,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 HorizontalLine()
                 Text(text= stringResource(R.string.taskeditor_project) + (" ") + (uiState.taskProjectObj?.name ?: stringResource(R.string.common_no)), fontSize = 18.sp)
                 HorizontalLine()
-                if(uiState.taskStatusName!=""){
+                if(uiState.taskStatusName!=""||uiState.taskId=="0"){
                     SpinnerSample(
                         name = stringResource(R.string.taskeditor_status),
                         items = viewModel.getStatus(),

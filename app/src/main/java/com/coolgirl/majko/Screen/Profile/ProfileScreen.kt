@@ -98,11 +98,9 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
                 )
             )
             IconButton(onClick = { viewModel.updateNameData()  }) {
-                Icon(
-                    Icons.Default.Check,
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.primary
-                )
+                Image(painter = painterResource(R.drawable.icon_check),
+                    contentDescription = "")
+
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -122,7 +120,8 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
             )
 
             IconButton(onClick = { viewModel.updateEmailData() }) {
-                Image(painter = painterResource(R.drawable.icon_check), contentDescription = "")
+                Image(painter = painterResource(R.drawable.icon_check),
+                    contentDescription = "")
             }
         }
 

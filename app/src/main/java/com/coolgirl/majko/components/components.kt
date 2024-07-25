@@ -210,7 +210,7 @@ fun ProjectCard(navHostController: NavHostController,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End) {
             if (!projectData.is_personal){
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "", tint = colorResource(R.color.black))
+                Image(painter = painterResource(R.drawable.icon_profile), contentDescription = "")
                 Text(text = projectData.members.size.toString())
             }
         }
@@ -266,7 +266,8 @@ fun GroupCard(navHostController: NavHostController,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End) {
             if (!groupData.is_personal){
-                Icon(imageVector = Icons.Filled.Person, contentDescription = "", tint = colorResource(R.color.black))
+                Image(painter = painterResource(R.drawable.icon_profile),
+                    contentDescription = "")
                 Text(text = groupData.members.size.toString())
             }
         }
