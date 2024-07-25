@@ -30,14 +30,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.Screen.TaskEditor.TaskEditorViewModel
 import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import org.koin.androidx.compose.getKoin
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.inject
 @Composable
 fun GroupEditorScreen(navController: NavHostController, group_id: String){
-    val cont = LocalContext.current
-    val viewModel : GroupEditorViewModel = remember{ GroupEditorViewModel(UserDataStore(cont), group_id) }
+    val viewModel = getViewModel<GroupEditorViewModel>(
+        parameters = { parametersOf(group_id) }
+    )
     val uiState by viewModel.uiState.collectAsState()
     SetGroupEditorScreen(uiState, viewModel, navController)
 }

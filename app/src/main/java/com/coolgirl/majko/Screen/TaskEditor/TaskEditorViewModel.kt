@@ -12,15 +12,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
+import com.coolgirl.majko.commons.ApiError
+import com.coolgirl.majko.commons.ApiExeption
+import com.coolgirl.majko.commons.ApiSuccess
+import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteUpdate
 import com.coolgirl.majko.data.remote.dto.TaskData.*
+import com.coolgirl.majko.data.remote.dto.UserUpdateEmail
 import com.coolgirl.majko.navigation.Screen
 import retrofit2.Response
 
-class TaskEditorViewModel(private val dataStore : UserDataStore, private val task_id : String) : ViewModel(){
+class TaskEditorViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoRepository, private val task_id : String) : ViewModel(){
     private val _uiState = MutableStateFlow(TaskEditorUiState())
     val uiState: StateFlow<TaskEditorUiState> = _uiState.asStateFlow()
 
@@ -183,32 +188,26 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
     fun saveUpdateNote(noteId: String, noteText: String){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<NoteDataResponse> = ApiClient().updateNote("Bearer " + accessToken, NoteUpdate(noteId,uiState.value.taskId, noteText))
-            call.enqueue(  object :Callback<NoteDataResponse>{
-                override fun onResponse(call: Call<NoteDataResponse>, response: Response<NoteDataResponse>) {
-                    loadNotesData()
+            majkoRepository.updateNote("Bearer " + accessToken,  NoteUpdate(noteId,uiState.value.taskId, noteText)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ loadNotesData() }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<NoteDataResponse>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
-                }
-            })
+            }
         }
     }
 
     fun removeNote(noteId: String){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<Unit> = ApiClient().removeNote("Bearer " + accessToken, NoteById(noteId))
-            call.enqueue(  object :Callback<Unit>{
-                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    loadNotesData()
+            majkoRepository.removeNote("Bearer " + accessToken,   NoteById(noteId)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{  loadNotesData() }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
-                }
-            })
+            }
         }
     }
 
@@ -218,32 +217,26 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
                 val accessToken = dataStore.getAccessToken().first() ?: ""
                 val newTask = TaskUpdateData(uiState.value.taskId, uiState.value.taskName, uiState.value.taskText,
                     uiState.value.taskPriority,uiState.value.taskDeadline, uiState.value.taskStatus)
-                val call: Call<TaskDataResponse> = ApiClient().updateTask("Bearer " + accessToken, newTask)
-                call.enqueue(object : Callback<TaskDataResponse> {
-                    override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                        navHostController.navigate(Screen.Task.route)
+                majkoRepository.updateTask("Bearer " + accessToken,  newTask).collect() { response ->
+                    when(response){
+                        is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
+                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                        is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                     }
-
-                    override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
-                        Log.d("tag", "Taskeditor response t" + t.message)
-                    }
-                })
+                }
             }
         }else{
             viewModelScope.launch {
                 val accessToken = dataStore.getAccessToken().first() ?: ""
                 val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
                     uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.taskProject,"")
-                val call: Call<TaskDataResponse> = ApiClient().postNewTask("Bearer " + accessToken, newTask)
-                call.enqueue(object : Callback<TaskDataResponse> {
-                    override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                        navHostController.navigate(Screen.Task.route)
+                majkoRepository.postNewTask("Bearer " + accessToken,  newTask).collect() { response ->
+                    when(response){
+                        is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
+                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                        is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                     }
-
-                    override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
-                        Log.d("tag", "Taskeditor response t" + t.message)
-                    }
-                })
+                }
             }
         }
 
@@ -254,16 +247,16 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
             val accessToken = dataStore.getAccessToken().first() ?: ""
             val newTask = TaskData(uiState.value.subtaskName, uiState.value.subtaskText,uiState.value.subtaskDeadline,
                 uiState.value.subtaskPriority,uiState.value.subtaskStatus,"",uiState.value.taskId)
-            val call: Call<TaskDataResponse> = ApiClient().postNewTask("Bearer " + accessToken, newTask)
-            call.enqueue(object : Callback<TaskDataResponse> {
-                override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                    addingTask()
-                    loadSubtaskData()
+            majkoRepository.postNewTask("Bearer " + accessToken,  newTask).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        addingTask()
+                        loadSubtaskData()
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-                override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
-                }
-            })
+            }
         }
     }
 
@@ -271,16 +264,13 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
        if(!task_id.equals("0")) {
            viewModelScope.launch {
                val accessToken = dataStore.getAccessToken().first() ?: ""
-               val call: Call<Unit> = ApiClient().removeTask("Bearer " + accessToken, TaskBy_Id(task_id))
-               call.enqueue(object : Callback<Unit> {
-                   override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                       navHostController.navigate(Screen.Task.route)
+               majkoRepository.removeTask("Bearer " + accessToken, TaskBy_Id(task_id)).collect() { response ->
+                   when(response){
+                       is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
+                       is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                       is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                    }
-
-                   override fun onFailure(call: Call<Unit>, t: Throwable) {
-                       Log.d("tag", "Taskeditor не 200 t" + t.message)
-                   }
-               })
+               }
            }
        }
     }
@@ -290,34 +280,33 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
             _uiState.update { it.copy(taskId = task_id) }
             viewModelScope.launch {
                 val accessToken = dataStore.getAccessToken().first() ?: ""
-                val call: Call<TaskDataResponse> = ApiClient().getTaskById("Bearer " + accessToken, TaskById(uiState.value.taskId))
-                call.enqueue(object : Callback<TaskDataResponse> {
-                    override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                        _uiState.update { it.copy(taskId = task_id) }
-                        _uiState.update { it.copy(taskDeadline = response.body()!!.deadline) }
-                        if(response.body()?.project !=null){
-                            _uiState.update { it.copy(taskProject = response.body()!!.project!!.id) }
-                        }
-                        updateTaskPriority(response.body()!!.priority!!.toString())
-                        _uiState.update { it.copy(taskName = response.body()!!.title!!) }
-                        _uiState.update { it.copy(taskText = response.body()!!.text!!) }
-                        _uiState.update { it.copy(taskStatus = response.body()!!.status!!) }
-                        if(response.body()!!.project!=null){
-                            _uiState.update { it.copy(taskProjectObj = response.body()!!.project!!) }
-                        }
+                majkoRepository.getTaskById("Bearer " + accessToken, TaskById(uiState.value.taskId)).collect() { response ->
+                    when(response){
+                        is ApiSuccess ->{
+                            _uiState.update { it.copy(taskId = task_id) }
+                            _uiState.update { it.copy(taskDeadline = response.data!!.deadline) }
+                            if(response.data?.project !=null){
+                                _uiState.update { it.copy(taskProject = response.data!!.project!!.id) }
+                            }
+                            updateTaskPriority(response.data!!.priority!!.toString())
+                            _uiState.update { it.copy(taskName = response.data!!.title!!) }
+                            _uiState.update { it.copy(taskText = response.data!!.text!!) }
+                            _uiState.update { it.copy(taskStatus = response.data!!.status!!) }
+                            if(response.data!!.project!=null){
+                                _uiState.update { it.copy(taskProjectObj = response.data!!.project!!) }
+                            }
 
-                        if(response.body()!!.count_notes!=0){
-                            loadNotesData()
+                            if(response.data!!.count_notes!=0){
+                                loadNotesData()
+                            }
+                            if(response.data!!.count_subtasks!=0){
+                                loadSubtaskData()
+                            }
                         }
-                        if(response.body()!!.count_subtasks!=0){
-                            loadSubtaskData()
-                        }
+                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                        is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                     }
-
-                    override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
-                        Log.d("tag", "Taskeditor response t" + t.message)
-                    }
-                })
+                }
             }
         }
     }
@@ -325,17 +314,16 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
     fun addNote(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<NoteDataResponse> = ApiClient().addNote("Bearer " + accessToken, NoteData(uiState.value.taskId, uiState.value.noteText))
-            call.enqueue(object : Callback<NoteDataResponse> {
-                override fun onResponse(call: Call<NoteDataResponse>, response: Response<NoteDataResponse>) {
-                    addNewNote()
-                    loadNotesData()
+            majkoRepository.addNote("Bearer " + accessToken,  NoteData(uiState.value.taskId, uiState.value.noteText)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        addNewNote()
+                        loadNotesData()
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<NoteDataResponse>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
-                }
-            })
+            }
         }
     }
 
@@ -344,16 +332,13 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
             _uiState.update { it.copy(taskId = task_id) }
             viewModelScope.launch {
                 val accessToken = dataStore.getAccessToken().first() ?: ""
-                val call: Call<List<TaskDataResponse>> = ApiClient().getSubtask("Bearer " + accessToken, TaskById(uiState.value.taskId))
-                call.enqueue(object : Callback<List<TaskDataResponse>> {
-                    override fun onResponse(call: Call<List<TaskDataResponse>>, response: Response<List<TaskDataResponse>>) {
-                        _uiState.update { it.copy(subtask = response.body()!!) }
+                majkoRepository.getSubtask("Bearer " + accessToken,  TaskById(uiState.value.taskId)).collect() { response ->
+                    when(response){
+                        is ApiSuccess ->{ _uiState.update { it.copy(subtask = response.data!!) }}
+                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                        is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                     }
-
-                    override fun onFailure(call: Call<List<TaskDataResponse>>, t: Throwable) {
-                        Log.d("tag", "Taskeditor response t" + t.message)
-                    }
-                })
+                }
             }
         }
     }
@@ -361,16 +346,13 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val tas
     fun loadNotesData(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<List<NoteDataResponse>> = ApiClient().getNotes("Bearer " + accessToken, TaskById(uiState.value.taskId))
-            call.enqueue(object : Callback<List<NoteDataResponse>> {
-                override fun onResponse(call: Call<List<NoteDataResponse>>, response: Response<List<NoteDataResponse>>) {
-                    _uiState.update { it.copy(notes = response.body()) }
+            majkoRepository.getNotes("Bearer " + accessToken, TaskById(uiState.value.taskId)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ _uiState.update { it.copy(notes = response.data) } }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<List<NoteDataResponse>>, t: Throwable) {
-                    Log.d("tag", "Taskeditor response t" + t.message)
-                }
-            })
+            }
         }
     }
 }

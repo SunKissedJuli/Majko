@@ -7,11 +7,17 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
+import com.coolgirl.majko.commons.ApiError
+import com.coolgirl.majko.commons.ApiExeption
+import com.coolgirl.majko.commons.ApiSuccess
+import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
+import com.coolgirl.majko.data.remote.dto.UserUpdateEmail
 import com.coolgirl.majko.di.ApiClient
+import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -19,7 +25,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
+class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskUiState())
     val uiState:StateFlow<TaskUiState> = _uiState.asStateFlow()
 
@@ -68,66 +74,59 @@ class TaskViewModel(private val dataStore : UserDataStore) : ViewModel() {
     fun loadData() {
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<List<TaskDataResponse>> = ApiClient().getAllUserTask("Bearer " + accessToken)
-            call.enqueue(object : Callback<List<TaskDataResponse>> {
-                override fun onResponse(call: Call<List<TaskDataResponse>>, response: Response<List<TaskDataResponse>>) {
-                    val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
-                    response.body()?.forEach { item ->
-                        if (!item.is_favorite && item.mainTaskId==null) {
-                            notFavorite.add(item)
+            majkoRepository.getAllUserTask("Bearer " + accessToken).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
+                        response.data?.forEach { item ->
+                            if (!item.is_favorite && item.mainTaskId==null) {
+                                notFavorite.add(item)
+                            }
                         }
+                        _uiState.update { it.copy(allTaskList = notFavorite)}
+                        _uiState.update { it.copy(searchAllTaskList = notFavorite)}
                     }
-                    _uiState.update { it.copy(allTaskList = notFavorite)}
-                    _uiState.update { it.copy(searchAllTaskList = notFavorite)}
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
+            }
 
-                override fun onFailure(call: Call<List<TaskDataResponse>>, t: Throwable) {
-                    //дописать
+            majkoRepository.getAllFavorites("Bearer " + accessToken).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(favoritesTaskList = response.data)}
+                        _uiState.update { it.copy(searchFavoritesTaskList =  response.data)}
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-            })
-            val call1: Call<List<TaskDataResponse>> = ApiClient().getAllFavorites("Bearer " + accessToken)
-            call1.enqueue(object : Callback<List<TaskDataResponse>> {
-                override fun onResponse(call1: Call<List<TaskDataResponse>>, response: Response<List<TaskDataResponse>>) {
-                    _uiState.update { it.copy(favoritesTaskList = response.body())}
-                    _uiState.update { it.copy(searchFavoritesTaskList =  response.body())}
-                }
-
-                override fun onFailure(call1: Call<List<TaskDataResponse>>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 
     fun addFavotite(task_id: String){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<MessageData> = ApiClient().addToFavorite("Bearer " + accessToken, TaskById(task_id))
-            call.enqueue(object : Callback<MessageData> {
-                override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
-                    loadData()
+            majkoRepository.addToFavorite("Bearer " + accessToken,  TaskById(task_id)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ loadData() }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<MessageData>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 
     fun removeFavotite(task_id: String){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<MessageData> = ApiClient().removeFavotire("Bearer " + accessToken, TaskById(task_id))
-            call.enqueue(object : Callback<MessageData> {
-                override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
-                    loadData()
+            majkoRepository.removeFavotire("Bearer " + accessToken,  TaskById(task_id)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ loadData() }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<MessageData>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 }

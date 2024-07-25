@@ -3,7 +3,11 @@ package com.coolgirl.majko.Screen.Project
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.coolgirl.majko.commons.ApiError
+import com.coolgirl.majko.commons.ApiExeption
+import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.components.ProjectCardUiState
+import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
@@ -14,7 +18,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
+class ProjectViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel(){
     private val _uiState = MutableStateFlow(ProjectUiState())
     val uiState: StateFlow<ProjectUiState> = _uiState.asStateFlow()
 
@@ -85,17 +89,16 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
     fun joinByInvite(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<MessageData> = ApiClient().joinByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite))
-            call.enqueue(object : Callback<MessageData> {
-                override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
-                    _uiState.update { it.copy(invite_message = response.body()!!.message!!) }
-                    loadData()
+            majkoRepository.joinByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(invite_message = response.data!!.message!!) }
+                        loadData()
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<MessageData>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 
@@ -116,17 +119,16 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
 
                 viewModelScope.launch {
                     val accessToken = dataStore.getAccessToken().first() ?: ""
-                    val call: Call<ProjectCurrentResponse> = ApiClient().updateProject("Bearer " + accessToken, updateProject)
-                    call.enqueue(object : Callback<ProjectCurrentResponse> {
-                        override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
-                            openPanel("")
-                            loadData()
+                    majkoRepository.updateProject("Bearer " + accessToken, updateProject).collect() { response ->
+                        when(response){
+                            is ApiSuccess ->{
+                                openPanel("")
+                                loadData()
+                            }
+                            is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                            is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                         }
-
-                        override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
-                            Log.d("tag", "response t" + t.message)
-                        }
-                    })
+                    }
                 }
             }
         }
@@ -135,58 +137,54 @@ class ProjectViewModel(private val dataStore : UserDataStore) : ViewModel(){
     fun addProject(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<ProjectDataResponse> = ApiClient().postNewProject("Bearer " + accessToken, ProjectData(uiState.value.newProjectName, uiState.value.newProjectDescription))
-            call.enqueue(object : Callback<ProjectDataResponse> {
-                override fun onResponse(call: Call<ProjectDataResponse>, response: Response<ProjectDataResponse>) {
-                    notAddingProjectYet()
-                    loadData()
+            majkoRepository.postNewProject("Bearer " + accessToken, ProjectData(uiState.value.newProjectName, uiState.value.newProjectDescription)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        notAddingProjectYet()
+                        loadData()
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<ProjectDataResponse>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 
     fun loadData() {
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<List<ProjectDataResponse>> = ApiClient().getPersonalProject("Bearer " + accessToken)
-            call.enqueue(object : Callback<List<ProjectDataResponse>> {
-                override fun onResponse(call: Call<List<ProjectDataResponse>>, response: Response<List<ProjectDataResponse>>) {
-                    val validData: MutableList<ProjectDataResponse> = mutableListOf()
-                    response.body()?.forEach { item ->
-                        if (item.is_personal && item.is_archive==0) {
-                            validData.add(item)
+            majkoRepository.getPersonalProject("Bearer " + accessToken).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                        response.data?.forEach { item ->
+                            if (item.is_personal && item.is_archive==0) {
+                                validData.add(item)
+                            }
                         }
+                        _uiState.update { it.copy(personalProject = validData)}
+                        _uiState.update { it.copy(searchPersonalProject = validData)}
                     }
-                    _uiState.update { it.copy(personalProject = validData)}
-                    _uiState.update { it.copy(searchPersonalProject = validData)}
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<List<ProjectDataResponse>>, t: Throwable) {
-                    //дописать
-                }
-            })
-            val call1: Call<List<ProjectDataResponse>> = ApiClient().getGroupProject("Bearer " + accessToken)
-            call1.enqueue(object : Callback<List<ProjectDataResponse>> {
-                override fun onResponse(call1: Call<List<ProjectDataResponse>>, response: Response<List<ProjectDataResponse>>) {
-                    val validData: MutableList<ProjectDataResponse> = mutableListOf()
-                    response.body()?.forEach { item ->
-                        if (!item.is_personal && item.is_archive==0) {
-                            validData.add(item)
+            }
+            majkoRepository.getGroupProject("Bearer " + accessToken).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                        response.data?.forEach { item ->
+                            if (!item.is_personal && item.is_archive==0) {
+                                validData.add(item)
+                            }
                         }
+                        _uiState.update { it.copy(groupProject = validData)}
+                        _uiState.update { it.copy(searchGroupProject = validData)}
                     }
-                    _uiState.update { it.copy(groupProject = validData)}
-                    _uiState.update { it.copy(searchGroupProject = validData)}
-
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call1: Call<List<ProjectDataResponse>>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 }

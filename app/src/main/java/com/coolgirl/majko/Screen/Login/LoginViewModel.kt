@@ -13,19 +13,10 @@ import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignInData
-import com.coolgirl.majko.data.remote.dto.UserSignInDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
-import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
-import com.coolgirl.majko.data.remote.dto.UserUpdateImage
-import com.coolgirl.majko.di.ApiClient
 import com.coolgirl.majko.navigation.Screen
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.random.Random
 
 class LoginViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel() {
@@ -98,20 +89,22 @@ class LoginViewModel(private val dataStore : UserDataStore, private val majkoRep
             }
         }else{
             viewModelScope.launch {
-                val call: Call<UserSignUpDataResponse> = ApiClient().signUp(UserSignUpData(userLogin, userPassword, userName))
-                call.enqueue(object : Callback<UserSignUpDataResponse> {
-                    override fun onResponse(call: Call<UserSignUpDataResponse>, response: Response<UserSignUpDataResponse>) {
-                        setAccesToken(response.body()!!.accessToken!!)
-                        navController.navigate(Screen.Task.route){
-                            launchSingleTop = true
-                            popUpTo(navController.graph.id){
-                                inclusive = true
+                majkoRepository.signUp(UserSignUpData(userLogin, userPassword, userName))
+                    .collect() { response ->
+                        when (response) {
+                            is ApiSuccess -> {
+                                setAccesToken(response.data!!.accessToken!!)
+                                navController.navigate(Screen.Task.route) {
+                                    launchSingleTop = true
+                                    popUpTo(navController.graph.id) {
+                                        inclusive = true
+                                    }
+                                }
                             }
+                            is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                            is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                         }
                     }
-                    override fun onFailure(call: Call<UserSignUpDataResponse>, t: Throwable) {
-                        //дописать
-                    } })
             }
         }
     }

@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,6 +15,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.coolgirl.majko.commons.ApiError
+import com.coolgirl.majko.commons.ApiExeption
+import com.coolgirl.majko.commons.ApiSuccess
+import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.*
 import com.coolgirl.majko.di.ApiClient
@@ -26,7 +31,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
+class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
@@ -53,28 +58,26 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
     fun updateNameData() {
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<CurrentUserDataResponse> = ApiClient().updateUserName("Bearer " + accessToken, UserUpdateName(uiState.value.userName))
-            call.enqueue(object : Callback<CurrentUserDataResponse> {
-                override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
+            majkoRepository.updateUserName("Bearer " + accessToken,  UserUpdateName(uiState.value.userName)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{}
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
-                    //дописать
-                } })
+            }
         }
     }
 
     fun updateEmailData() {
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<CurrentUserDataResponse> = ApiClient().updateUserEmail("Bearer " + accessToken, UserUpdateEmail(uiState.value.userName, uiState.value.userEmail))
-            call.enqueue(object : Callback<CurrentUserDataResponse> {
-                override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
+            majkoRepository.updateUserEmail("Bearer " + accessToken,  UserUpdateEmail(uiState.value.userName, uiState.value.userEmail)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{}
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
-                    //дописать
-                } })
+            }
         }
     }
 
@@ -98,32 +101,30 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
     fun loadData() {
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<CurrentUserDataResponse> = ApiClient().currentUser("Bearer " + accessToken)
-            call.enqueue(object : Callback<CurrentUserDataResponse> {
-                override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
-                    updateUserEmail(response.body()?.email.toString())
-                    updateUserName(response.body()?.name.toString())
+            majkoRepository.currentUser("Bearer " + accessToken).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        updateUserEmail(response.data?.email.toString())
+                        updateUserName(response.data?.name.toString())
                 }
-
-                override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
-                    //дописать
-                } })
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                }
+            }
         }
     }
 
     fun changePassword(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<CurrentUserDataResponse> = ApiClient().updateUserPassword("Bearer " + accessToken, UserUpdatePassword(uiState.value.userName,
-                uiState.value.newPassword,uiState.value.confirmPassword, uiState.value.oldPassword))
-            call.enqueue(object : Callback<CurrentUserDataResponse> {
-                override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
-                    changePasswordScreen()
+            majkoRepository.updateUserPassword("Bearer " + accessToken,  UserUpdatePassword(uiState.value.userName,
+                uiState.value.newPassword,uiState.value.confirmPassword, uiState.value.oldPassword)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ changePasswordScreen() }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
-                    //дописать
-                } })
+            }
         }
     }
 
@@ -149,14 +150,13 @@ class ProfileViewModel(private val dataStore: UserDataStore) : ViewModel() {
                 coroutineScope.launch() {
                     viewModelScope.launch {
                         val accessToken = dataStore.getAccessToken().first() ?: ""
-                        val call: Call<CurrentUserDataResponse> = ApiClient().updateUserImage("Bearer " + accessToken, UserUpdateImage(uiState.value.userName, file))
-                        call.enqueue(object : Callback<CurrentUserDataResponse> {
-                            override fun onResponse(call: Call<CurrentUserDataResponse>, response: Response<CurrentUserDataResponse>) {
-
+                        majkoRepository.updateUserImage("Bearer " + accessToken,   UserUpdateImage(uiState.value.userName, file)).collect() { response ->
+                            when(response){
+                                is ApiSuccess ->{  }
+                                is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                                is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                             }
-                            override fun onFailure(call: Call<CurrentUserDataResponse>, t: Throwable) {
-                                //дописать
-                            } })
+                        }
                     }
                 }
 

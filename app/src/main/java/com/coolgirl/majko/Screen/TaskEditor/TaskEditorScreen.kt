@@ -30,14 +30,18 @@ import com.coolgirl.majko.components.HorizontalLine
 import com.coolgirl.majko.components.SpinnerSample
 import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Composable
 fun TaskEditorScreen(navController: NavHostController, task_id : String){
-    val cont = LocalContext.current
-    val viewModel : TaskEditorViewModel = remember{ TaskEditorViewModel(UserDataStore(cont), task_id)}
+    val viewModel = getViewModel<TaskEditorViewModel>(
+        parameters = { parametersOf(task_id) }
+    )
+
     val uiState by viewModel.uiState.collectAsState()
     SetTaskEditorScreen(uiState, {viewModel.updateTaskText(it)},
         { viewModel.updateTaskName(it) }, viewModel, navController)

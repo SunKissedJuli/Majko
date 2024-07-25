@@ -5,9 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.commons.ApiError
+import com.coolgirl.majko.commons.ApiExeption
+import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.components.SpinnerItems
+import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
+import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.di.ApiClient
@@ -18,7 +23,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProjectEditViewModel(private val dataStore: UserDataStore, private val project_id : String) : ViewModel() {
+class ProjectEditViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository, private val project_id : String) : ViewModel() {
     private val _uiState = MutableStateFlow(ProjectEditUiState())
     val uiState: StateFlow<ProjectEditUiState> = _uiState.asStateFlow()
 
@@ -133,19 +138,18 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
         _uiState.update { it.copy(projectId = project_id) }
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<ProjectCurrentResponse> = ApiClient().getProjectById("Bearer " + accessToken, ProjectById(uiState.value.projectId))
-            call.enqueue(object : Callback<ProjectCurrentResponse> {
-                override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
-                    _uiState.update { it.copy(projectData = response.body()!!) }
-                    if(response.body()!!.members.isNotEmpty()){
-                        _uiState.update { it.copy(members = response.body()!!.members) }
+            majkoRepository.getProjectById("Bearer " + accessToken, ProjectById(uiState.value.projectId)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(projectData = response.data!!) }
+                        if(response.data!!.members.isNotEmpty()){
+                            _uiState.update { it.copy(members = response.data!!.members) }
+                        }
                     }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
-                    Log.d("tag", "Projectedit t = " + t.message)
-                }
-            })
+            }
         }
     }
 
@@ -153,32 +157,26 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
             val updateProject = ProjectUpdate(uiState.value.projectId, uiState.value.projectData!!.name,uiState.value.projectData!!.description,0)
-            val call: Call<ProjectCurrentResponse> = ApiClient().updateProject("Bearer " + accessToken, updateProject)
-            call.enqueue(object : Callback<ProjectCurrentResponse> {
-                override fun onResponse(call: Call<ProjectCurrentResponse>, response: Response<ProjectCurrentResponse>) {
-                       navHostController.navigate(Screen.Project.route)
+            majkoRepository.updateProject("Bearer " + accessToken, updateProject).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ navHostController.navigate(Screen.Project.route) }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<ProjectCurrentResponse>, t: Throwable) {
-                    Log.d("tag", "Projectedit response t" + t.message)
-                }
-            })
+            }
         }
     }
 
     fun removeProject(navHostController: NavHostController){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<Unit> = ApiClient().removeProject("Bearer " + accessToken, ProjectById(uiState.value.projectId))
-            call.enqueue(object : Callback<Unit> {
-                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    navHostController.navigate(Screen.Project.route)
+            majkoRepository.removeProject("Bearer " + accessToken,  ProjectById(uiState.value.projectId)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ navHostController.navigate(Screen.Project.route) }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    Log.d("tag", "Projectedit response t" + t.message)
-                }
-            })
+            }
         }
     }
 
@@ -188,34 +186,32 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val pro
             val accessToken = dataStore.getAccessToken().first() ?: ""
             val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
                 uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.projectId,"")
-            val call: Call<TaskDataResponse> = ApiClient().postNewTask("Bearer " + accessToken, newTask)
-            call.enqueue(object : Callback<TaskDataResponse> {
-                override fun onResponse(call: Call<TaskDataResponse>, response: Response<TaskDataResponse>) {
-                    addingTask()
-                    loadData()
+            majkoRepository.postNewTask("Bearer " + accessToken, newTask).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        addingTask()
+                        loadData()
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<TaskDataResponse>, t: Throwable) {
-                    Log.d("tag", "Projectedit response t" + t.message)
-                }
-            })
+            }
         }
     }
 
     fun createInvite(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<ProjectCreateInviteResponse> = ApiClient().createInvitetoProject("Bearer " + accessToken, ProjectBy_Id(uiState.value.projectId))
-            call.enqueue(object : Callback<ProjectCreateInviteResponse> {
-                override fun onResponse(call: Call<ProjectCreateInviteResponse>, response: Response<ProjectCreateInviteResponse>) {
-                    _uiState.update { it.copy(invite = response.body()!!.invite) }
-                    newInvite()
+            majkoRepository.createInvitetoProject("Bearer " + accessToken,  ProjectBy_Id(uiState.value.projectId)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(invite = response.data!!.invite) }
+                        newInvite()
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<ProjectCreateInviteResponse>, t: Throwable) {
-                    Log.d("tag", "Projectedit response t" + t.message)
-                }
-            })
+            }
         }
     }
 }

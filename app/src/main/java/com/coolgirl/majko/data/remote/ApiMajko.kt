@@ -21,122 +21,120 @@ interface ApiMajko{
     suspend fun signIn(@Body user: UserSignInData?): Response<UserSignInDataResponse>
 
     @POST("api/auth/local/signup")
-    fun signUp(@Body user: UserSignUpData?): Call<UserSignUpDataResponse>
+    suspend fun signUp(@Body user: UserSignUpData?): Response<UserSignUpDataResponse>
 
     @GET("api/user/current")
-    fun currentUser(@Header("Authorization") tocken: String): Call<CurrentUserDataResponse>
+    suspend fun currentUser(@Header("Authorization") token: String): Response<CurrentUserDataResponse>
 
     @POST("api/user/update")
-    fun updateUserName(@Header("Authorization") tocken: String, @Body user: UserUpdateName): Call<CurrentUserDataResponse>
+    suspend fun updateUserName(@Header("Authorization") token: String, @Body user: UserUpdateName): Response<CurrentUserDataResponse>
 
     @POST("api/user/update")
-    fun updateUserEmail(@Header("Authorization") tocken: String, @Body user: UserUpdateEmail): Call<CurrentUserDataResponse>
+    suspend fun updateUserEmail(@Header("Authorization") token: String, @Body user: UserUpdateEmail): Response<CurrentUserDataResponse>
 
     @POST("api/user/update")
-    fun updateUserPassword(@Header("Authorization") tocken: String, @Body user: UserUpdatePassword): Call<CurrentUserDataResponse>
+    suspend fun updateUserPassword(@Header("Authorization") token: String, @Body user: UserUpdatePassword): Response<CurrentUserDataResponse>
 
     @POST("api/user/update")
-    fun updateUserImage(@Header("Authorization") tocken: String, @Body user: UserUpdateImage): Call<CurrentUserDataResponse>
+    suspend fun updateUserImage(@Header("Authorization") token: String, @Body user: UserUpdateImage): Response<CurrentUserDataResponse>
 
     //таски
     @POST("api/task/allUserTasks")
-    fun getAllUserTask(@Header("Authorization") tocken: String): Call<List<TaskDataResponse>>
+    suspend fun getAllUserTask(@Header("Authorization") token: String): Response<List<TaskDataResponse>>
 
     @POST("api/task/create")
-    fun postNewTask(@Header("Authorization") tocken: String, @Body task:TaskData): Call<TaskDataResponse>
+    suspend fun postNewTask(@Header("Authorization") token: String, @Body task:TaskData): Response<TaskDataResponse>
 
     @POST("api/task/getById")
-    fun getTaskById(@Header("Authorization") tocken: String, @Body taskId: TaskById): Call<TaskDataResponse>
+    suspend fun getTaskById(@Header("Authorization") token: String, @Body taskId: TaskById): Response<TaskDataResponse>
 
     @HTTP(method = "DELETE", path = "api/task/delete", hasBody = true)
-    fun removeTask(@Header("Authorization") tocken: String, @Body taskId: TaskBy_Id) : Call<Unit>
+    suspend fun removeTask(@Header("Authorization") token: String, @Body taskId: TaskBy_Id) : Response<Unit>
 
-    //субтаски
+    @POST("api/task/update")
+    suspend fun updateTask(@Header("Authorization") token: String, @Body taskData: TaskUpdateData) : Response<TaskDataResponse>
+
     @POST("api/task/getSubtaskForTask")
-    fun getSubtask(@Header("Authorization") tocken: String, @Body taskId: TaskById): Call<List<TaskDataResponse>>
+    suspend fun getSubtask(@Header("Authorization") token: String, @Body taskId: TaskById): Response<List<TaskDataResponse>>
 
 
     //фавориты
     @HTTP(method = "DELETE", path = "api/task/removeFavorite", hasBody = true)
-    fun removeFavotire(@Header("Authorization") tocken: String, @Body taskId: TaskById) : Call<MessageData>
+    suspend fun removeFavotire(@Header("Authorization") token: String, @Body taskId: TaskById) : Response<MessageData>
 
     @POST("api/task/addToFavorite")
-    fun addToFavorite(@Header("Authorization") tocken: String, @Body taskId: TaskById) : Call<MessageData>
+    suspend fun addToFavorite(@Header("Authorization") token: String, @Body taskId: TaskById) : Response<MessageData>
 
     @GET("api/task/favorites")
-    fun getAllFavorites(@Header("Authorization") tocken: String): Call<List<TaskDataResponse>>
-
-    @POST("api/task/update")
-    fun updateTask(@Header("Authorization") tocken: String, @Body taskData: TaskUpdateData) : Call<TaskDataResponse>
+    suspend fun getAllFavorites(@Header("Authorization") token: String): Response<List<TaskDataResponse>>
 
 
     //проекты
     @POST("api/project/getPersonal")
-    fun getPersonalProject(@Header("Authorization") tocken: String): Call<List<ProjectDataResponse>>
+    suspend fun getPersonalProject(@Header("Authorization") token: String): Response<List<ProjectDataResponse>>
 
     @POST("api/project/getPrivate")
-    fun getGroupProject(@Header("Authorization") tocken: String): Call<List<ProjectDataResponse>>
+    suspend fun getGroupProject(@Header("Authorization") token: String): Response<List<ProjectDataResponse>>
 
     @POST("api/project/create")
-    fun postNewProject(@Header("Authorization") tocken: String, @Body project:ProjectData): Call<ProjectDataResponse>
+    suspend fun postNewProject(@Header("Authorization") token: String, @Body project:ProjectData): Response<ProjectDataResponse>
 
     @POST("api/project/getById")
-    fun getProjectById(@Header("Authorization") tocken: String, @Body projectById: ProjectById) : Call<ProjectCurrentResponse>
+    suspend fun getProjectById(@Header("Authorization") token: String, @Body projectById: ProjectById) : Response<ProjectCurrentResponse>
 
     @POST("api/project/update")
-    fun updateProject(@Header("Authorization") tocken: String, @Body projectById: ProjectUpdate) : Call<ProjectCurrentResponse>
+    suspend fun updateProject(@Header("Authorization") token: String, @Body project: ProjectUpdate) : Response<ProjectCurrentResponse>
 
     @HTTP(method = "DELETE", path = "api/project/delete", hasBody = true)
-    fun removeProject(@Header("Authorization") tocken: String, @Body taskId: ProjectById) : Call<Unit>
+    suspend fun removeProject(@Header("Authorization") token: String, @Body projectId: ProjectById) : Response<Unit>
 
     @POST("api/project/createInvite")
-    fun createInvitetoProject(@Header("Authorization") tocken: String, @Body projectById: ProjectBy_Id) : Call<ProjectCreateInviteResponse>
+    suspend fun createInvitetoProject(@Header("Authorization") token: String, @Body projectById: ProjectBy_Id) : Response<ProjectCreateInviteResponse>
 
     @POST("api/project/joinByInvitation")
-    fun joinByInvitation(@Header("Authorization") tocken: String, @Body invite: JoinByInviteProjectData) : Call<MessageData>
-
+    suspend fun joinByInvitation(@Header("Authorization") token: String, @Body invite: JoinByInviteProjectData) : Response<MessageData>
 
 
     //записи
     @POST("api/note/create")
-    fun addNote(@Header("Authorization") tocken: String, @Body note: NoteData) : Call<NoteDataResponse>
+    suspend fun addNote(@Header("Authorization") token: String, @Body note: NoteData) : Response<NoteDataResponse>
 
     @POST("api/note/update")
-    fun updateNote(@Header("Authorization") tocken: String, @Body note: NoteUpdate) : Call<NoteDataResponse>
+    suspend fun updateNote(@Header("Authorization") token: String, @Body note: NoteUpdate) : Response<NoteDataResponse>
 
     @HTTP(method = "DELETE", path = "api/note/delete", hasBody = true)
-    fun removeNote(@Header("Authorization") tocken: String, @Body noteId: NoteById) : Call<Unit>
+    suspend fun removeNote(@Header("Authorization") token: String, @Body noteId: NoteById) : Response<Unit>
 
     @POST("api/note/getNotes?aseae=asdsad")
-    fun getNotes(@Header("Authorization") tocken: String, @Body taskId: TaskById) : Call<List<NoteDataResponse>>
+    suspend fun getNotes(@Header("Authorization") token: String, @Body taskId: TaskById) : Response<List<NoteDataResponse>>
 
 
     //группы
     @POST("api/group/create")
-    fun addGroup(@Header("Authorization") tocken: String, @Body group: GroupData) : Call<GroupResponse>
+    suspend fun addGroup(@Header("Authorization") token: String, @Body group: GroupData) : Response<GroupResponse>
 
     @POST("api/group/getPersonal")
-    fun getPersonalGroup(@Header("Authorization") tocken: String): Call<List<GroupResponse>>
+    suspend fun getPersonalGroup(@Header("Authorization") token: String): Response<List<GroupResponse>>
 
     @POST("api/group/getPrivate")
-    fun getGroupGroup(@Header("Authorization") tocken: String): Call<List<GroupResponse>>
+    suspend fun getGroupGroup(@Header("Authorization") token: String): Response<List<GroupResponse>>
 
     @POST("api/group/getById")
-    fun getGroupById(@Header("Authorization") tocken: String, @Body groupId: GroupById): Call<GroupResponse>
+    suspend fun getGroupById(@Header("Authorization") token: String, @Body groupId: GroupById): Response<GroupResponse>
 
     @POST("api/group/update")
-    fun updateGroup(@Header("Authorization") tocken: String, @Body group: GroupUpdate): Call<GroupResponse>
+    suspend fun updateGroup(@Header("Authorization") token: String, @Body group: GroupUpdate): Response<GroupResponse>
 
     @HTTP(method = "DELETE", path = "api/group/delete", hasBody = true)
-    fun removeGroup(@Header("Authorization") tocken: String, @Body groupId: GroupById) : Call<Unit>
+    suspend fun removeGroup(@Header("Authorization") token: String, @Body groupId: GroupById) : Response<Unit>
 
     @POST("api/group/addProjectInGroup")
-    fun addProjectInGroup(@Header("Authorization") tocken: String, @Body group: ProjectInGroup): Call<ProjectDataResponse>
+    suspend fun addProjectInGroup(@Header("Authorization") token: String, @Body group: ProjectInGroup): Response<ProjectDataResponse>
 
     @POST("api/group/createInvite")
-    fun createInvitetoGroup(@Header("Authorization") tocken: String, @Body groupId: GroupBy_Id) : Call<GroupInviteResponse>
+    suspend fun createInvitetoGroup(@Header("Authorization") token: String, @Body groupId: GroupBy_Id) : Response<GroupInviteResponse>
 
     @POST("api/group/joinByInvitation")
-    fun joinGroupByInvitation(@Header("Authorization") tocken: String, @Body invite: JoinByInviteProjectData) : Call<MessageData>
+    suspend fun joinGroupByInvitation(@Header("Authorization") token: String, @Body invite: JoinByInviteProjectData) : Response<MessageData>
 
 }

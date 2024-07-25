@@ -33,18 +33,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
+import com.coolgirl.majko.Screen.TaskEditor.TaskEditorViewModel
 import com.coolgirl.majko.components.HorizontalLine
 import com.coolgirl.majko.components.SpinnerSample
 import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Composable
 fun ProjectEditScreen(navController: NavHostController, project_id : String){
-    val cont = LocalContext.current
-    val viewModel : ProjectEditViewModel = remember{ ProjectEditViewModel(UserDataStore(cont), project_id) }
+
+    val viewModel = getViewModel<ProjectEditViewModel>(
+        parameters = { parametersOf(project_id) }
+    )
     val uiState by viewModel.uiState.collectAsState()
     SetProjectEditScreen(uiState, viewModel, navController)
 }

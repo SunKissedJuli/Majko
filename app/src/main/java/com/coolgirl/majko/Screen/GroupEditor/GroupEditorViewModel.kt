@@ -4,6 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.coolgirl.majko.commons.ApiError
+import com.coolgirl.majko.commons.ApiExeption
+import com.coolgirl.majko.commons.ApiSuccess
+import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.GroupData.*
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
@@ -15,7 +19,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GroupEditorViewModel(private val dataStore: UserDataStore, private val group_id: String) : ViewModel() {
+class GroupEditorViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository, private val group_id: String) : ViewModel() {
     private val _uiState = MutableStateFlow(GroupEditorUiState())
     val uiState: StateFlow<GroupEditorUiState> = _uiState.asStateFlow()
 
@@ -62,50 +66,42 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val gro
         _uiState.update { it.copy(group_id = group_id) }
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<GroupResponse> = ApiClient().getGroupById("Bearer " + accessToken, GroupById(uiState.value.group_id))
-            call.enqueue(object : Callback<GroupResponse> {
-                override fun onResponse(call: Call<GroupResponse>, response: Response<GroupResponse>) {
-                    _uiState.update { it.copy(groupData = response.body()!!) }
-
+            majkoRepository.getGroupById("Bearer " + accessToken,  GroupById(uiState.value.group_id)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(groupData = response.data!!) }
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<GroupResponse>, t: Throwable) {
-                    Log.d("tag", "Projectedit t = " + t.message)
-                }
-            })
+            }
         }
     }
 
     fun saveGroup(navHostController: NavHostController){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<GroupResponse> = ApiClient().updateGroup("Bearer " + accessToken, GroupUpdate(uiState.value.group_id,
-                uiState.value.groupData!!.title, uiState.value.groupData!!.description))
-            call.enqueue(object : Callback<GroupResponse> {
-                override fun onResponse(call: Call<GroupResponse>, response: Response<GroupResponse>) {
-                    navHostController.navigate(Screen.Group.route)
+            majkoRepository.updateGroup("Bearer " + accessToken,  GroupUpdate(uiState.value.group_id,
+                uiState.value.groupData!!.title, uiState.value.groupData!!.description)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ navHostController.navigate(Screen.Group.route) }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<GroupResponse>, t: Throwable) {
-                    Log.d("tag", "Projectedit response t" + t.message)
-                }
-            })
+            }
         }
     }
 
     fun removeGroup(navHostController: NavHostController){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<Unit> = ApiClient().removeGroup("Bearer " + accessToken, GroupById(uiState.value.group_id))
-            call.enqueue(object : Callback<Unit> {
-                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                    navHostController.navigate(Screen.Group.route)
+            majkoRepository.removeGroup("Bearer " + accessToken,  GroupById(uiState.value.group_id)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ navHostController.navigate(Screen.Group.route) }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<Unit>, t: Throwable) {
-                    Log.d("tag", "Projectedit response t" + t.message)
-                }
-            })
+            }
         }
     }
 
@@ -113,57 +109,50 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val gro
         _uiState.update { it.copy(group_id = group_id) }
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<ProjectDataResponse> = ApiClient().addProjectInGroup("Bearer " + accessToken, ProjectInGroup(project_id, uiState.value.group_id))
-            call.enqueue(object : Callback<ProjectDataResponse> {
-                override fun onResponse(call: Call<ProjectDataResponse>, response: Response<ProjectDataResponse>) {
-                    addingProject()
-                    loadData()
+            majkoRepository.addProjectInGroup("Bearer " + accessToken, ProjectInGroup(project_id, uiState.value.group_id)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        addingProject()
+                        loadData() }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<ProjectDataResponse>, t: Throwable) {
-                    Log.d("tag", "Projectedit response t" + t.message)
-                }
-            })
+            }
         }
     }
 
     fun getProjectData(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<List<ProjectDataResponse>> =
-                ApiClient().getPersonalProject("Bearer " + accessToken)
-            call.enqueue(object : Callback<List<ProjectDataResponse>> {
-                override fun onResponse(call: Call<List<ProjectDataResponse>>, response: Response<List<ProjectDataResponse>>) {
-                    val validData: MutableList<ProjectDataResponse> = mutableListOf()
-                    response.body()?.forEach { item ->
-                        if (item.is_personal && item.is_archive == 0) {
-                            validData.add(item)
+            majkoRepository.getPersonalProject("Bearer " + accessToken).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                        response.data?.forEach { item ->
+                            if (item.is_personal && item.is_archive == 0) {
+                                validData.add(item)
+                            }
                         }
-                    }
-                    _uiState.update { it.copy(projectData = validData) }
+                        _uiState.update { it.copy(projectData = validData) } }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<List<ProjectDataResponse>>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 
     fun createInvite(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<GroupInviteResponse> = ApiClient().createInvitetoGroup("Bearer " + accessToken, GroupBy_Id(uiState.value.group_id))
-            call.enqueue(object : Callback<GroupInviteResponse> {
-                override fun onResponse(call: Call<GroupInviteResponse>, response: Response<GroupInviteResponse>) {
-                    _uiState.update { it.copy(invite = response.body()!!.invite) }
-                    newInvite()
+            majkoRepository.createInvitetoGroup("Bearer " + accessToken, GroupBy_Id(uiState.value.group_id)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(invite = response.data!!.invite) }
+                        newInvite()}
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<GroupInviteResponse>, t: Throwable) {
-                    Log.d("tag", "Projectedit response t" + t.message)
-                }
-            })
+            }
         }
     }
 

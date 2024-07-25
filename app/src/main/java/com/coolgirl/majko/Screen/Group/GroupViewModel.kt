@@ -1,8 +1,14 @@
 package com.coolgirl.majko.Screen.Group
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.coolgirl.majko.commons.ApiError
+import com.coolgirl.majko.commons.ApiExeption
+import com.coolgirl.majko.commons.ApiSuccess
+import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import com.coolgirl.majko.data.remote.dto.GroupData.GroupBy_Id
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupData
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.data.remote.dto.MessageData
@@ -14,7 +20,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
+class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(GroupUiState())
     val uiState: StateFlow<GroupUiState> = _uiState.asStateFlow()
 
@@ -74,74 +80,69 @@ class GroupViewModel(private val dataStore: UserDataStore) : ViewModel() {
     fun addGroup(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<GroupResponse> = ApiClient().addGroup("Bearer " + accessToken, GroupData(uiState.value.newGroupName, uiState.value.newGroupDescription))
-            call.enqueue(object : Callback<GroupResponse> {
-                override fun onResponse(call: Call<GroupResponse>, response: Response<GroupResponse>) {
-                    addingGroup()
-                    loadData()
+            majkoRepository.addGroup("Bearer " + accessToken,  GroupData(uiState.value.newGroupName, uiState.value.newGroupDescription)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        addingGroup()
+                        loadData()}
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-                override fun onFailure(call: Call<GroupResponse>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 
     fun loadData() {
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<List<GroupResponse>> = ApiClient().getPersonalGroup("Bearer " + accessToken)
-            call.enqueue(object : Callback<List<GroupResponse>> {
-                override fun onResponse(call: Call<List<GroupResponse>>, response: Response<List<GroupResponse>>) {
-                    val validData: MutableList<GroupResponse> = mutableListOf()
-                    response.body()?.forEach { item ->
-                        if (item.is_personal ) {
-                            validData.add(item)
+            majkoRepository.getPersonalGroup("Bearer " + accessToken).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        val validData: MutableList<GroupResponse> = mutableListOf()
+                        response.data?.forEach { item ->
+                            if (item.is_personal ) {
+                                validData.add(item)
+                            }
                         }
+                        _uiState.update { it.copy(personalGroup = validData)}
+                        _uiState.update { it.copy(searchPersonalGroup = validData)}
                     }
-                    _uiState.update { it.copy(personalGroup = validData)}
-                    _uiState.update { it.copy(searchPersonalGroup = validData)}
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<List<GroupResponse>>, t: Throwable) {
-                    //дописать
-                }
-            })
-            val call1: Call<List<GroupResponse>> = ApiClient().getGroupGroup("Bearer " + accessToken)
-            call1.enqueue(object : Callback<List<GroupResponse>> {
-                override fun onResponse(call1: Call<List<GroupResponse>>, response: Response<List<GroupResponse>>) {
-                    val validData: MutableList<GroupResponse> = mutableListOf()
-                    response.body()?.forEach { item ->
-                        if (!item.is_personal) {
-                            validData.add(item)
+            }
+            majkoRepository.getGroupGroup("Bearer " + accessToken).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        val validData: MutableList<GroupResponse> = mutableListOf()
+                        response.data?.forEach { item ->
+                            if (!item.is_personal) {
+                                validData.add(item)
+                            }
                         }
+                        _uiState.update { it.copy(groupGroup = validData)}
+                        _uiState.update { it.copy(searchGroupGroup = validData)}
                     }
-                    _uiState.update { it.copy(groupGroup = validData)}
-                    _uiState.update { it.copy(searchGroupGroup = validData)}
-
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call1: Call<List<GroupResponse>>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 
     fun joinByInvite(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            val call: Call<MessageData> = ApiClient().joinGroupByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite))
-            call.enqueue(object : Callback<MessageData> {
-                override fun onResponse(call: Call<MessageData>, response: Response<MessageData>) {
-                    _uiState.update { it.copy(invite_message = response.body()!!.message!!) }
-                    loadData()
+            majkoRepository.joinGroupByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite)).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(invite_message = response.data!!.message!!) }
+                        loadData()
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
-
-                override fun onFailure(call: Call<MessageData>, t: Throwable) {
-                    //дописать
-                }
-            })
+            }
         }
     }
 }
