@@ -63,8 +63,7 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
                     shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+            verticalArrangement = Arrangement.Center) {
             Spacer(modifier = Modifier.height(1.dp))
             Column(
                 Modifier
@@ -87,7 +86,7 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
                     TextField(
                         value = uiState.userLogin,
                         modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_login), color = MaterialTheme.colors.surface) },
+                        placeholder = { Text(text = stringResource(id = R.string.login_login), color = MaterialTheme.colors.onSurface) },
                         onValueChange = { viewModel.updateUserLogin(it) },
                         colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
                             unfocusedContainerColor = MaterialTheme.colors.background)
@@ -95,7 +94,7 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
                     TextField(
                         value = uiState.userPassword,
                         modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_password), color = MaterialTheme.colors.surface) },
+                        placeholder = { Text(text = stringResource(id = R.string.login_password), color = MaterialTheme.colors.onSurface) },
                         onValueChange = { viewModel.updateUserPassword(it) },
                         colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
                             unfocusedContainerColor = MaterialTheme.colors.background)
@@ -103,7 +102,6 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
                 }
             }
         }
-
     }
 
     Column(

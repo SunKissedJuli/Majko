@@ -16,6 +16,6 @@ fun HorizontalLine(){
         .fillMaxWidth()
         .padding(top = 5.dp, bottom = 12.dp)
         .height(1.dp)
-        .background(color = MaterialTheme.colors.surface)
+        .background(color = MaterialTheme.colors.onSurface)
     )
 }

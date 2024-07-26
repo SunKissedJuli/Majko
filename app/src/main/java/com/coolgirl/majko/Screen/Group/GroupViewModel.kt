@@ -91,6 +91,37 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
     }
 
     fun loadData() {
+        loadPersonalGroup()
+        loadGroupGroup()
+    }
+
+    fun loadGroupGroup() {
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            majkoRepository.getGroupGroup("Bearer " + accessToken).collect() { response ->
+                when (response) {
+                    is ApiSuccess -> {
+                        val validData: MutableList<GroupResponse> = mutableListOf()
+                        response.data?.forEach { item ->
+                            if (!item.is_personal) {
+                                validData.add(item)
+                            }
+                        }
+                        _uiState.update { it.copy(groupGroup = validData) }
+                        _uiState.update { it.copy(searchGroupGroup = validData) }
+                    }
+                    is ApiError -> {
+                        Log.d("TAG", "error message = " + response.message)
+                    }
+                    is ApiExeption -> {
+                        Log.d("TAG", "exeption e = " + response.e)
+                    }
+                }
+            }
+        }
+    }
+
+    fun loadPersonalGroup(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
             majkoRepository.getPersonalGroup("Bearer " + accessToken).collect() { response ->
@@ -104,22 +135,6 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
                         }
                         _uiState.update { it.copy(personalGroup = validData)}
                         _uiState.update { it.copy(searchPersonalGroup = validData)}
-                    }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
-                }
-            }
-            majkoRepository.getGroupGroup("Bearer " + accessToken).collect() { response ->
-                when(response){
-                    is ApiSuccess ->{
-                        val validData: MutableList<GroupResponse> = mutableListOf()
-                        response.data?.forEach { item ->
-                            if (!item.is_personal) {
-                                validData.add(item)
-                            }
-                        }
-                        _uiState.update { it.copy(groupGroup = validData)}
-                        _uiState.update { it.copy(searchGroupGroup = validData)}
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

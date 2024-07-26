@@ -148,7 +148,12 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
         }
     }
 
-    fun loadData() {
+    fun loadData(){
+        loadPersonalProject()
+        loadGroupProject()
+    }
+
+    fun loadPersonalProject(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
             majkoRepository.getPersonalProject("Bearer " + accessToken).collect() { response ->
@@ -167,20 +172,30 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
             }
+        }
+    }
+
+    fun loadGroupProject() {
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
             majkoRepository.getGroupProject("Bearer " + accessToken).collect() { response ->
-                when(response){
-                    is ApiSuccess ->{
+                when (response) {
+                    is ApiSuccess -> {
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (!item.is_personal && item.is_archive==0) {
+                            if (!item.is_personal && item.is_archive == 0) {
                                 validData.add(item)
                             }
                         }
-                        _uiState.update { it.copy(groupProject = validData)}
-                        _uiState.update { it.copy(searchGroupProject = validData)}
+                        _uiState.update { it.copy(groupProject = validData) }
+                        _uiState.update { it.copy(searchGroupProject = validData) }
                     }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    is ApiError -> {
+                        Log.d("TAG", "error message = " + response.message)
+                    }
+                    is ApiExeption -> {
+                        Log.d("TAG", "exeption e = " + response.e)
+                    }
                 }
             }
         }

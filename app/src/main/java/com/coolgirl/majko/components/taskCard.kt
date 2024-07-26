@@ -8,9 +8,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -56,13 +58,18 @@ fun TaskCard(navHostController: NavHostController,
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ){
-            Image(painter = painterResource(R.drawable.icon_plug),
+            Box(Modifier.
+            fillMaxHeight(0.8f)
+                .size(27.dp)
+                .aspectRatio(1f)
+                .background(MaterialTheme.colors.primary, shape = CircleShape))
+           /* Image(painter = painterResource(R.drawable.icon_plug),
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxHeight(0.8f)
-                    .clip(CircleShape))
-            Spacer(Modifier.width(5.dp))
+                    .clip(CircleShape))*/
+            Spacer(Modifier.width(7.dp))
             Text(text= taskData.title?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
             Spacer(Modifier.width(5.dp))
             if (taskData.is_favorite==true){

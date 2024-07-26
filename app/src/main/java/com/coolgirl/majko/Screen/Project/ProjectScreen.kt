@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -18,22 +17,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.components.ProjectCardUiState
+import com.coolgirl.majko.components.SearchBox
 import com.coolgirl.majko.components.plusButton
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -83,15 +78,15 @@ fun ProjectScreen(navController: NavHostController){
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier.fillMaxWidth(0.5f)) {
-                        Text(
-                            stringResource(R.string.project_to_archive),
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .padding(all = 10.dp)
-                                .clickable {
-                                    viewModel.toArchive()
-                                }
-                        )
+                        Row(Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.toArchive() }) {
+                            Text(
+                                stringResource(R.string.project_to_archive),
+                                fontSize = 18.sp,
+                                modifier = Modifier.padding(all = 10.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -110,6 +105,11 @@ fun ProjectScreen(navController: NavHostController){
 
 @Composable
 fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, viewModel: ProjectViewModel, uiStateCard: ProjectCardUiState) {
+    var expanded by remember { mutableStateOf(false) }
+
+    val personalProject = uiState.searchPersonalProject
+    val groupProject = uiState.searchGroupProject
+
     Column(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
@@ -123,23 +123,10 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
                 .clip(RoundedCornerShape(30.dp))
                 .background(color = MaterialTheme.colors.primary),
             verticalAlignment = Alignment.CenterVertically) {
-            BasicTextField(
-                value = uiState.searchString,
-                modifier = Modifier
-                    .fillMaxWidth(0.82f)
-                    .padding(start = 50.dp),
-                textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = MaterialTheme.colors.background),
-                onValueChange = {viewModel.updateSearchString(it)},
-                decorationBox = { innerTextField ->
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        if (uiState.searchString.isEmpty()) {
-                           Text(text = stringResource(R.string.project_search),
-                                color = Color.DarkGray,fontSize = 17.sp) }
-                        innerTextField() } })
 
-            var expanded by remember { mutableStateOf(false) }
+            SearchBox(uiState.searchString, {viewModel.updateSearchString(it)}, R.string.project_search )
 
-            Box(Modifier.padding(10.dp)) {
+            Box(Modifier.padding(end = 10.dp)) {
                 IconButton(onClick = { expanded = true }) {
                     Icon(
                         Icons.Default.MoreVert,
@@ -151,21 +138,20 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier.fillMaxWidth(0.5f)) {
-                    Text(
-                        stringResource(R.string.project_joininvite),
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .padding(all = 10.dp)
-                            .clickable {
-                                viewModel.openInviteWindow()
-                            }
-                    )
+
+                    Row(Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.openInviteWindow() }) {
+                        Text(
+                            stringResource(R.string.project_joininvite),
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(all = 10.dp)
+                        )
+                    }
                 }
             }
         }
-
-        val personalProject = uiState.searchPersonalProject
-        val groupProject = uiState.searchGroupProject
 
         LazyColumn(
             Modifier
@@ -176,7 +162,7 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
             if (!groupProject.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.project_group),
-                        color = colorResource(R.color.gray),
+                        color = MaterialTheme.colors.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(groupProject) { project ->
@@ -187,7 +173,7 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
             if (!personalProject.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.project_personal),
-                        color = MaterialTheme.colors.surface,
+                        color = MaterialTheme.colors.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(personalProject) { project ->
@@ -278,7 +264,7 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRe
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
                     focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.project_name), color = MaterialTheme.colors.surface)})
+                placeholder = {Text(text = stringResource(R.string.project_name), color = MaterialTheme.colors.onSurface)})
 
             OutlinedTextField(value = uiState.newProjectDescription,
                 onValueChange = {viewModel.updateProjectDescription(it)},
@@ -289,7 +275,7 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRe
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
                     focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.project_description), color = MaterialTheme.colors.surface)})
+                placeholder = {Text(text = stringResource(R.string.project_description), color = MaterialTheme.colors.onSurface)})
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){

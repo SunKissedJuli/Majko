@@ -4,6 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,10 +29,10 @@ import com.coolgirl.majko.navigation.Screen
 fun ProjectCard(navHostController: NavHostController,
                 priorityColor : Int = R.color.white,
                 projectData: ProjectDataResponse,
-                is_archive:Boolean=false,
                 onLongTap:(String) -> Unit) {
 
     var tapType by remember { mutableStateOf(R.color.gray) }
+
     Column(modifier = Modifier
         .fillMaxWidth()
         .height(170.dp)
@@ -59,12 +60,18 @@ fun ProjectCard(navHostController: NavHostController,
                 .fillMaxHeight(0.27f),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically){
-            Image(painter = painterResource(R.drawable.icon_plug),
+            Box(Modifier.
+            fillMaxHeight(0.8f)
+                .size(25.dp)
+                .aspectRatio(1f)
+                .background(MaterialTheme.colors.primary, shape = CircleShape))
+          /*  Image(painter = painterResource(R.drawable.icon_plug),
                 contentDescription = "",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxHeight(0.8f)
-                    .clip(CircleShape))
+                    .clip(CircleShape))*/
+
             Spacer(Modifier.width(15.dp))
             Text(text= projectData.name?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
 

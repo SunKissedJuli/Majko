@@ -3,6 +3,7 @@ package com.coolgirl.majko.data.remote.dto.GroupData
 import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.Member
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectRole
 
 data class GroupResponse(
     val id: String,
@@ -16,6 +17,12 @@ data class GroupResponse(
     val image: String?,
     val files_count: Int,
     val projects_group: List<ProjectDataResponse>,
-    val members: List<Member>,
+    val members: List<GroupMember>,
     val files: List<Any>
+)
+
+data class GroupMember(
+    val id: String,
+    val user: CurrentUserDataResponse,
+    val role: ProjectRole
 )

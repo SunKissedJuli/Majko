@@ -1,16 +1,13 @@
 package com.coolgirl.majko.Sc
 
+import androidx.compose.foundation.*
 import com.coolgirl.majko.Screen.GroupEditor.GroupEditorUiState
 import com.coolgirl.majko.Screen.GroupEditor.GroupEditorViewModel
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -22,6 +19,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +38,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.inject
 @Composable
 fun GroupEditorScreen(navController: NavHostController, groupId: String){
+
     val viewModel = getViewModel<GroupEditorViewModel>(
         parameters = { parametersOf(groupId) }
     )
@@ -57,6 +56,8 @@ fun GroupEditorScreen(navController: NavHostController, groupId: String){
 
 @Composable
 fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorViewModel, navController: NavHostController){
+    var expanded by remember { mutableStateOf(false) }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -70,12 +71,10 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 .padding(horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(
-                modifier = Modifier.clickable { viewModel.saveGroup(navController) },
-                text = stringResource(R.string.common_back), fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colors.background, fontSize = 50.sp,)
+            Image(painter = painterResource(R.drawable.icon_back), contentDescription = "",
+                Modifier.fillMaxHeight().clickable { viewModel.saveGroup(navController) })
 
-            var expanded by remember { mutableStateOf(false) }
+
 
             Box() { IconButton(onClick = { expanded = true }) {
                 Icon(Icons.Default.MoreVert, tint = MaterialTheme.colors.background, contentDescription = "") }
@@ -83,15 +82,21 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier.fillMaxWidth(0.5f)) {
-                    Text(  stringResource(R.string.project_delite), fontSize=18.sp,
-                        modifier = Modifier
-                            .padding(all = 10.dp)
-                            .clickable { viewModel.removeGroup(navController) })
-                    Text(
-                        stringResource(R.string.project_createinvite), fontSize=18.sp,
-                        modifier = Modifier
-                            .padding(all = 10.dp)
-                            .clickable { viewModel.createInvite() })
+                    Row(Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.removeGroup(navController) }) {
+                        Text(stringResource(R.string.project_delite), fontSize = 18.sp,
+                            modifier = Modifier.padding(all = 10.dp))
+                    }
+                    Row(Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.createInvite() }) {
+                        Text(
+                            stringResource(R.string.project_createinvite), fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(all = 10.dp)
+                        )
+                    }
                 }
             }
         }
@@ -222,27 +227,28 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                     Modifier
                         .fillMaxSize()
                         .padding(horizontal = 20.dp)) {
-                    for(item in uiState.members!!)
-                        Row(verticalAlignment = Alignment.CenterVertically){
 
-                            Column() {
-                                Text(
-                                    text = stringResource(R.string.common_dash),
-                                    fontSize = 55.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colors.background
-                                )
+                    if(!uiState.members.isNullOrEmpty()){
+                        for(item in uiState.members!!){
+                            Row(verticalAlignment = Alignment.CenterVertically){
+
+                                Column() {
+                                    Text(
+                                        text = stringResource(R.string.common_dash),
+                                        fontSize = 55.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = MaterialTheme.colors.background
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(10.dp))
+
+                                Column() {
+                                    Text(text = stringResource(R.string.groupeditor_name) + " " + item.user.name)
+                                    Text(text = stringResource(R.string.groupeditor_role) + " " + item.role.name)
+                                }
                             }
-                            Spacer(modifier = Modifier.width(10.dp))
-
-                            Column() {
-                                Text(text = stringResource(R.string.groupeditor_name) + " " + item.user.name)
-                                Text(text = stringResource(R.string.groupeditor_role) + " " + item.role_id.name)
-                            }
-
-
-
                         }
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }

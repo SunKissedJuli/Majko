@@ -137,20 +137,38 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
 
     fun loadData(){
         _uiState.update { it.copy(projectId = projectId) }
+        loadProject()
+        loadPriorities()
+        loadStatuses()
+    }
+
+    fun loadProject(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getProjectById("Bearer " + accessToken, ProjectById(uiState.value.projectId)).collect() { response ->
-                when(response){
-                    is ApiSuccess ->{
+            majkoRepository.getProjectById(
+                "Bearer " + accessToken,
+                ProjectById(uiState.value.projectId)
+            ).collect() { response ->
+                when (response) {
+                    is ApiSuccess -> {
                         _uiState.update { it.copy(projectData = response.data!!) }
-                        if(response.data!!.members.isNotEmpty()){
+                        if (response.data!!.members.isNotEmpty()) {
                             _uiState.update { it.copy(members = response.data!!.members) }
                         }
                     }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    is ApiError -> {
+                        Log.d("TAG", "error message = " + response.message)
+                    }
+                    is ApiExeption -> {
+                        Log.d("TAG", "exeption e = " + response.e)
+                    }
                 }
             }
+        }
+    }
+
+    fun loadStatuses(){
+        viewModelScope.launch {
             majkoRepository.getStatuses().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
@@ -160,6 +178,11 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
             }
+        }
+    }
+
+    fun loadPriorities(){
+        viewModelScope.launch {
             majkoRepository.getPriorities().collect() { response ->
                 when(response){
                     is ApiSuccess ->{

@@ -47,6 +47,7 @@ fun ProfileScreen( navController: NavHostController) {
     }
 
     val uiState by viewModel.uiState.collectAsState()
+
     Column(
         Modifier
             .fillMaxSize()

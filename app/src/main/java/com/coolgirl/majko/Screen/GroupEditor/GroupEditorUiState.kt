@@ -1,7 +1,7 @@
 package com.coolgirl.majko.Screen.GroupEditor
 
+import com.coolgirl.majko.data.remote.dto.GroupData.GroupMember
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
-import com.coolgirl.majko.data.remote.dto.ProjectData.Member
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 
 data class GroupEditorUiState(
@@ -12,5 +12,5 @@ data class GroupEditorUiState(
     val taskProjectName: String = "",
     val isInvite: Boolean = false,
     val invite: String = "",
-    val members: List<Member>? = null
+    val members: List<GroupMember>? = null
 )

@@ -1,6 +1,7 @@
 package com.coolgirl.majko
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -22,32 +23,33 @@ import com.coolgirl.majko.navigation.Screen
 import com.coolgirl.majko.ui.theme.MajkoTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MajkoTheme {
+
+                val dataStore: UserDataStore by inject()
                 val navController = rememberNavController()
-                val dataStore: UserDataStore = UserDataStore(LocalContext.current)
                 val coroutineScope = rememberCoroutineScope()
-                var accessToken by remember { mutableStateOf("") }
+                var accessToken by remember { mutableStateOf<String?>(null) }
                 val currentBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = currentBackStackEntry?.destination
 
                 LaunchedEffect(Unit) {
                     coroutineScope.launch {
-                        accessToken = dataStore.getAccessToken().first() ?: ""
+                        accessToken = dataStore.getAccessToken().first()
+                        Log.d("tag", "access = " + accessToken)
                     }
                 }
 
-                val startDestination = if (accessToken!="null") {
-                    Screen.Profile.route
-                } else {
+                val startDestination = if (!accessToken.isNullOrEmpty()) {
+                    Screen.Profile.route }
+                else {
                     Screen.Login.route
                 }
-
-
 
                 Scaffold(
                     bottomBar = {
@@ -56,23 +58,19 @@ class MainActivity : ComponentActivity() {
                                 &&currentDestination.route!=Screen.TaskEditor.createRoute()
                                 &&currentDestination.route!=Screen.GroupEditor.createRoute()
                                 &&currentDestination.route!=Screen.ProjectEditor.createRoute()){
-                             //   Column(Modifier.fillMaxHeight(0.07f)) {
+
                                     BottomBar(navController,
                                         listOf(BottomBarScreens.Group,
                                             BottomBarScreens.Project,
                                             BottomBarScreens.Task,
                                             BottomBarScreens.Archive,
                                             BottomBarScreens.Profile))
-                              //  }
                             }
                         }
-
-                    }
-                ) {
+                    }) {
                     Box(Modifier.padding(it)){
                         AppNavHost(navController, startDestination)
                     }
-
                 }
             }
         }

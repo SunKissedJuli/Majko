@@ -204,18 +204,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
     fun saveTask(navHostController: NavHostController){
         if(!taskId.equals("0")){
-            viewModelScope.launch {
-                val accessToken = dataStore.getAccessToken().first() ?: ""
-                val newTask = TaskUpdateData(uiState.value.taskId, uiState.value.taskName, uiState.value.taskText,
-                    uiState.value.taskPriority,uiState.value.taskDeadline, uiState.value.taskStatus)
-                majkoRepository.updateTask("Bearer " + accessToken,  newTask).collect() { response ->
-                    when(response){
-                        is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
-                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                        is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
-                    }
-                }
-            }
+           updateTask(navHostController)
         }else{
             viewModelScope.launch {
                 val accessToken = dataStore.getAccessToken().first() ?: ""
@@ -230,7 +219,21 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
                 }
             }
         }
+    }
 
+    fun updateTask(navHostController: NavHostController){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            val newTask = TaskUpdateData(uiState.value.taskId, uiState.value.taskName, uiState.value.taskText,
+                uiState.value.taskPriority,uiState.value.taskDeadline, uiState.value.taskStatus)
+            majkoRepository.updateTask("Bearer " + accessToken,  newTask).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                }
+            }
+        }
     }
 
     fun saveSubtask(){
@@ -267,27 +270,11 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
     }
 
     fun loadData() {
+        loadStatuses()
+        loadPriorities()
+
         if(!taskId.equals("0")){
-            _uiState.update { it.copy(taskId = taskId) }
             viewModelScope.launch {
-                majkoRepository.getStatuses().collect() { response ->
-                    when(response){
-                        is ApiSuccess ->{
-                            _uiState.update { it.copy(statuses = response.data!!) }
-                        }
-                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                        is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
-                    }
-                }
-                majkoRepository.getPriorities().collect() { response ->
-                    when(response){
-                        is ApiSuccess ->{
-                            _uiState.update { it.copy(proprieties = response.data!!) }
-                        }
-                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                        is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
-                    }
-                }
                 val accessToken = dataStore.getAccessToken().first() ?: ""
                 majkoRepository.getTaskById("Bearer " + accessToken, TaskById(uiState.value.taskId)).collect() { response ->
                     when(response){
@@ -318,6 +305,35 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
                         is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                         is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                     }
+                }
+            }
+        }
+    }
+
+
+    fun loadStatuses(){
+        viewModelScope.launch {
+            majkoRepository.getStatuses().collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(statuses = response.data!!) }
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                }
+            }
+        }
+    }
+
+    fun loadPriorities(){
+        viewModelScope.launch {
+            majkoRepository.getPriorities().collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(proprieties = response.data!!) }
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
             }
         }

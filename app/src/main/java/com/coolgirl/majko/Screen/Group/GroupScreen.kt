@@ -9,32 +9,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.components.GroupCard
+import com.coolgirl.majko.components.SearchBox
 import com.coolgirl.majko.components.plusButton
-import com.coolgirl.majko.navigation.BottomBar
-import com.coolgirl.majko.navigation.BottomBarScreens
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
@@ -75,6 +67,12 @@ fun GroupScreen(navController: NavHostController) {
 
 @Composable
 fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, viewModel: GroupViewModel) {
+
+    var expanded by remember { mutableStateOf(false) }
+
+    val personalGroup = uiState.searchPersonalGroup
+    val groupGroup = uiState.searchGroupGroup
+
     Column(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
@@ -88,22 +86,13 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
                 .clip(RoundedCornerShape(30.dp))
                 .background(color = MaterialTheme.colors.primary),
             verticalAlignment = Alignment.CenterVertically) {
-            BasicTextField(
-                value = uiState.searchString,
-                modifier = Modifier
-                    .fillMaxWidth(0.82f)
-                    .padding(start = 50.dp),
-                textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = MaterialTheme.colors.background),
-                onValueChange = {viewModel.updateSearchString(it)},
-                decorationBox = { innerTextField ->
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        if (uiState.searchString.isEmpty()) {
-                            Text(text = stringResource(R.string.group_search),
-                                color = Color.DarkGray,fontSize = 17.sp) }
-                        innerTextField() } })
 
-            var expanded by remember { mutableStateOf(false) }
-            Box(Modifier.padding(all = 10.dp)) {
+            SearchBox(value = uiState.searchString,
+                onValueChange = {viewModel.updateSearchString(it)},
+                placeholder = R.string.group_search)
+
+
+            Box(Modifier.padding(end = 10.dp)) {
                 IconButton(onClick = { expanded = true }) {
                     Image(painter = painterResource(R.drawable.icon_menu),
                         contentDescription = "")
@@ -112,22 +101,19 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier.fillMaxWidth(0.5f)) {
-                    Text(
-                        stringResource(R.string.project_joininvite),
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .padding(all = 10.dp)
-                            .clickable {
-                                viewModel.openInviteWindow()
-                            }
-                    )
+                    Row(Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.openInviteWindow() }) {
+                        Text(
+                            stringResource(R.string.project_joininvite),
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(all = 10.dp)
+                        )
+                    }
                 }
             }
-            // строка поиска, бургер и тд и тп
         }
-
-        val personalGroup = uiState.searchPersonalGroup
-        val groupGroup = uiState.searchGroupGroup
 
         LazyColumn(
             Modifier
@@ -138,7 +124,7 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
             if (!groupGroup.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.group_group),
-                        color = MaterialTheme.colors.surface,
+                        color = MaterialTheme.colors.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(groupGroup) { group ->
@@ -149,7 +135,7 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
             if (!personalGroup.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.group_personal),
-                        color = MaterialTheme.colors.surface,
+                        color = MaterialTheme.colors.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(personalGroup) { group ->

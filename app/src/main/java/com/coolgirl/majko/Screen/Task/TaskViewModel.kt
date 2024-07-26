@@ -71,6 +71,29 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
     }
 
     fun loadData() {
+        loadFavTask()
+        loadEachTask()
+        loadStatuses()
+    }
+
+    fun loadFavTask(){
+        viewModelScope.launch {
+            val accessToken = dataStore.getAccessToken().first() ?: ""
+            majkoRepository.getAllFavorites("Bearer " + accessToken).collect() { response ->
+                when(response){
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(favoritesTaskList = response.data)}
+                        _uiState.update { it.copy(searchFavoritesTaskList =  response.data)}
+                    }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                }
+            }
+        }
+
+    }
+
+    fun loadEachTask(){
         viewModelScope.launch {
             val accessToken = dataStore.getAccessToken().first() ?: ""
             majkoRepository.getAllUserTask("Bearer " + accessToken).collect() { response ->
@@ -89,17 +112,11 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
             }
+        }
+    }
 
-            majkoRepository.getAllFavorites("Bearer " + accessToken).collect() { response ->
-                when(response){
-                    is ApiSuccess ->{
-                        _uiState.update { it.copy(favoritesTaskList = response.data)}
-                        _uiState.update { it.copy(searchFavoritesTaskList =  response.data)}
-                    }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
-                }
-            }
+    fun loadStatuses(){
+        viewModelScope.launch {
             majkoRepository.getStatuses().collect() { response ->
                 when(response){
                     is ApiSuccess ->{

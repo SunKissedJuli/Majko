@@ -68,6 +68,9 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(groupData = response.data!!) }
+                        if(!response.data.members.isNullOrEmpty()){
+                            _uiState.update { it.copy(members = response.data!!.members) }
+                        }
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

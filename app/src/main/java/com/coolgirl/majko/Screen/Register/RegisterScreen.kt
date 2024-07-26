@@ -87,7 +87,7 @@ fun SetRegisterScreen(navController: NavController, viewModel: RegisterViewModel
                     TextField(
                         value = uiState.userName,
                         modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_username), color = MaterialTheme.colors.surface) },
+                        placeholder = { Text(text = stringResource(id = R.string.login_username), color = MaterialTheme.colors.onSurface) },
                         onValueChange = { viewModel.updateUserName(it) },
                         colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
                             unfocusedContainerColor = MaterialTheme.colors.background)
@@ -96,7 +96,7 @@ fun SetRegisterScreen(navController: NavController, viewModel: RegisterViewModel
                     TextField(
                         value = uiState.userLogin,
                         modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_login), color = MaterialTheme.colors.surface) },
+                        placeholder = { Text(text = stringResource(id = R.string.login_login), color = MaterialTheme.colors.onSurface) },
                         onValueChange = { viewModel.updateUserLogin(it) },
                         colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
                             unfocusedContainerColor = MaterialTheme.colors.background)
@@ -104,7 +104,7 @@ fun SetRegisterScreen(navController: NavController, viewModel: RegisterViewModel
                     TextField(
                         value = uiState.userPassword,
                         modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_password), color = MaterialTheme.colors.surface) },
+                        placeholder = { Text(text = stringResource(id = R.string.login_password), color = MaterialTheme.colors.onSurface) },
                         onValueChange = { viewModel.updateUserPassword(it) },
                         colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
                             unfocusedContainerColor = MaterialTheme.colors.background)
@@ -113,7 +113,7 @@ fun SetRegisterScreen(navController: NavController, viewModel: RegisterViewModel
                     TextField(
                         value = uiState.userPasswordRepeat,
                         modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_passwordrepeat), color = MaterialTheme.colors.surface) },
+                        placeholder = { Text(text = stringResource(id = R.string.login_passwordrepeat), color = MaterialTheme.colors.onSurface) },
                         onValueChange = { viewModel.updateUserPasswordRepeat(it) },
                         colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
                             unfocusedContainerColor = MaterialTheme.colors.background)
