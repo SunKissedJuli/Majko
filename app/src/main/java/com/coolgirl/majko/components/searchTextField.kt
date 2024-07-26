@@ -44,19 +44,7 @@ fun SearchBox(
                 }
             }
         )
-
         Spacer(modifier = Modifier.width(5.dp))
-
-
-
-             /*   Icon(painter = painterResource(R.drawable.icon_filter), modifier = Modifier.clickable {  },
-                    contentDescription = "", tint = MaterialTheme.colors.surface)
-
-             Spacer(modifier = Modifier.width(5.dp))
-
-                Icon(painter = painterResource(R.drawable.icon_filter_off),
-                    contentDescription = "", tint = MaterialTheme.colors.surface)*/
-
     }
 
 }

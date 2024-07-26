@@ -20,8 +20,8 @@ data class TaskEditorUiState(
     val backgroundColor: Int = R.color.white,
     val noteText: String = "",
     val newNote:Boolean = false,
-    val notes: List<NoteDataResponse>? = null,
-    val subtask: List<TaskDataResponse>? = null,
+    val notes: List<NoteDataResponse>? = listOf(),
+    val subtask: List<TaskDataResponse>? = listOf(),
     val isAdding: Boolean = false,
     val subtaskText: String = "",
     val subtaskName: String = "",
@@ -29,6 +29,6 @@ data class TaskEditorUiState(
     val subtaskPriority: Int = 1,
     val subtaskStatus: Int = 1,
     val subtaskProject: String = "",
-    val statuses: List<Info>? = null,
-    val proprieties: List<Info>? = null
+    val statuses: List<Info>? = listOf(),
+    val proprieties: List<Info>? = listOf(),
 )

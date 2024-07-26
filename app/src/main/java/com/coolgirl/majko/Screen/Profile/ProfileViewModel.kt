@@ -3,7 +3,6 @@ package com.coolgirl.majko.Screen.Profile
 import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
@@ -14,24 +13,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
-import com.coolgirl.majko.data.MajkoRepository
+import com.coolgirl.majko.data.MajkoUserRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.*
-import com.coolgirl.majko.di.ApiClient
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel() {
+class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoUserRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 

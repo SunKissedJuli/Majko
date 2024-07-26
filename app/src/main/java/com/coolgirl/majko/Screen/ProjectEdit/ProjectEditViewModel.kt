@@ -9,21 +9,19 @@ import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.components.SpinnerItems
-import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
-import com.coolgirl.majko.di.ApiClient
+import com.coolgirl.majko.data.repository.MajkoInfoRepository
+import com.coolgirl.majko.data.repository.MajkoProjectRepository
+import com.coolgirl.majko.data.repository.MajkoTaskRepository
 import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class ProjectEditViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoRepository, private val projectId : String) : ViewModel() {
+class ProjectEditViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoProjectRepository,
+                           private val majkoInfoRepository: MajkoInfoRepository,  private val majkoTaskRepository: MajkoTaskRepository,
+                           private val projectId : String) : ViewModel() {
     private val _uiState = MutableStateFlow(ProjectEditUiState())
     val uiState: StateFlow<ProjectEditUiState> = _uiState.asStateFlow()
 
@@ -169,7 +167,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
 
     fun loadStatuses(){
         viewModelScope.launch {
-            majkoRepository.getStatuses().collect() { response ->
+            majkoInfoRepository.getStatuses().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(statuses = response.data!!) }
@@ -183,7 +181,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
 
     fun loadPriorities(){
         viewModelScope.launch {
-            majkoRepository.getPriorities().collect() { response ->
+            majkoInfoRepository.getPriorities().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(proprieties = response.data!!) }
@@ -228,7 +226,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
             val accessToken = dataStore.getAccessToken().first() ?: ""
             val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
                 uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.projectId,"")
-            majkoRepository.postNewTask("Bearer " + accessToken, newTask).collect() { response ->
+            majkoTaskRepository.postNewTask("Bearer " + accessToken, newTask).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         addingTask()

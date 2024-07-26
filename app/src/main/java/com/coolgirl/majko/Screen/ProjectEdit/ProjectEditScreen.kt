@@ -174,8 +174,8 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 .fillMaxWidth()
                 .padding(all = 5.dp)
         ) {
-            if (uiState.projectData != null) {
-                if (uiState.projectData.tasks != null) {
+            if (uiState.projectData!=null) {
+                if (!uiState.projectData.tasks.isNullOrEmpty()) {
                     val projectData = uiState.projectData.tasks
                     val count = uiState.projectData?.tasks?.size ?: 0
                     items(count) { rowIndex ->
@@ -209,7 +209,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
         }
 
         //мемберы
-        if (uiState.members != null) {
+        if (uiState.members.isNullOrEmpty()) {
             Column(Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Bottom) {
 
@@ -453,7 +453,7 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 10.dp),
+                        .padding(bottom = 5.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
@@ -461,7 +461,7 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                         shape = CircleShape,
                         modifier = Modifier
                             .fillMaxWidth(0.65f)
-                            .padding(vertical = 10.dp),
+                            .padding(vertical = 5.dp),
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)
                     ) {
                         Text(

@@ -182,12 +182,12 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 }
 
                 //отображение notes
-                if(uiState.notes!=null){
+                if(!uiState.notes.isNullOrEmpty()){
                     SetNotes(uiState, viewModel)
                 }
 
                     //отображение субтасков
-                if(uiState.subtask!=null){
+                if(!uiState.subtask.isNullOrEmpty()){
                     LazyRow(Modifier.padding(all = 5.dp)) {
                         val subtask = uiState.subtask
                         val count = uiState.subtask?.size?:0

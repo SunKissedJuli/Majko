@@ -7,19 +7,14 @@ import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.components.ProjectCardUiState
-import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectCurrentResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
-import com.coolgirl.majko.di.ApiClient
+import com.coolgirl.majko.data.repository.MajkoProjectRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class ArchiveViewModel(private val dataStore:UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel(){
+class ArchiveViewModel(private val dataStore:UserDataStore, private val majkoRepository: MajkoProjectRepository) : ViewModel(){
     private val _uiState = MutableStateFlow(ArchiveUiState())
     val uiState: StateFlow<ArchiveUiState> = _uiState.asStateFlow()
 

@@ -153,7 +153,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 .fillMaxWidth()
                 .padding(all = 5.dp)) {
             if(uiState.groupData!=null){
-                if(uiState.groupData.projects_group!=null){
+                if(!uiState.groupData.projects_group.isNullOrEmpty()){
                     val projectData = uiState.groupData.projects_group
 
                     for (item in projectData){
@@ -181,7 +181,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 Modifier
                     .fillMaxWidth()
                     .padding(all = 5.dp)) {
-                if(uiState.projectData!=null){
+                if(!uiState.projectData.isNullOrEmpty()){
                     val projectData = uiState.projectData
                     val count = uiState.projectData.size?:0
                     items(count) { rowIndex ->
@@ -220,19 +220,15 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
 
                 Text(text = stringResource(R.string.projectedit_members),
                     fontWeight = FontWeight.Medium,
-                    fontSize = 18.sp
-                )
+                    fontSize = 18.sp)
 
-                Column(
-                    Modifier
+                Column(Modifier
                         .fillMaxSize()
                         .padding(horizontal = 20.dp)) {
-
                     if(!uiState.members.isNullOrEmpty()){
                         for(item in uiState.members!!){
                             Row(verticalAlignment = Alignment.CenterVertically){
-
-                                Column() {
+                                Column {
                                     Text(
                                         text = stringResource(R.string.common_dash),
                                         fontSize = 55.sp,
@@ -242,7 +238,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                                 }
                                 Spacer(modifier = Modifier.width(10.dp))
 
-                                Column() {
+                                Column {
                                     Text(text = stringResource(R.string.groupeditor_name) + " " + item.user.name)
                                     Text(text = stringResource(R.string.groupeditor_role) + " " + item.role.name)
                                 }

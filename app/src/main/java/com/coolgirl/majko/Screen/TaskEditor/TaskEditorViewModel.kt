@@ -5,27 +5,23 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.components.SpinnerItems
 import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.di.ApiClient
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
-import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
-import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteUpdate
 import com.coolgirl.majko.data.remote.dto.TaskData.*
-import com.coolgirl.majko.data.remote.dto.UserUpdateEmail
+import com.coolgirl.majko.data.repository.MajkoInfoRepository
+import com.coolgirl.majko.data.repository.MajkoTaskRepository
 import com.coolgirl.majko.navigation.Screen
-import retrofit2.Response
 
-class TaskEditorViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoRepository, private val taskId : String) : ViewModel(){
+class TaskEditorViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoTaskRepository,
+    private val majkoInfoRepository: MajkoInfoRepository, private val taskId : String) : ViewModel(){
     private val _uiState = MutableStateFlow(TaskEditorUiState())
     val uiState: StateFlow<TaskEditorUiState> = _uiState.asStateFlow()
 
@@ -101,7 +97,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
     }
 
     fun addNewNote(){
-        if(uiState.value.newNote==false){
+        if(!uiState.value.newNote){
             _uiState.update { it.copy(newNote = true) }
         }else{
             _uiState.update { it.copy(newNote = false) }
@@ -273,6 +269,8 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
         loadStatuses()
         loadPriorities()
 
+        _uiState.update { it.copy(taskId = taskId) }
+
         if(!taskId.equals("0")){
             viewModelScope.launch {
                 val accessToken = dataStore.getAccessToken().first() ?: ""
@@ -313,7 +311,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
     fun loadStatuses(){
         viewModelScope.launch {
-            majkoRepository.getStatuses().collect() { response ->
+            majkoInfoRepository.getStatuses().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(statuses = response.data!!) }
@@ -327,7 +325,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
     fun loadPriorities(){
         viewModelScope.launch {
-            majkoRepository.getPriorities().collect() { response ->
+            majkoInfoRepository.getPriorities().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(proprieties = response.data!!) }

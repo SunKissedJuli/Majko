@@ -4,10 +4,10 @@ import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 
 data class GroupUiState(
-    val personalGroup : List<GroupResponse>? = null,
-    val groupGroup : List<GroupResponse>? = null,
-    val searchPersonalGroup : List<GroupResponse>? = null,
-    val searchGroupGroup : List<GroupResponse>? = null,
+    val personalGroup : List<GroupResponse>? = listOf(),
+    val groupGroup : List<GroupResponse>? = listOf(),
+    val searchPersonalGroup : List<GroupResponse>? = listOf(),
+    val searchGroupGroup : List<GroupResponse>? = listOf(),
     val searchString: String = "",
     val isAdding: Boolean = false,
     val newGroupName : String = "",

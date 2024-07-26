@@ -7,10 +7,10 @@ import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 data class GroupEditorUiState(
     val groupId: String = "",
     val groupData: GroupResponse? = null,
-    val projectData: List<ProjectDataResponse>? = null,
+    val projectData: List<ProjectDataResponse>? = listOf(),
     val isAdding: Boolean = false,
     val taskProjectName: String = "",
     val isInvite: Boolean = false,
     val invite: String = "",
-    val members: List<GroupMember>? = null
+    val members: List<GroupMember>? = listOf(),
 )

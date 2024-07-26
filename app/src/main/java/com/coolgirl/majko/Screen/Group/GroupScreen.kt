@@ -100,7 +100,7 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
                         contentDescription = "",
                         tint = MaterialTheme.colors.surface)
                 }
-                FilterDropdown(expanded = expandedFilter, onExpandedChange = { expandedFilter = it },
+                FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
                     R.string.filter_group_personal, { viewModel.updateSearchString(uiState.searchString, 0) },
                     R.string.filter_group_group, {viewModel.updateSearchString(uiState.searchString, 1)},
                     R.string.filter_all, {viewModel.updateSearchString(uiState.searchString, 2)})

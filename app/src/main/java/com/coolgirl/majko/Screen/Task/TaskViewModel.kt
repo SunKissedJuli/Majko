@@ -1,32 +1,23 @@
 package com.coolgirl.majko.Screen.Task
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
-import com.coolgirl.majko.data.MajkoRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.data.remote.dto.MessageData
-import com.coolgirl.majko.data.remote.dto.ProjectData.JoinByInviteProjectData
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
-import com.coolgirl.majko.data.remote.dto.UserUpdateEmail
-import com.coolgirl.majko.di.ApiClient
-import com.coolgirl.majko.navigation.Screen
+import com.coolgirl.majko.data.repository.MajkoInfoRepository
+import com.coolgirl.majko.data.repository.MajkoTaskRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
-class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoRepository) : ViewModel() {
+class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoTaskRepository,
+                    private val majkoInfoRepository: MajkoInfoRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskUiState())
     val uiState:StateFlow<TaskUiState> = _uiState.asStateFlow()
 
@@ -175,7 +166,7 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
 
     fun loadStatuses(){
         viewModelScope.launch {
-            majkoRepository.getStatuses().collect() { response ->
+            majkoInfoRepository.getStatuses().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(statuses = response.data!!) }

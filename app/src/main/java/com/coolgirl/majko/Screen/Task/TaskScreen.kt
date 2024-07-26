@@ -79,7 +79,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                         contentDescription = "",
                         tint = MaterialTheme.colors.surface)
                 }
-                FilterDropdown(expanded = expandedFilter, onExpandedChange = { expandedFilter = it },
+                FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
                     R.string.filter_task_fav, { viewModel.updateSearchString(uiState.searchString, 1) },
                     R.string.filter_task_each, {viewModel.updateSearchString(uiState.searchString, 0)},
                     R.string.filter_all, {viewModel.updateSearchString(uiState.searchString, 2)})
@@ -101,7 +101,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
 
-            if (favoritesTaskList != null && favoritesTaskList.isNotEmpty()) {
+            if (!favoritesTaskList.isNullOrEmpty()) {
                 item {
                     Text(
                         text = stringResource(R.string.task_favorites),
@@ -136,7 +136,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                 }
             }
 
-            if (allTaskList != null && allTaskList.isNotEmpty()) {
+            if (!allTaskList.isNullOrEmpty()) {
                 item {
                     Text(
                         text = stringResource(R.string.task_each),

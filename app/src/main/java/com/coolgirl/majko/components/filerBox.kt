@@ -13,29 +13,36 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FilterDropdown(
     expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
+    onDismissRequest: (Boolean) -> Unit,
     firstText: Int,
     onFirstClick:()-> Unit,
     secondText: Int,
     onSecondClick:()-> Unit,
     thirdText: Int,
-    onThirdClick:()-> Unit
-    // ... другие параметры для настройки фильтрации
-) {
+    onThirdClick:()-> Unit) {
+
     DropdownMenu(
         expanded = expanded,
-        onDismissRequest = { onExpandedChange(false) },
-        modifier = Modifier.width(300.dp) // Настройте ширину по необходимости
-    ) {
+        onDismissRequest = { onDismissRequest(false) },
+        modifier = Modifier.fillMaxWidth(0.6f)) {
 
-        DropdownMenuItem(onClick = { onFirstClick() }) {
+        DropdownMenuItem(onClick = {
+            onFirstClick()
+            onDismissRequest(false)
+        }) {
             Text(stringResource(firstText))
         }
-        DropdownMenuItem(onClick = { onSecondClick() }) {
+        DropdownMenuItem(onClick = {
+            onSecondClick()
+            onDismissRequest(false) }
+        ) {
             Text(stringResource(secondText))
         }
 
-        DropdownMenuItem(onClick = { onThirdClick() }) {
+        DropdownMenuItem(onClick = {
+            onThirdClick()
+            onDismissRequest(false)}
+        ) {
             Text(stringResource(thirdText))
         }
     }
