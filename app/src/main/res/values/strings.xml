@@ -63,4 +63,10 @@
     <string name="bottomBar_archive">Готовые</string>
     <string name="bottomBar_profile">Профиль</string>
     <string name="bottomBar_task">Задачи</string>
+    <string name="filter_group_group">Только общие</string>
+    <string name="filter_project_group">Только групповые</string>
+    <string name="filter_group_personal">Только личные</string>
+    <string name="filter_task_fav">Только избранные</string>
+    <string name="filter_task_each">Только другие</string>
+    <string name="filter_all">Все</string>
 </resources>

@@ -23,12 +23,12 @@ fun SearchBox(
     onValueChange: (String) -> Unit,
     placeholder: Int,
 ) {
-    Row(Modifier.fillMaxWidth(0.88f), verticalAlignment = Alignment.CenterVertically){
+    Row(Modifier.fillMaxWidth(0.7f), verticalAlignment = Alignment.CenterVertically){
         BasicTextField(
             value = value,
             onValueChange = { onValueChange(it) },
             modifier = Modifier
-                .fillMaxWidth(0.78f)
+                .fillMaxWidth()
                 .padding(start = 20.dp),
             textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = MaterialTheme.colors.background),
             decorationBox = { innerTextField ->
@@ -48,15 +48,14 @@ fun SearchBox(
         Spacer(modifier = Modifier.width(5.dp))
 
 
-          //  IconButton(onClick = { /*TODO*/ }) {
-                Icon(painter = painterResource(R.drawable.icon_filter), modifier = Modifier.clickable {  },
+
+             /*   Icon(painter = painterResource(R.drawable.icon_filter), modifier = Modifier.clickable {  },
                     contentDescription = "", tint = MaterialTheme.colors.surface)
-          //  }
+
              Spacer(modifier = Modifier.width(5.dp))
-           // IconButton(onClick = { /*TODO*/ }) {
+
                 Icon(painter = painterResource(R.drawable.icon_filter_off),
-                    contentDescription = "", tint = MaterialTheme.colors.surface)
-            //}
+                    contentDescription = "", tint = MaterialTheme.colors.surface)*/
 
     }
 

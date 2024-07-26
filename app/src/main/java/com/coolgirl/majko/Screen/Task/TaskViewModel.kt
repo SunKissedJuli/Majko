@@ -50,6 +50,64 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
         }
     }
 
+    fun updateSearchString(newSearchString:String, whatFilter: Int){
+        when (whatFilter) {
+            0 -> { updateEachTask(newSearchString) }
+            1 -> { updateFavTask(newSearchString) }
+            else -> { updateAllTask(newSearchString) }
+        }
+    }
+
+    fun updateEachTask(newSearchString:String){
+        _uiState.update { currentState ->
+            val filteredAllTasks = currentState.allTaskList?.filter { task ->
+                task.title?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.text?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            currentState.copy(
+                searchString = newSearchString,
+                searchAllTaskList = filteredAllTasks,
+                searchFavoritesTaskList = null
+            )
+        }
+    }
+
+    fun updateFavTask(newSearchString:String){
+        _uiState.update { currentState ->
+            val filteredFavoritesTasks = currentState.favoritesTaskList?.filter { task ->
+                task.title?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.text?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            currentState.copy(
+                searchString = newSearchString,
+                searchAllTaskList = null,
+                searchFavoritesTaskList = filteredFavoritesTasks
+            )
+        }
+    }
+
+    fun updateAllTask(newSearchString:String){
+        _uiState.update { currentState ->
+            val filteredAllTasks = currentState.allTaskList?.filter { task ->
+                task.title?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.text?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            val filteredFavoritesTasks = currentState.favoritesTaskList?.filter { task ->
+                task.title?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.text?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            currentState.copy(
+                searchString = newSearchString,
+                searchAllTaskList = filteredAllTasks,
+                searchFavoritesTaskList = filteredFavoritesTasks
+            )
+        }
+    }
+
     fun getPriority(priorityId: Int): Int{
         return when (priorityId) {
             1 -> R.color.green

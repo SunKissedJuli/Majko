@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.components.FilterDropdown
 import com.coolgirl.majko.components.GroupCard
 import com.coolgirl.majko.components.SearchBox
 import com.coolgirl.majko.components.plusButton
@@ -69,6 +70,7 @@ fun GroupScreen(navController: NavHostController) {
 fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, viewModel: GroupViewModel) {
 
     var expanded by remember { mutableStateOf(false) }
+    var expandedFilter by remember { mutableStateOf(false) }
 
     val personalGroup = uiState.searchPersonalGroup
     val groupGroup = uiState.searchGroupGroup
@@ -88,8 +90,28 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
             verticalAlignment = Alignment.CenterVertically) {
 
             SearchBox(value = uiState.searchString,
-                onValueChange = {viewModel.updateSearchString(it)},
+                onValueChange = {viewModel.updateSearchString(it,2)},
                 placeholder = R.string.group_search)
+
+            Column {
+                Row {
+                    Icon(painter = painterResource(R.drawable.icon_filter),
+                        modifier = Modifier.clickable {expandedFilter = !expandedFilter },
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.surface)
+                }
+                FilterDropdown(expanded = expandedFilter, onExpandedChange = { expandedFilter = it },
+                    R.string.filter_group_personal, { viewModel.updateSearchString(uiState.searchString, 0) },
+                    R.string.filter_group_group, {viewModel.updateSearchString(uiState.searchString, 1)},
+                    R.string.filter_all, {viewModel.updateSearchString(uiState.searchString, 2)})
+            }
+
+            Spacer(modifier = Modifier.width(5.dp))
+
+            Icon(painter = painterResource(R.drawable.icon_filter_off),
+                modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
+                contentDescription = "", tint = MaterialTheme.colors.surface)
+
 
 
             Box(Modifier.padding(end = 10.dp)) {
@@ -165,7 +187,7 @@ private fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel, onDismiss
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
                     focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.group_name), color = MaterialTheme.colors.surface)})
+                placeholder = {Text(text = stringResource(R.string.group_name), color = MaterialTheme.colors.onSurface)})
 
             OutlinedTextField(value = uiState.newGroupDescription,
                 onValueChange = {viewModel.updateGroupDescription(it)},
@@ -176,7 +198,7 @@ private fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel, onDismiss
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
                     focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.group_description), color = MaterialTheme.colors.surface)})
+                placeholder = {Text(text = stringResource(R.string.group_description), color = MaterialTheme.colors.onSurface)})
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){

@@ -64,7 +64,46 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
 
     }
 
-    fun updateSearchString(newSearchString:String){
+    fun updateSearchString(newSearchString:String, whatFilter: Int){
+        when (whatFilter) {
+            0 -> { updatePersonalProject(newSearchString) }
+            1 -> { updateGroupProject(newSearchString) }
+            else -> { updateAllProject(newSearchString) }
+        }
+    }
+
+    fun updatePersonalProject(newSearchString:String){
+        _uiState.update { currentState ->
+            val filteredPersonalProject = currentState.personalProject?.filter { task ->
+                task.name?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.description?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            currentState.copy(
+                searchString = newSearchString,
+                searchPersonalProject = filteredPersonalProject,
+                searchGroupProject = null
+            )
+        }
+    }
+
+    fun updateGroupProject(newSearchString:String){
+        _uiState.update { currentState ->
+
+            val filteredGroupProject = currentState.groupProject?.filter { task ->
+                task.name?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.description?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            currentState.copy(
+                searchString = newSearchString,
+                searchPersonalProject = null,
+                searchGroupProject = filteredGroupProject
+            )
+        }
+    }
+
+    fun updateAllProject(newSearchString:String){
         _uiState.update { currentState ->
             val filteredPersonalProject = currentState.personalProject?.filter { task ->
                 task.name?.contains(newSearchString, ignoreCase = true) == true ||
@@ -101,7 +140,6 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
     }
 
     fun toArchive(){
-
         val projectIds = uiState.value.longtapProjectId.chunked(36) // Разделяем строку на ID длиной 36 символов
         projectIds.mapNotNull { id ->
             val project = uiState.value.personalProject?.find { it.id == id }

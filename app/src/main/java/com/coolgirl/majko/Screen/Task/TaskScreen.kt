@@ -2,6 +2,7 @@ package com.coolgirl.majko.Screen.Task
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,11 +13,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.R
+import com.coolgirl.majko.components.FilterDropdown
 import com.coolgirl.majko.components.SearchBox
 import com.coolgirl.majko.components.plusButton
 import com.coolgirl.majko.navigation.*
@@ -49,6 +52,8 @@ fun TaskScreen(navController: NavHostController) {
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, uiState: TaskUiState) {
+    var expandedFilter by remember { mutableStateOf(false) }
+
     val allTaskList = uiState.searchAllTaskList
     val favoritesTaskList = uiState.searchFavoritesTaskList
 
@@ -66,6 +71,25 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
         verticalAlignment = Alignment.CenterVertically) {
 
             SearchBox(uiState.searchString, {viewModel.updateSearchString(it)}, R.string.task_search )
+
+            Column {
+                Row {
+                    Icon(painter = painterResource(R.drawable.icon_filter),
+                        modifier = Modifier.clickable {expandedFilter = !expandedFilter },
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.surface)
+                }
+                FilterDropdown(expanded = expandedFilter, onExpandedChange = { expandedFilter = it },
+                    R.string.filter_task_fav, { viewModel.updateSearchString(uiState.searchString, 1) },
+                    R.string.filter_task_each, {viewModel.updateSearchString(uiState.searchString, 0)},
+                    R.string.filter_all, {viewModel.updateSearchString(uiState.searchString, 2)})
+            }
+
+            Spacer(modifier = Modifier.width(5.dp))
+
+            Icon(painter = painterResource(R.drawable.icon_filter_off),
+                modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
+                contentDescription = "", tint = MaterialTheme.colors.surface)
 
         }
 

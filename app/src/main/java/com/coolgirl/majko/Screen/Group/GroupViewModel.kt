@@ -53,8 +53,46 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
         }
     }
 
+    fun updateSearchString(newSearchString:String, whatFilter: Int){
+        when (whatFilter) {
+            0 -> { updatePersonalGroup(newSearchString) }
+            1 -> { updateGroupGroup(newSearchString) }
+            else -> { updateAllGroup(newSearchString) }
+        }
+    }
 
-    fun updateSearchString(newSearchString:String){
+    fun updatePersonalGroup(newSearchString:String){
+        _uiState.update { currentState ->
+            val filteredPersonalGroup = currentState.personalGroup?.filter { task ->
+                task.title?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.description?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            currentState.copy(
+                searchString = newSearchString,
+                searchPersonalGroup = filteredPersonalGroup,
+                searchGroupGroup = null
+            )
+        }
+    }
+
+    fun updateGroupGroup(newSearchString:String){
+        _uiState.update { currentState ->
+
+            val filteredGroupGroup = currentState.groupGroup?.filter { task ->
+                task.title?.contains(newSearchString, ignoreCase = true) == true ||
+                        task.description?.contains(newSearchString, ignoreCase = true) == true
+            }
+
+            currentState.copy(
+                searchString = newSearchString,
+                searchPersonalGroup = null,
+                searchGroupGroup = filteredGroupGroup
+            )
+        }
+    }
+
+    fun updateAllGroup(newSearchString:String){
         _uiState.update { currentState ->
             val filteredPersonalGroup = currentState.personalGroup?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
