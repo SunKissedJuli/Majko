@@ -70,7 +70,8 @@ fun ArchiveScreen(navController: NavHostController){
 
                     Row(Modifier
                         .fillMaxWidth()
-                        .clickable { viewModel.fromArchive() }){
+                        .clickable { viewModel.fromArchive()
+                        expanded = false}){
                         Text(
                             stringResource(R.string.archive_to_project),
                             fontSize = 18.sp,
@@ -137,7 +138,13 @@ fun SetArchiveScreen(uiState: ArchiveUiState, navController: NavHostController, 
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(groupProject) { project ->
-                    ProjectCard(navController, projectData = project, onLongTap = {viewModel.openPanel(it)})
+                    ProjectCard(
+                        navController,
+                        projectData = project,
+                        onLongTap = { viewModel.openPanel(it) },
+                        onLongTapRelease = { viewModel.openPanel(it) },
+                        isSelected = uiState.longtapProjectId.contains(project.id)
+                    )
                 }
             }
 
@@ -148,7 +155,13 @@ fun SetArchiveScreen(uiState: ArchiveUiState, navController: NavHostController, 
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(personalProject) { project ->
-                    ProjectCard(navController, projectData = project, onLongTap = {viewModel.openPanel(it)})
+                    ProjectCard(
+                        navController,
+                        projectData = project,
+                        onLongTap = { viewModel.openPanel(it) },
+                        onLongTapRelease = { viewModel.openPanel(it) },
+                        isSelected = uiState.longtapProjectId.contains(project.id)
+                    )
                 }
             }
         }

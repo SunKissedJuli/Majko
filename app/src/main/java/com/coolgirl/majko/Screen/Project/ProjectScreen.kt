@@ -77,7 +77,8 @@ fun ProjectScreen(navController: NavHostController){
                         modifier = Modifier.fillMaxWidth(0.5f)) {
                         Row(Modifier
                             .fillMaxWidth()
-                            .clickable { viewModel.toArchive() }) {
+                            .clickable { viewModel.toArchive()
+                            expanded = false }) {
                             Text(
                                 stringResource(R.string.project_to_archive),
                                 fontSize = 18.sp,
@@ -185,7 +186,13 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(groupProject) { project ->
-                    ProjectCard(navController, projectData = project, onLongTap = {viewModel.openPanel(it)})
+                    ProjectCard(
+                        navController,
+                        projectData = project,
+                        onLongTap = { viewModel.openPanel(it) },
+                        onLongTapRelease = { viewModel.openPanel(it) },
+                        isSelected = uiState.longtapProjectId.contains(project.id)
+                    )
                 }
             }
 
@@ -196,7 +203,13 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(personalProject) { project ->
-                    ProjectCard(navController, projectData = project, onLongTap = {viewModel.openPanel(it)})
+                    ProjectCard(
+                        navController,
+                        projectData = project,
+                        onLongTap = { viewModel.openPanel(it) },
+                        onLongTapRelease = { viewModel.openPanel(it) },
+                        isSelected = uiState.longtapProjectId.contains(project.id)
+                    )
                 }
             }
         }

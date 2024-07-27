@@ -157,7 +157,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                     val projectData = uiState.groupData.projectsGroup
 
                     for (item in projectData){
-                        ProjectCard(navController, projectData = item, onLongTap = {})
+                        ProjectCard(navController, projectData = item, onLongTap = {}, onLongTapRelease =  {}, isSelected = false)
                     }
                 }
             }
@@ -186,7 +186,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                     val count = uiState.projectData.size?:0
                     items(count) { rowIndex ->
                         Column(Modifier.width(200.dp)) {
-                            ProjectCard(navController, projectData = projectData[rowIndex], onLongTap = {})
+                            ProjectCard(navController, projectData = projectData[rowIndex], onLongTap = {}, onLongTapRelease =  {}, isSelected = false)
                             Row(Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center){
                                 Button(onClick = { viewModel.saveProject(projectData[rowIndex].id) },

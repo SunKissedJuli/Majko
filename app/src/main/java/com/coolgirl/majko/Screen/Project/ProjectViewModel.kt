@@ -48,7 +48,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         _uiState.update { it.copy(isAdding = false)}
     }
 
-    fun openPanel(id: String){
+   /* fun openPanel(id: String){
         if(id.isNotEmpty()){
             _uiState.update { it.copy(isLongtap = true) }
             _uiState.update { it.copy(longtapProjectId = uiState.value.longtapProjectId + id) }
@@ -57,6 +57,16 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
             _uiState.update { it.copy(longtapProjectId = "") }
         }
 
+    }*/
+
+    fun openPanel(id: String) {
+        if (uiState.value.longtapProjectId.contains(id)) {
+            val updatedIds = uiState.value.longtapProjectId.split(",").filter { it != id }.joinToString(",")
+            _uiState.update { it.copy(isLongtap = updatedIds.isNotEmpty(), longtapProjectId = updatedIds) }
+        } else {
+            val updatedIds = if (uiState.value.longtapProjectId.isEmpty()) id else "${uiState.value.longtapProjectId},$id"
+            _uiState.update { it.copy(isLongtap = true, longtapProjectId = updatedIds) }
+        }
     }
 
     fun updateSearchString(newSearchString:String, whatFilter: Int){

@@ -26,55 +26,67 @@ import com.coolgirl.majko.navigation.Screen
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ProjectCard(navHostController: NavHostController,
-                priorityColor : Int = R.color.white,
-                projectData: ProjectDataResponse,
-                onLongTap:(String) -> Unit) {
+fun ProjectCard(
+    navHostController: NavHostController,
+    priorityColor: Int = R.color.white,
+    projectData: ProjectDataResponse,
+    onLongTap: (String) -> Unit,
+    onLongTapRelease: (String) -> Unit,
+    isSelected: Boolean
+) {
+    var tapType by remember { mutableStateOf(if (isSelected) R.color.purple else R.color.gray) }
 
-    var tapType by remember { mutableStateOf(R.color.gray) }
-
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .height(170.dp)
-        .padding(start = 10.dp, top = 10.dp, end = 10.dp)
-        .clip(RoundedCornerShape(20.dp))
-        .border(
-            3.dp,
-            color = colorResource(tapType),
-            shape = RoundedCornerShape(20.dp)
-        )
-        .background(color = colorResource(priorityColor))
-        .combinedClickable(
-            onClick = { navHostController.navigate(Screen.ProjectEditor.createRoute(projectData.id)) },
-            onLongClick = {
-                tapType = R.color.purple
-                onLongTap(projectData.id)
-            },
-        ),
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(170.dp)
+            .padding(start = 10.dp, top = 10.dp, end = 10.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .border(
+                3.dp,
+                color = colorResource(tapType),
+                shape = RoundedCornerShape(20.dp)
+            )
+            .background(color = colorResource(priorityColor))
+            .combinedClickable(
+                onClick = { navHostController.navigate(Screen.ProjectEditor.createRoute(projectData.id)) },
+                onLongClick = {
+                    if (isSelected) {
+                        tapType = R.color.gray
+                        onLongTapRelease(projectData.id)
+                    } else {
+                        tapType = R.color.purple
+                        onLongTap(projectData.id)
+                    }
+                },
+            ),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Top) {
+        verticalArrangement = Arrangement.Top
+    ) {
         Row(
             Modifier
                 .padding(start = 15.dp, top = 10.dp, end = 10.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(0.27f),
             horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically){
-            Box(Modifier.
-            fillMaxHeight(0.8f)
-                .size(25.dp)
-                .aspectRatio(1f)
-                .background(MaterialTheme.colors.primary, shape = CircleShape))
-          /*  Image(painter = painterResource(R.drawable.icon_plug),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                Modifier
                     .fillMaxHeight(0.8f)
-                    .clip(CircleShape))*/
-
+                    .size(25.dp)
+                    .aspectRatio(1f)
+                    .background(MaterialTheme.colors.primary, shape = CircleShape)
+            )
             Spacer(Modifier.width(15.dp))
-            Text(text= projectData.name?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
-
+            Text(
+                text = projectData.name ?: stringResource(R.string.common_noname),
+                modifier = Modifier.fillMaxWidth(0.7f),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                softWrap = true,
+                maxLines = 2
+            )
         }
         Row(
             Modifier
@@ -82,16 +94,24 @@ fun ProjectCard(navHostController: NavHostController,
                 .fillMaxWidth()
                 .fillMaxHeight(0.7f),
             horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.Top){
-            Text(text= projectData.description?: stringResource(R.string.common_nodescription), fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 4)
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = projectData.description ?: stringResource(R.string.common_nodescription),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Light,
+                softWrap = true,
+                maxLines = 4
+            )
         }
         Row(
             Modifier
                 .fillMaxSize()
                 .padding(end = 15.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End) {
-            if (!projectData.isPersonal){
+            horizontalArrangement = Arrangement.End
+        ) {
+            if (!projectData.isPersonal) {
                 Image(painter = painterResource(R.drawable.icon_members), contentDescription = "")
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(text = projectData.members.size.toString())
@@ -99,6 +119,7 @@ fun ProjectCard(navHostController: NavHostController,
         }
     }
 }
+
 
 data class ProjectCardUiState(
     var borderColor: Int = R.color.gray,
