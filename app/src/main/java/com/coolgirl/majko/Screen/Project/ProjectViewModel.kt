@@ -48,16 +48,6 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         _uiState.update { it.copy(isAdding = false)}
     }
 
-   /* fun openPanel(id: String){
-        if(id.isNotEmpty()){
-            _uiState.update { it.copy(isLongtap = true) }
-            _uiState.update { it.copy(longtapProjectId = uiState.value.longtapProjectId + id) }
-        }else{
-            _uiState.update { it.copy(isLongtap = false) }
-            _uiState.update { it.copy(longtapProjectId = "") }
-        }
-
-    }*/
 
     fun openPanel(id: String) {
         if (uiState.value.longtapProjectId.contains(id)) {

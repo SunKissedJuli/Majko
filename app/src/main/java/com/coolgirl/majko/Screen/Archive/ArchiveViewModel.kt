@@ -25,11 +25,8 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         if (uiState.value.longtapProjectId.contains(id)) {
             val updatedIds = uiState.value.longtapProjectId.split(",").filter { it != id }.joinToString(",")
             _uiState.update { it.copy(isLongtap = updatedIds.isNotEmpty(), longtapProjectId = updatedIds) }
-            Log.d("tag","id = " + uiState.value.longtapProjectId)
         } else {
-           // val updatedIds = if (uiState.value.longtapProjectId.isEmpty()) id else "${uiState.value.longtapProjectId},$id"
             _uiState.update { it.copy(isLongtap = true, longtapProjectId = uiState.value.longtapProjectId + id) }
-            Log.d("tag","id = " + uiState.value.longtapProjectId)
         }
     }
 
