@@ -64,8 +64,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
             val updatedIds = uiState.value.longtapProjectId.split(",").filter { it != id }.joinToString(",")
             _uiState.update { it.copy(isLongtap = updatedIds.isNotEmpty(), longtapProjectId = updatedIds) }
         } else {
-            val updatedIds = if (uiState.value.longtapProjectId.isEmpty()) id else "${uiState.value.longtapProjectId},$id"
-            _uiState.update { it.copy(isLongtap = true, longtapProjectId = updatedIds) }
+            _uiState.update { it.copy(isLongtap = true, longtapProjectId = uiState.value.longtapProjectId + id) }
         }
     }
 
@@ -171,6 +170,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                 }
             }
         }
+        _uiState.update { it.copy(longtapProjectId = "") }
     }
 
     fun addProject(){
