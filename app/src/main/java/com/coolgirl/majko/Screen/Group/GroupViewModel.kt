@@ -133,7 +133,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
                     is ApiSuccess -> {
                         val validData: MutableList<GroupResponse> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (!item.is_personal) {
+                            if (!item.isPersonal) {
                                 validData.add(item)
                             }
                         }
@@ -158,7 +158,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
                     is ApiSuccess ->{
                         val validData: MutableList<GroupResponse> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (item.is_personal ) {
+                            if (item.isPersonal ) {
                                 validData.add(item)
                             }
                         }

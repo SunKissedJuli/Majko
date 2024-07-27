@@ -79,7 +79,7 @@ fun GroupCard(navHostController: NavHostController,
                 .padding(end = 15.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End) {
-            if (!groupData.is_personal){
+            if (!groupData.isPersonal){
                 Image(painter = painterResource(R.drawable.icon_members),
                     contentDescription = "")
                 Text(text = groupData.members.size.toString())

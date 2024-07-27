@@ -72,7 +72,7 @@ fun TaskCard(navHostController: NavHostController,
             Spacer(Modifier.width(7.dp))
             Text(text= taskData.title?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
             Spacer(Modifier.width(5.dp))
-            if (taskData.is_favorite==true){
+            if (taskData.isFavorite==true){
                 IconButton(onClick = { onBurnStarClick(taskData.id) }) {
                     Icon(imageVector = Icons.Filled.Star, contentDescription = "", tint = colorResource(
                         R.color.yellow)
@@ -125,7 +125,7 @@ fun TaskCard(navHostController: NavHostController,
                 Image(painter = painterResource(R.drawable.icon_subtask),
                     contentDescription = "",
                     Modifier.size(20.dp))
-                Text(text = taskData.count_subtasks.toString())
+                Text(text = taskData.countSubtasks.toString())
             }
         }
     }

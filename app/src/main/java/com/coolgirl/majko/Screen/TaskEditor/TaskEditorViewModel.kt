@@ -286,10 +286,10 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
                                 _uiState.update { it.copy(taskProjectObj = response.data!!.project!!) }
                             }
 
-                            if(response.data!!.count_notes!=0){
+                            if(response.data!!.countNotes!=0){
                                 loadNotesData()
                             }
-                            if(response.data!!.count_subtasks!=0){
+                            if(response.data!!.countSubtasks!=0){
                                 loadSubtaskData()
                             }
                         }

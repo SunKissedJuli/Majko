@@ -1,10 +1,12 @@
 package com.coolgirl.majko.data.remote.dto.ProjectData
 
+import com.google.gson.annotations.SerializedName
+
 data class ProjectCreateInviteResponse(
-    val project_id: String,
+    @SerializedName("project_id") val projectId: String,
     val invite: String,
-    val user_id: String,
+    @SerializedName("user_id") val userId: String,
     val id: String,
-    val updated_at: String,
-    val created_at: String,
+    @SerializedName("updated_at") val updatedAt: String,
+    @SerializedName("created_at") val createdAt: String,
 )

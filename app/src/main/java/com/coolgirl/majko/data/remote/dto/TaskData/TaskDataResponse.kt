@@ -2,6 +2,7 @@ package com.coolgirl.majko.data.remote.dto.TaskData
 
 import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
+import com.google.gson.annotations.SerializedName
 
 data class TaskDataResponse(
     val id: String,
@@ -15,12 +16,12 @@ data class TaskDataResponse(
     val image: String?,
     val creator: List<CurrentUserDataResponse>,
     val mainTaskId: String?,
-    val task_members: List<CurrentUserDataResponse>?,
-    val is_personal: Boolean,
-    val count_subtasks: Int,
-    val count_notes: Int,
-    val count_files: Int,
-    val is_favorite: Boolean,
+    @SerializedName("task_members") val taskMembers: List<CurrentUserDataResponse>?,
+    @SerializedName("is_personal") val isPersonal: Boolean,
+    @SerializedName("count_subtasks") val countSubtasks: Int,
+    @SerializedName("count_notes") val countNotes: Int,
+    @SerializedName("count_files") val countFiles: Int,
+    @SerializedName("is_favorite") val isFavorite: Boolean,
     val project: ProjectDataResponse?
 )
 

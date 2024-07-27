@@ -101,7 +101,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                     id = it.id,
                     name = it.name,
                     description = it.description,
-                    is_archive = 0
+                    isArchive = 0
                 )
                 viewModelScope.launch {
                     majkoRepository.updateProject(updateProject).collect() { response ->
@@ -131,7 +131,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                     is ApiSuccess ->{
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (item.is_personal && item.is_archive==1) {
+                            if (item.isPersonal && item.isArchive==1) {
                                 validData.add(item)
                             }
                         }
@@ -152,7 +152,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                     is ApiSuccess -> {
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (!item.is_personal && item.is_archive == 1) {
+                            if (!item.isPersonal && item.isArchive == 1) {
                                 validData.add(item)
                             }
                         }

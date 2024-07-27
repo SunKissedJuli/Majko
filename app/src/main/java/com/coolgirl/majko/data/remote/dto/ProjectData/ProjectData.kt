@@ -1,7 +1,10 @@
 package com.coolgirl.majko.data.remote.dto.ProjectData
 
+import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+
 data class ProjectData(
     val name : String = "",
     val description : String = "",
-    val is_archive : Int = 0
+    @SerializedName("is_archive") val isArchive : Int = 0
 )

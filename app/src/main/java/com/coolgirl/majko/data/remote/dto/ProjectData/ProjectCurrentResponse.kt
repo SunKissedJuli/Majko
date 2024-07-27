@@ -2,6 +2,7 @@ package com.coolgirl.majko.data.remote.dto.ProjectData
 
 import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
+import com.google.gson.annotations.SerializedName
 
 data class ProjectCurrentResponse(
     val id: String,
@@ -9,12 +10,12 @@ data class ProjectCurrentResponse(
     val updatedAt: String,
     val name: String,
     val description: String,
-    val is_archive: Int,
+    @SerializedName("is_archive") var isArchive: Int,
     val author: CurrentUserDataResponse,
     val members: List<Member>,
     val image: String?,
-    val is_personal: Boolean,
-    val count_files: Int,
+    @SerializedName("is_personal") var isPersonal: Boolean,
+    @SerializedName("count_files") val countFiles: Int,
     val tasks: List<TaskDataResponse>,
     val groups: List<Group>,
     val files: List<File>
@@ -32,14 +33,14 @@ data class File(
 )
 
 data class Member(
-    val project_member_id: String,
+    @SerializedName("project_member_id") var projectMemberId: String,
     val user: CurrentUserDataResponse,
-    val role_id:ProjectRole
+    @SerializedName("role_id") var roleId:ProjectRole
 )
 
 data class ProjectRole(
     val id: Int,
     val name: String,
-    val created_at: String,
-    val updated_at: String,
+    @SerializedName("created_at") val createdAt: String,
+    @SerializedName("updated_at") val updatedAt: String,
 )

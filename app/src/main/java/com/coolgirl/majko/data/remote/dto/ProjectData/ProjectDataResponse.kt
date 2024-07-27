@@ -1,6 +1,7 @@
 package com.coolgirl.majko.data.remote.dto.ProjectData
 
 import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
+import com.google.gson.annotations.SerializedName
 
 data class ProjectDataResponse(
     val id: String,
@@ -8,11 +9,11 @@ data class ProjectDataResponse(
     val updatedAt: String,
     val name: String,
     val description: String,
-    val is_archive: Int,
+    @SerializedName("is_archive") var isArchive: Int,
     val author: CurrentUserDataResponse,
     val members: List<Member>,
     val image: String?,
-    val is_personal: Boolean,
+    @SerializedName("is_personal") var isPersonal: Boolean,
     val countFiles: Int
     )
 

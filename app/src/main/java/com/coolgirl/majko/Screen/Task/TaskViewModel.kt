@@ -148,7 +148,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
                     is ApiSuccess ->{
                         val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (!item.is_favorite && item.mainTaskId==null) {
+                            if (!item.isFavorite && item.mainTaskId==null) {
                                 notFavorite.add(item)
                             }
                         }

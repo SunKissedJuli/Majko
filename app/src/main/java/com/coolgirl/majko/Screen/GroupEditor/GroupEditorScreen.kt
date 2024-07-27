@@ -153,8 +153,8 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 .fillMaxWidth()
                 .padding(all = 5.dp)) {
             if(uiState.groupData!=null){
-                if(!uiState.groupData.projects_group.isNullOrEmpty()){
-                    val projectData = uiState.groupData.projects_group
+                if(!uiState.groupData.projectsGroup.isNullOrEmpty()){
+                    val projectData = uiState.groupData.projectsGroup
 
                     for (item in projectData){
                         ProjectCard(navController, projectData = item, onLongTap = {})

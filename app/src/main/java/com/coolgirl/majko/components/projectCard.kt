@@ -91,7 +91,7 @@ fun ProjectCard(navHostController: NavHostController,
                 .padding(end = 15.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End) {
-            if (!projectData.is_personal){
+            if (!projectData.isPersonal){
                 Image(painter = painterResource(R.drawable.icon_members), contentDescription = "")
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(text = projectData.members.size.toString())

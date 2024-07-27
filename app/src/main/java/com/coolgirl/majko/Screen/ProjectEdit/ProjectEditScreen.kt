@@ -209,7 +209,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
         }
 
         //мемберы
-        if (uiState.members.isNullOrEmpty()) {
+        if (!uiState.members.isNullOrEmpty()) {
             Column(Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Bottom) {
 
@@ -246,7 +246,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
 
                                 Column {
                                     Text(text = stringResource(R.string.groupeditor_name) + " " + item.user.name)
-                                    Text(text = stringResource(R.string.groupeditor_role) + " " + item.role_id.name)
+                                    Text(text = stringResource(R.string.groupeditor_role) + " " + item.roleId.name)
                                 }
                             }
                         Spacer(modifier = Modifier.height(10.dp))

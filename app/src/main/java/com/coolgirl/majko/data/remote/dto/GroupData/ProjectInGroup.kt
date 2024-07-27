@@ -1,8 +1,10 @@
 package com.coolgirl.majko.data.remote.dto.GroupData
 
+import com.google.gson.annotations.SerializedName
+
 data class ProjectInGroup(
 
-    val project_id: String,
-    val group_id: String
+    @SerializedName("project_id") val projectId: String,
+    @SerializedName("group_id") val groupId: String
 
 )

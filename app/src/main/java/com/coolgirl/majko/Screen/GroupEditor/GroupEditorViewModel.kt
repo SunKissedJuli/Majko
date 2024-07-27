@@ -123,7 +123,7 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
                     is ApiSuccess ->{
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (item.is_personal && item.is_archive == 0) {
+                            if (item.isPersonal && item.isArchive == 0) {
                                 validData.add(item)
                             }
                         }
