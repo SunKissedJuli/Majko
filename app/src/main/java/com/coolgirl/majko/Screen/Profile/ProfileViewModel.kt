@@ -51,8 +51,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
 
     fun updateNameData() {
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.updateUserName("Bearer " + accessToken,  UserUpdateName(uiState.value.userName)).collect() { response ->
+            majkoRepository.updateUserName(UserUpdateName(uiState.value.userName)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{}
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -64,8 +63,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
 
     fun updateEmailData() {
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.updateUserEmail("Bearer " + accessToken,  UserUpdateEmail(uiState.value.userName, uiState.value.userEmail)).collect() { response ->
+            majkoRepository.updateUserEmail(UserUpdateEmail(uiState.value.userName, uiState.value.userEmail)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{}
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -92,8 +90,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
 
     fun loadData() {
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.currentUser("Bearer " + accessToken).collect() { response ->
+            majkoRepository.currentUser().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         updateUserEmail(response.data?.email.toString())
@@ -108,8 +105,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
 
     fun changePassword(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.updateUserPassword("Bearer " + accessToken,  UserUpdatePassword(uiState.value.userName,
+            majkoRepository.updateUserPassword(UserUpdatePassword(uiState.value.userName,
                 uiState.value.newPassword,uiState.value.confirmPassword, uiState.value.oldPassword)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ changePasswordScreen() }
@@ -141,8 +137,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
             }finally { cursor!!.close()
                 coroutineScope.launch() {
                     viewModelScope.launch {
-                        val accessToken = dataStore.getAccessToken().first() ?: ""
-                        majkoRepository.updateUserImage("Bearer " + accessToken,   UserUpdateImage(uiState.value.userName, file)).collect() { response ->
+                        majkoRepository.updateUserImage(UserUpdateImage(uiState.value.userName, file)).collect() { response ->
                             when(response){
                                 is ApiSuccess ->{  }
                                 is ApiError -> { Log.d("TAG", "error message = " + response.message) }

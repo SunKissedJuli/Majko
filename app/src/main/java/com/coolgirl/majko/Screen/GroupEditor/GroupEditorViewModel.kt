@@ -16,7 +16,7 @@ import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class GroupEditorViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoGroupRepository,
+class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
                            private val majkoProjectRepository: MajkoProjectRepository, private val groupId: String) : ViewModel() {
     private val _uiState = MutableStateFlow(GroupEditorUiState())
     val uiState: StateFlow<GroupEditorUiState> = _uiState.asStateFlow()
@@ -61,8 +61,7 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
     fun loadData(){
         _uiState.update { it.copy(groupId = groupId) }
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getGroupById("Bearer " + accessToken,  GroupById(uiState.value.groupId)).collect() { response ->
+            majkoRepository.getGroupById(GroupById(uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(groupData = response.data!!) }
@@ -79,8 +78,7 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
 
     fun saveGroup(navHostController: NavHostController){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.updateGroup("Bearer " + accessToken,  GroupUpdate(uiState.value.groupId,
+            majkoRepository.updateGroup(GroupUpdate(uiState.value.groupId,
                 uiState.value.groupData!!.title, uiState.value.groupData!!.description)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ navHostController.navigate(Screen.Group.route) }
@@ -93,8 +91,7 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
 
     fun removeGroup(navHostController: NavHostController){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.removeGroup("Bearer " + accessToken,  GroupById(uiState.value.groupId)).collect() { response ->
+            majkoRepository.removeGroup(GroupById(uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ navHostController.navigate(Screen.Group.route) }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -107,8 +104,7 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
     fun saveProject(project_id: String){
         _uiState.update { it.copy(groupId = groupId) }
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.addProjectInGroup("Bearer " + accessToken, ProjectInGroup(project_id, uiState.value.groupId)).collect() { response ->
+            majkoRepository.addProjectInGroup(ProjectInGroup(project_id, uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         addingProject()
@@ -122,8 +118,7 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
 
     fun getProjectData(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoProjectRepository.getPersonalProject("Bearer " + accessToken).collect() { response ->
+            majkoProjectRepository.getPersonalProject().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()
@@ -142,8 +137,7 @@ class GroupEditorViewModel(private val dataStore: UserDataStore, private val maj
 
     fun createInvite(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.createInvitetoGroup("Bearer " + accessToken, GroupBy_Id(uiState.value.groupId)).collect() { response ->
+            majkoRepository.createInvitetoGroup(GroupBy_Id(uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(invite = response.data!!.invite) }

@@ -7,19 +7,19 @@ import kotlinx.coroutines.flow.Flow
 
 interface MajkoProjectRepositoryInterface {
 
-    fun getPersonalProject(token: String): Flow<ApiResult<List<ProjectDataResponse>>>
+    fun getPersonalProject(): Flow<ApiResult<List<ProjectDataResponse>>>
 
-    fun getGroupProject(token: String): Flow<ApiResult<List<ProjectDataResponse>>>
+    fun getGroupProject(): Flow<ApiResult<List<ProjectDataResponse>>>
 
-    fun postNewProject(token: String, project: ProjectData): Flow<ApiResult<ProjectDataResponse>>
+    fun postNewProject(project: ProjectData): Flow<ApiResult<ProjectDataResponse>>
 
-    fun getProjectById(token: String, projectById: ProjectById): Flow<ApiResult<ProjectCurrentResponse>>
+    fun getProjectById(projectById: ProjectById): Flow<ApiResult<ProjectCurrentResponse>>
 
-    fun updateProject(token: String, project: ProjectUpdate): Flow<ApiResult<ProjectCurrentResponse>>
+    fun updateProject(project: ProjectUpdate): Flow<ApiResult<ProjectCurrentResponse>>
 
-    fun removeProject(token: String, projectId: ProjectById): Flow<ApiResult<Unit>>
+    fun removeProject(projectId: ProjectById): Flow<ApiResult<Unit>>
 
-    fun createInvitetoProject(token: String, projectById: ProjectBy_Id): Flow<ApiResult<ProjectCreateInviteResponse>>
+    fun createInvitetoProject(projectById: ProjectBy_Id): Flow<ApiResult<ProjectCreateInviteResponse>>
 
-    fun joinByInvitation(token: String, invite: JoinByInviteProjectData): Flow<ApiResult<MessageData>>
+    fun joinByInvitation(invite: JoinByInviteProjectData): Flow<ApiResult<MessageData>>
 }

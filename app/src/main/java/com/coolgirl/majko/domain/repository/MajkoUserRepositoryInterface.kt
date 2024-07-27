@@ -18,24 +18,21 @@ interface MajkoUserRepositoryInterface {
 
    fun signIn(user: UserSignInData?): Flow<ApiResult<UserSignInDataResponse>>
 
-   fun currentUser(token: String): Flow<ApiResult<CurrentUserDataResponse>>
+   fun currentUser(): Flow<ApiResult<CurrentUserDataResponse>>
 
    fun signUp(user: UserSignUpData?): Flow<ApiResult<UserSignUpDataResponse>>
 
-   fun updateUserName(token: String, user: UserUpdateName): Flow<ApiResult<CurrentUserDataResponse>>
+   fun updateUserName(user: UserUpdateName): Flow<ApiResult<CurrentUserDataResponse>>
 
    fun updateUserEmail(
-      token: String,
       user: UserUpdateEmail
    ): Flow<ApiResult<CurrentUserDataResponse>>
 
    fun updateUserPassword(
-      token: String,
       user: UserUpdatePassword
    ): Flow<ApiResult<CurrentUserDataResponse>>
 
    fun updateUserImage(
-      token: String,
       user: UserUpdateImage
    ): Flow<ApiResult<CurrentUserDataResponse>>
 

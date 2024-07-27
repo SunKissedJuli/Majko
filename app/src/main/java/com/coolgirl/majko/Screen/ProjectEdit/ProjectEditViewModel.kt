@@ -19,7 +19,7 @@ import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class ProjectEditViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoProjectRepository,
+class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
                            private val majkoInfoRepository: MajkoInfoRepository,  private val majkoTaskRepository: MajkoTaskRepository,
                            private val projectId : String) : ViewModel() {
     private val _uiState = MutableStateFlow(ProjectEditUiState())
@@ -142,10 +142,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
 
     fun loadProject(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getProjectById(
-                "Bearer " + accessToken,
-                ProjectById(uiState.value.projectId)
+            majkoRepository.getProjectById(ProjectById(uiState.value.projectId)
             ).collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
@@ -195,9 +192,8 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
 
     fun saveProject(navHostController: NavHostController){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
             val updateProject = ProjectUpdate(uiState.value.projectId, uiState.value.projectData!!.name,uiState.value.projectData!!.description,0)
-            majkoRepository.updateProject("Bearer " + accessToken, updateProject).collect() { response ->
+            majkoRepository.updateProject(updateProject).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ navHostController.navigate(Screen.Project.route) }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -209,8 +205,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
 
     fun removeProject(navHostController: NavHostController){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.removeProject("Bearer " + accessToken,  ProjectById(uiState.value.projectId)).collect() { response ->
+            majkoRepository.removeProject(ProjectById(uiState.value.projectId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ navHostController.navigate(Screen.Project.route) }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -223,10 +218,9 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
     fun saveTask(){
         _uiState.update { it.copy(projectId = projectId) }
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
             val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
                 uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.projectId,"")
-            majkoTaskRepository.postNewTask("Bearer " + accessToken, newTask).collect() { response ->
+            majkoTaskRepository.postNewTask(newTask).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         addingTask()
@@ -241,8 +235,7 @@ class ProjectEditViewModel(private val dataStore: UserDataStore, private val maj
 
     fun createInvite(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.createInvitetoProject("Bearer " + accessToken,  ProjectBy_Id(uiState.value.projectId)).collect() { response ->
+            majkoRepository.createInvitetoProject(ProjectBy_Id(uiState.value.projectId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(invite = response.data!!.invite) }

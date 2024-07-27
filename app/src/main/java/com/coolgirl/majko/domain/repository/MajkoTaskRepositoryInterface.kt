@@ -11,31 +11,31 @@ import kotlinx.coroutines.flow.Flow
 
 interface MajkoTaskRepositoryInterface {
 
-    fun getAllUserTask(token: String): Flow<ApiResult<List<TaskDataResponse>>>
+    fun getAllUserTask(): Flow<ApiResult<List<TaskDataResponse>>>
 
-    fun postNewTask(token: String, task: TaskData): Flow<ApiResult<TaskDataResponse>>
+    fun postNewTask(task: TaskData): Flow<ApiResult<TaskDataResponse>>
 
-    fun getTaskById(token: String, taskId: TaskById): Flow<ApiResult<TaskDataResponse>>
+    fun getTaskById(taskId: TaskById): Flow<ApiResult<TaskDataResponse>>
 
-    fun removeTask(token: String, taskId: TaskBy_Id): Flow<ApiResult<Unit>>
+    fun removeTask(taskId: TaskBy_Id): Flow<ApiResult<Unit>>
 
-    fun updateTask(token: String, taskData: TaskUpdateData): Flow<ApiResult<TaskDataResponse>>
+    fun updateTask(taskData: TaskUpdateData): Flow<ApiResult<TaskDataResponse>>
 
-    fun getSubtask(token: String, taskId: TaskById): Flow<ApiResult<List<TaskDataResponse>>>
+    fun getSubtask(taskId: TaskById): Flow<ApiResult<List<TaskDataResponse>>>
 
     //фавориты
-    fun removeFavotire(token: String, taskId: TaskById): Flow<ApiResult<MessageData>>
+    fun removeFavotire(taskId: TaskById): Flow<ApiResult<MessageData>>
 
-    fun addToFavorite(token: String, taskId: TaskById): Flow<ApiResult<MessageData>>
+    fun addToFavorite(taskId: TaskById): Flow<ApiResult<MessageData>>
 
-    fun getAllFavorites(token: String): Flow<ApiResult<List<TaskDataResponse>>>
+    fun getAllFavorites(): Flow<ApiResult<List<TaskDataResponse>>>
 
     //записи
-    fun addNote(token: String, note: NoteData) : Flow<ApiResult<NoteDataResponse>>
+    fun addNote(note: NoteData) : Flow<ApiResult<NoteDataResponse>>
 
-    fun updateNote(token: String, note: NoteUpdate) : Flow<ApiResult<NoteDataResponse>>
+    fun updateNote(note: NoteUpdate) : Flow<ApiResult<NoteDataResponse>>
 
-    fun removeNote(token: String, noteId: NoteById) : Flow<ApiResult<Unit>>
+    fun removeNote(noteId: NoteById) : Flow<ApiResult<Unit>>
 
-    fun getNotes(token: String, taskId: TaskById) : Flow<ApiResult<List<NoteDataResponse>>>
+    fun getNotes(taskId: TaskById) : Flow<ApiResult<List<NoteDataResponse>>>
 }

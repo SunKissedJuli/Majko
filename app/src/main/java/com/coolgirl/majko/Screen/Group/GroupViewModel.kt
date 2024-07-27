@@ -14,7 +14,7 @@ import com.coolgirl.majko.data.repository.MajkoGroupRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoGroupRepository) : ViewModel() {
+class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(GroupUiState())
     val uiState: StateFlow<GroupUiState> = _uiState.asStateFlow()
 
@@ -109,8 +109,7 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
 
     fun addGroup(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.addGroup("Bearer " + accessToken,  GroupData(uiState.value.newGroupName, uiState.value.newGroupDescription)).collect() { response ->
+            majkoRepository.addGroup(GroupData(uiState.value.newGroupName, uiState.value.newGroupDescription)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         addingGroup()
@@ -129,8 +128,7 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
 
     fun loadGroupGroup() {
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getGroupGroup("Bearer " + accessToken).collect() { response ->
+            majkoRepository.getGroupGroup().collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
                         val validData: MutableList<GroupResponse> = mutableListOf()
@@ -155,8 +153,7 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
 
     fun loadPersonalGroup(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getPersonalGroup("Bearer " + accessToken).collect() { response ->
+            majkoRepository.getPersonalGroup().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         val validData: MutableList<GroupResponse> = mutableListOf()
@@ -177,8 +174,7 @@ class GroupViewModel(private val dataStore: UserDataStore, private val majkoRepo
 
     fun joinByInvite(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.joinGroupByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite)).collect() { response ->
+            majkoRepository.joinGroupByInvitation(JoinByInviteProjectData(uiState.value.invite)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(inviteMessage = response.data!!.message!!) }

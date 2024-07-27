@@ -13,7 +13,7 @@ import com.coolgirl.majko.data.repository.MajkoProjectRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class ProjectViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoProjectRepository) : ViewModel(){
+class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : ViewModel(){
     private val _uiState = MutableStateFlow(ProjectUiState())
     val uiState: StateFlow<ProjectUiState> = _uiState.asStateFlow()
 
@@ -120,8 +120,7 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
 
     fun joinByInvite(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.joinByInvitation("Bearer " + accessToken, JoinByInviteProjectData(uiState.value.invite)).collect() { response ->
+            majkoRepository.joinByInvitation(JoinByInviteProjectData(uiState.value.invite)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(invite_message = response.data!!.message!!) }
@@ -149,8 +148,7 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
                 )
 
                 viewModelScope.launch {
-                    val accessToken = dataStore.getAccessToken().first() ?: ""
-                    majkoRepository.updateProject("Bearer " + accessToken, updateProject).collect() { response ->
+                    majkoRepository.updateProject(updateProject).collect() { response ->
                         when(response){
                             is ApiSuccess ->{
                                 openPanel("")
@@ -167,8 +165,7 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
 
     fun addProject(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.postNewProject("Bearer " + accessToken, ProjectData(uiState.value.newProjectName, uiState.value.newProjectDescription)).collect() { response ->
+            majkoRepository.postNewProject(ProjectData(uiState.value.newProjectName, uiState.value.newProjectDescription)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         notAddingProjectYet()
@@ -188,8 +185,7 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
 
     fun loadPersonalProject(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getPersonalProject("Bearer " + accessToken).collect() { response ->
+            majkoRepository.getPersonalProject().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()
@@ -210,8 +206,7 @@ class ProjectViewModel(private val dataStore : UserDataStore, private val majkoR
 
     fun loadGroupProject() {
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getGroupProject("Bearer " + accessToken).collect() { response ->
+            majkoRepository.getGroupProject().collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()

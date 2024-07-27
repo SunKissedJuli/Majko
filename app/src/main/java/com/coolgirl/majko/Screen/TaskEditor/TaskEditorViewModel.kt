@@ -20,7 +20,7 @@ import com.coolgirl.majko.data.repository.MajkoInfoRepository
 import com.coolgirl.majko.data.repository.MajkoTaskRepository
 import com.coolgirl.majko.navigation.Screen
 
-class TaskEditorViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoTaskRepository,
+class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     private val majkoInfoRepository: MajkoInfoRepository, private val taskId : String) : ViewModel(){
     private val _uiState = MutableStateFlow(TaskEditorUiState())
     val uiState: StateFlow<TaskEditorUiState> = _uiState.asStateFlow()
@@ -174,8 +174,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
     fun saveUpdateNote(noteId: String, noteText: String){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.updateNote("Bearer " + accessToken,  NoteUpdate(noteId,uiState.value.taskId, noteText)).collect() { response ->
+            majkoRepository.updateNote(NoteUpdate(noteId,uiState.value.taskId, noteText)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ loadNotesData() }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -187,8 +186,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
     fun removeNote(noteId: String){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.removeNote("Bearer " + accessToken,   NoteById(noteId)).collect() { response ->
+            majkoRepository.removeNote(NoteById(noteId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{  loadNotesData() }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -203,10 +201,9 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
            updateTask(navHostController)
         }else{
             viewModelScope.launch {
-                val accessToken = dataStore.getAccessToken().first() ?: ""
                 val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
                     uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.taskProject,"")
-                majkoRepository.postNewTask("Bearer " + accessToken,  newTask).collect() { response ->
+                majkoRepository.postNewTask(newTask).collect() { response ->
                     when(response){
                         is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
                         is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -219,10 +216,9 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
     fun updateTask(navHostController: NavHostController){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
             val newTask = TaskUpdateData(uiState.value.taskId, uiState.value.taskName, uiState.value.taskText,
                 uiState.value.taskPriority,uiState.value.taskDeadline, uiState.value.taskStatus)
-            majkoRepository.updateTask("Bearer " + accessToken,  newTask).collect() { response ->
+            majkoRepository.updateTask(newTask).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -234,10 +230,9 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
     fun saveSubtask(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
             val newTask = TaskData(uiState.value.subtaskName, uiState.value.subtaskText,uiState.value.subtaskDeadline,
                 uiState.value.subtaskPriority,uiState.value.subtaskStatus,"",uiState.value.taskId)
-            majkoRepository.postNewTask("Bearer " + accessToken,  newTask).collect() { response ->
+            majkoRepository.postNewTask(newTask).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         addingTask()
@@ -253,8 +248,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
     fun removeTask(navHostController: NavHostController){
        if(!taskId.equals("0")) {
            viewModelScope.launch {
-               val accessToken = dataStore.getAccessToken().first() ?: ""
-               majkoRepository.removeTask("Bearer " + accessToken, TaskBy_Id(taskId)).collect() { response ->
+               majkoRepository.removeTask(TaskBy_Id(taskId)).collect() { response ->
                    when(response){
                        is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -273,8 +267,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
         if(!taskId.equals("0")){
             viewModelScope.launch {
-                val accessToken = dataStore.getAccessToken().first() ?: ""
-                majkoRepository.getTaskById("Bearer " + accessToken, TaskById(uiState.value.taskId)).collect() { response ->
+                majkoRepository.getTaskById(TaskById(uiState.value.taskId)).collect() { response ->
                     when(response){
                         is ApiSuccess ->{
                             _uiState.update { it.copy(taskId = taskId) }
@@ -339,8 +332,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
     fun addNote(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.addNote("Bearer " + accessToken,  NoteData(uiState.value.taskId, uiState.value.noteText)).collect() { response ->
+            majkoRepository.addNote(NoteData(uiState.value.taskId, uiState.value.noteText)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         addNewNote()
@@ -357,8 +349,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
         if(!taskId.equals("0")){
             _uiState.update { it.copy(taskId = taskId) }
             viewModelScope.launch {
-                val accessToken = dataStore.getAccessToken().first() ?: ""
-                majkoRepository.getSubtask("Bearer " + accessToken,  TaskById(uiState.value.taskId)).collect() { response ->
+                majkoRepository.getSubtask(TaskById(uiState.value.taskId)).collect() { response ->
                     when(response){
                         is ApiSuccess ->{ _uiState.update { it.copy(subtask = response.data!!) }}
                         is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -371,8 +362,7 @@ class TaskEditorViewModel(private val dataStore : UserDataStore, private val maj
 
     fun loadNotesData(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getNotes("Bearer " + accessToken, TaskById(uiState.value.taskId)).collect() { response ->
+            majkoRepository.getNotes(TaskById(uiState.value.taskId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ _uiState.update { it.copy(notes = response.data) } }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }

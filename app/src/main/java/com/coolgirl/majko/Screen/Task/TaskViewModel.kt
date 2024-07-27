@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 
-class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoTaskRepository,
+class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
                     private val majkoInfoRepository: MajkoInfoRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskUiState())
     val uiState:StateFlow<TaskUiState> = _uiState.asStateFlow()
@@ -127,8 +127,7 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
 
     fun loadFavTask(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getAllFavorites("Bearer " + accessToken).collect() { response ->
+            majkoRepository.getAllFavorites().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(favoritesTaskList = response.data)}
@@ -144,8 +143,7 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
 
     fun loadEachTask(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getAllUserTask("Bearer " + accessToken).collect() { response ->
+            majkoRepository.getAllUserTask().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
@@ -180,8 +178,7 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
 
     fun addFavotite(task_id: String){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.addToFavorite("Bearer " + accessToken,  TaskById(task_id)).collect() { response ->
+            majkoRepository.addToFavorite(TaskById(task_id)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ loadData() }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -193,8 +190,7 @@ class TaskViewModel(private val dataStore : UserDataStore, private val majkoRepo
 
     fun removeFavotite(task_id: String){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.removeFavotire("Bearer " + accessToken,  TaskById(task_id)).collect() { response ->
+            majkoRepository.removeFavotire(TaskById(task_id)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ loadData() }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }

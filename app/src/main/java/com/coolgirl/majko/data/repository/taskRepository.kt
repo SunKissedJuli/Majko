@@ -19,58 +19,58 @@ class MajkoTaskRepository @Inject constructor(
 ): MajkoTaskRepositoryInterface {
 
     //таски
-    override fun getAllUserTask(token: String): Flow<ApiResult<List<TaskDataResponse>>> = flow {
-        emit(handler { api.getAllUserTask(token) })
+    override fun getAllUserTask(): Flow<ApiResult<List<TaskDataResponse>>> = flow {
+        emit(handler { api.getAllUserTask() })
     }
 
-    override fun postNewTask(token: String, task: TaskData): Flow<ApiResult<TaskDataResponse>> = flow {
-        emit(handler { api.postNewTask(token, task) })
+    override fun postNewTask(task: TaskData): Flow<ApiResult<TaskDataResponse>> = flow {
+        emit(handler { api.postNewTask(task) })
     }
 
-    override fun getTaskById(token: String, taskId: TaskById): Flow<ApiResult<TaskDataResponse>> = flow {
-        emit(handler { api.getTaskById(token, taskId) })
+    override fun getTaskById(taskId: TaskById): Flow<ApiResult<TaskDataResponse>> = flow {
+        emit(handler { api.getTaskById(taskId) })
     }
 
-    override fun updateTask(token: String, taskData: TaskUpdateData) : Flow<ApiResult<TaskDataResponse>> = flow {
-        emit(handler { api.updateTask(token, taskData) })
+    override fun updateTask(taskData: TaskUpdateData) : Flow<ApiResult<TaskDataResponse>> = flow {
+        emit(handler { api.updateTask(taskData) })
     }
 
-    override fun removeTask(token: String, taskId: TaskBy_Id): Flow<ApiResult<Unit>> = flow {
-        emit(handler { api.removeTask(token, taskId) })
+    override fun removeTask(taskId: TaskBy_Id): Flow<ApiResult<Unit>> = flow {
+        emit(handler { api.removeTask(taskId) })
     }
 
-    override fun getSubtask(token: String, taskId: TaskById): Flow<ApiResult<List<TaskDataResponse>>> = flow {
-        emit(handler { api.getSubtask(token, taskId) })
+    override fun getSubtask(taskId: TaskById): Flow<ApiResult<List<TaskDataResponse>>> = flow {
+        emit(handler { api.getSubtask(taskId) })
     }
 
     //фавориты
-    override fun removeFavotire(token: String, taskId: TaskById): Flow<ApiResult<MessageData>> = flow {
-        emit(handler { api.removeFavotire(token, taskId) })
+    override fun removeFavotire(taskId: TaskById): Flow<ApiResult<MessageData>> = flow {
+        emit(handler { api.removeFavotire(taskId) })
     }
 
-    override fun addToFavorite(token: String, taskId: TaskById): Flow<ApiResult<MessageData>> = flow {
-        emit(handler { api.addToFavorite(token, taskId) })
+    override fun addToFavorite(taskId: TaskById): Flow<ApiResult<MessageData>> = flow {
+        emit(handler { api.addToFavorite(taskId) })
     }
 
-    override fun getAllFavorites(token: String): Flow<ApiResult<List<TaskDataResponse>>> = flow {
-        emit(handler { api.getAllFavorites(token)})
+    override fun getAllFavorites(): Flow<ApiResult<List<TaskDataResponse>>> = flow {
+        emit(handler { api.getAllFavorites()})
     }
 
     //записи
-    override fun addNote(token: String, note: NoteData): Flow<ApiResult<NoteDataResponse>> = flow {
-        emit(handler { api.addNote(token, note)})
+    override fun addNote(note: NoteData): Flow<ApiResult<NoteDataResponse>> = flow {
+        emit(handler { api.addNote(note)})
     }
 
-    override fun updateNote(token: String, note: NoteUpdate): Flow<ApiResult<NoteDataResponse>> = flow {
-        emit(handler { api.updateNote(token, note)})
+    override fun updateNote(note: NoteUpdate): Flow<ApiResult<NoteDataResponse>> = flow {
+        emit(handler { api.updateNote(note)})
     }
 
-    override fun removeNote(token: String, noteId: NoteById): Flow<ApiResult<Unit>> = flow {
-        emit(handler { api.removeNote(token, noteId)})
+    override fun removeNote(noteId: NoteById): Flow<ApiResult<Unit>> = flow {
+        emit(handler { api.removeNote(noteId)})
     }
 
-    override fun getNotes(token: String, taskId: TaskById): Flow<ApiResult<List<NoteDataResponse>>> = flow {
-        emit(handler { api.getNotes(token, taskId) })
+    override fun getNotes(taskId: TaskById): Flow<ApiResult<List<NoteDataResponse>>> = flow {
+        emit(handler { api.getNotes(taskId) })
     }
 
 

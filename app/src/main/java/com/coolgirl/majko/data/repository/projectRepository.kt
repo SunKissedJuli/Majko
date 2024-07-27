@@ -13,35 +13,35 @@ import javax.inject.Inject
 class MajkoProjectRepository @Inject constructor(
     private val api: ApiMajko
 ):MajkoProjectRepositoryInterface{
-    override fun getPersonalProject(token: String): Flow<ApiResult<List<ProjectDataResponse>>> = flow {
-        emit(handler { api.getPersonalProject(token)})
+    override fun getPersonalProject(): Flow<ApiResult<List<ProjectDataResponse>>> = flow {
+        emit(handler { api.getPersonalProject()})
     }
 
-    override fun getGroupProject(token: String): Flow<ApiResult<List<ProjectDataResponse>>> = flow {
-        emit(handler { api.getGroupProject(token)})
+    override fun getGroupProject(): Flow<ApiResult<List<ProjectDataResponse>>> = flow {
+        emit(handler { api.getGroupProject()})
     }
 
-    override fun postNewProject(token: String, project: ProjectData): Flow<ApiResult<ProjectDataResponse>> = flow {
-        emit(handler { api.postNewProject(token, project)})
+    override fun postNewProject(project: ProjectData): Flow<ApiResult<ProjectDataResponse>> = flow {
+        emit(handler { api.postNewProject(project)})
     }
 
-    override fun getProjectById(token: String, projectById: ProjectById): Flow<ApiResult<ProjectCurrentResponse>> = flow {
-        emit(handler { api.getProjectById(token, projectById)})
+    override fun getProjectById(projectById: ProjectById): Flow<ApiResult<ProjectCurrentResponse>> = flow {
+        emit(handler { api.getProjectById(projectById)})
     }
 
-    override fun updateProject(token: String, project: ProjectUpdate): Flow<ApiResult<ProjectCurrentResponse>> = flow {
-        emit(handler { api.updateProject(token, project)})
+    override fun updateProject(project: ProjectUpdate): Flow<ApiResult<ProjectCurrentResponse>> = flow {
+        emit(handler { api.updateProject(project)})
     }
 
-    override fun removeProject(token: String, projectId: ProjectById): Flow<ApiResult<Unit>> = flow {
-        emit(handler { api.removeProject(token, projectId)})
+    override fun removeProject(projectId: ProjectById): Flow<ApiResult<Unit>> = flow {
+        emit(handler { api.removeProject(projectId)})
     }
 
-    override fun createInvitetoProject(token: String, projectById: ProjectBy_Id): Flow<ApiResult<ProjectCreateInviteResponse>> = flow {
-        emit(handler { api.createInvitetoProject(token, projectById)})
+    override fun createInvitetoProject(projectById: ProjectBy_Id): Flow<ApiResult<ProjectCreateInviteResponse>> = flow {
+        emit(handler { api.createInvitetoProject(projectById)})
     }
 
-    override fun joinByInvitation(token: String, invite: JoinByInviteProjectData): Flow<ApiResult<MessageData>> = flow {
-        emit(handler { api.joinByInvitation(token, invite)})
+    override fun joinByInvitation(invite: JoinByInviteProjectData): Flow<ApiResult<MessageData>> = flow {
+        emit(handler { api.joinByInvitation(invite)})
     }
 }

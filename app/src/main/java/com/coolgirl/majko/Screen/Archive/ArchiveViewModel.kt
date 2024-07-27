@@ -14,7 +14,7 @@ import com.coolgirl.majko.data.repository.MajkoProjectRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class ArchiveViewModel(private val dataStore:UserDataStore, private val majkoRepository: MajkoProjectRepository) : ViewModel(){
+class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : ViewModel(){
     private val _uiState = MutableStateFlow(ArchiveUiState())
     val uiState: StateFlow<ArchiveUiState> = _uiState.asStateFlow()
 
@@ -57,7 +57,6 @@ class ArchiveViewModel(private val dataStore:UserDataStore, private val majkoRep
 
     fun updateGroupProject(newSearchString:String){
         _uiState.update { currentState ->
-
             val filteredGroupProject = currentState.groupProject?.filter { task ->
                 task.name?.contains(newSearchString, ignoreCase = true) == true ||
                         task.description?.contains(newSearchString, ignoreCase = true) == true
@@ -92,7 +91,6 @@ class ArchiveViewModel(private val dataStore:UserDataStore, private val majkoRep
     }
 
     fun fromArchive(){
-
         val projectIds = uiState.value.longtapProjectId.chunked(36) // Разделяем строку на ID длиной 36 символов
         projectIds.mapNotNull { id ->
             val project = uiState.value.personalProject?.find { it.id == id }
@@ -105,10 +103,8 @@ class ArchiveViewModel(private val dataStore:UserDataStore, private val majkoRep
                     description = it.description,
                     is_archive = 0
                 )
-
                 viewModelScope.launch {
-                    val accessToken = dataStore.getAccessToken().first() ?: ""
-                    majkoRepository.updateProject("Bearer " + accessToken,  updateProject).collect() { response ->
+                    majkoRepository.updateProject(updateProject).collect() { response ->
                         when(response){
                             is ApiSuccess ->{
                                 openPanel("")
@@ -130,8 +126,7 @@ class ArchiveViewModel(private val dataStore:UserDataStore, private val majkoRep
 
     fun loadPersonalProject(){
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getPersonalProject("Bearer " + accessToken).collect() { response ->
+            majkoRepository.getPersonalProject().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()
@@ -152,8 +147,7 @@ class ArchiveViewModel(private val dataStore:UserDataStore, private val majkoRep
 
     fun loadGroupProject() {
         viewModelScope.launch {
-            val accessToken = dataStore.getAccessToken().first() ?: ""
-            majkoRepository.getGroupProject("Bearer " + accessToken).collect() { response ->
+            majkoRepository.getGroupProject().collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()

@@ -1,6 +1,5 @@
 package com.coolgirl.majko.di
 
-import com.coolgirl.majko.Sc.GroupEditorScreen
 import com.coolgirl.majko.Screen.Archive.ArchiveViewModel
 import com.coolgirl.majko.Screen.Group.GroupViewModel
 import com.coolgirl.majko.Screen.GroupEditor.GroupEditorViewModel
@@ -26,22 +25,22 @@ val dataStoreModule = module {
 }
 
 val apiModule = module {
-    single { MajkoUserRepository(ApiClient()) }
-    single { MajkoTaskRepository(ApiClient()) }
-    single { MajkoInfoRepository(ApiClient()) }
-    single { MajkoProjectRepository(ApiClient()) }
-    single { MajkoGroupRepository(ApiClient()) }
+    single { MajkoUserRepository(ApiClient(androidContext())) }
+    single { MajkoTaskRepository(ApiClient(androidContext())) }
+    single { MajkoInfoRepository(ApiClient(androidContext())) }
+    single { MajkoProjectRepository(ApiClient(androidContext())) }
+    single { MajkoGroupRepository(ApiClient(androidContext())) }
 }
 
 val appModule = module {
-    viewModel { ArchiveViewModel(get(), get()) }
-    viewModel { GroupViewModel(get(), get()) }
+    viewModel { ArchiveViewModel(get()) }
+    viewModel { GroupViewModel(get()) }
     viewModel { LoginViewModel(get(), get()) }
     viewModel { RegisterViewModel(get(), get()) }
     viewModel { ProfileViewModel(get(), get()) }
-    viewModel { ProjectViewModel(get(), get()) }
-    viewModel { TaskViewModel(get(), get(), get()) }
-    viewModel { (taskId: String) -> TaskEditorViewModel(get(), get(), get(), taskId) }
-    viewModel { (projectId: String) -> ProjectEditViewModel(get(), get(),get(), get(), projectId) }
-    viewModel { (groupId: String) -> GroupEditorViewModel(get(), get(), get(), groupId) }
+    viewModel { ProjectViewModel(get()) }
+    viewModel { TaskViewModel(get(), get()) }
+    viewModel { (taskId: String) -> TaskEditorViewModel(get(), get(),taskId) }
+    viewModel { (projectId: String) -> ProjectEditViewModel(get(),get(), get(), projectId) }
+    viewModel { (groupId: String) -> GroupEditorViewModel(get(), get(), groupId) }
 }

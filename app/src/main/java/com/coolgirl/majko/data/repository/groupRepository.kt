@@ -16,40 +16,40 @@ class MajkoGroupRepository @Inject constructor(
     private val api: ApiMajko
 ): MajkoGroupRepositoryInterface {
 
-    override fun addGroup(token: String, group: GroupData): Flow<ApiResult<GroupResponse>> = flow {
-        emit(handler { api.addGroup(token, group)})
+    override fun addGroup(group: GroupData): Flow<ApiResult<GroupResponse>> = flow {
+        emit(handler { api.addGroup(group)})
     }
 
-    override fun getPersonalGroup(token: String): Flow<ApiResult<List<GroupResponse>>> = flow {
-        emit(handler { api.getPersonalGroup(token)})
+    override fun getPersonalGroup(): Flow<ApiResult<List<GroupResponse>>> = flow {
+        emit(handler { api.getPersonalGroup()})
     }
 
-    override fun getGroupGroup(token: String): Flow<ApiResult<List<GroupResponse>>> = flow {
-        emit(handler { api.getGroupGroup(token)})
+    override fun getGroupGroup(): Flow<ApiResult<List<GroupResponse>>> = flow {
+        emit(handler { api.getGroupGroup()})
     }
 
-    override fun getGroupById(token: String, groupId: GroupById): Flow<ApiResult<GroupResponse>> = flow {
-        emit(handler { api.getGroupById(token, groupId)})
+    override fun getGroupById(groupId: GroupById): Flow<ApiResult<GroupResponse>> = flow {
+        emit(handler { api.getGroupById(groupId)})
     }
 
-    override fun updateGroup(token: String, group: GroupUpdate): Flow<ApiResult<GroupResponse>> = flow {
-        emit(handler { api.updateGroup(token, group)})
+    override fun updateGroup(group: GroupUpdate): Flow<ApiResult<GroupResponse>> = flow {
+        emit(handler { api.updateGroup(group)})
     }
 
-    override fun removeGroup(token: String, groupId: GroupById): Flow<ApiResult<Unit>> = flow {
-        emit(handler { api.removeGroup(token, groupId)})
+    override fun removeGroup(groupId: GroupById): Flow<ApiResult<Unit>> = flow {
+        emit(handler { api.removeGroup(groupId)})
     }
 
-    override fun addProjectInGroup(token: String, group: ProjectInGroup): Flow<ApiResult<ProjectDataResponse>> = flow {
-        emit(handler { api.addProjectInGroup(token, group)})
+    override fun addProjectInGroup(group: ProjectInGroup): Flow<ApiResult<ProjectDataResponse>> = flow {
+        emit(handler { api.addProjectInGroup(group)})
     }
 
-    override fun createInvitetoGroup(token: String, groupId: GroupBy_Id): Flow<ApiResult<GroupInviteResponse>> = flow {
-        emit(handler { api.createInvitetoGroup(token, groupId)})
+    override fun createInvitetoGroup(groupId: GroupBy_Id): Flow<ApiResult<GroupInviteResponse>> = flow {
+        emit(handler { api.createInvitetoGroup(groupId)})
     }
 
-    override fun joinGroupByInvitation(token: String, invite: JoinByInviteProjectData): Flow<ApiResult<MessageData>> = flow {
-        emit(handler { api.joinGroupByInvitation(token, invite)})
+    override fun joinGroupByInvitation(invite: JoinByInviteProjectData): Flow<ApiResult<MessageData>> = flow {
+        emit(handler { api.joinGroupByInvitation(invite)})
     }
 
 }

@@ -27,8 +27,8 @@ class MajkoUserRepository @Inject constructor(
         emit(handler { api.signIn(user) })
     }
 
-    override fun currentUser(token: String): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.currentUser(token) })
+    override fun currentUser(): Flow<ApiResult<CurrentUserDataResponse>> = flow {
+        emit(handler { api.currentUser() })
     }
 
     override fun signUp(user: UserSignUpData?): Flow<ApiResult<UserSignUpDataResponse>> = flow {
@@ -36,31 +36,27 @@ class MajkoUserRepository @Inject constructor(
     }
 
     override fun updateUserName(
-        token: String,
         user: UserUpdateName
     ): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.updateUserName(token, user) })
+        emit(handler { api.updateUserName(user) })
     }
 
     override fun updateUserEmail(
-        token: String,
         user: UserUpdateEmail
     ): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.updateUserEmail(token, user) })
+        emit(handler { api.updateUserEmail(user) })
     }
 
     override fun updateUserPassword(
-        token: String,
         user: UserUpdatePassword
     ): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.updateUserPassword(token, user) })
+        emit(handler { api.updateUserPassword(user) })
     }
 
     override fun updateUserImage(
-        token: String,
         user: UserUpdateImage
     ): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.updateUserImage(token, user) })
+        emit(handler { api.updateUserImage(user) })
     }
 
 }
