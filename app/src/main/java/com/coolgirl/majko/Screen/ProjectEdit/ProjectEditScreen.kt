@@ -19,8 +19,8 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -31,17 +31,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
-import com.coolgirl.majko.Screen.TaskEditor.TaskEditorViewModel
 import com.coolgirl.majko.components.HorizontalLine
 import com.coolgirl.majko.components.SpinnerSample
 import com.coolgirl.majko.components.TaskCard
-import com.coolgirl.majko.data.dataStore.UserDataStore
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 
 @Composable
 fun ProjectEditScreen(navController: NavHostController, projectId : String){
@@ -65,197 +65,239 @@ fun ProjectEditScreen(navController: NavHostController, projectId : String){
 fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel, navController: NavHostController) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .background(MaterialTheme.colors.background)) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.08f)
-                .background(MaterialTheme.colors.primary)
-                .padding(horizontal = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        ConstraintLayout(
+            Modifier.fillMaxSize()
         ) {
-            Image(painter = painterResource(R.drawable.icon_back), contentDescription = "",
-                Modifier.fillMaxHeight().clickable { viewModel.saveProject(navController) })
+            val (page, members) = createRefs()
 
-
-
-            Box() {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        Icons.Default.MoreVert,
-                        tint = MaterialTheme.colors.background,
-                        contentDescription = ""
-                    )
-                }
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.fillMaxWidth(0.5f)
+            Column(
+                Modifier
+                    .verticalScroll(rememberScrollState())
+                    .background(MaterialTheme.colors.background)
+                    .constrainAs(page) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(if (uiState.members.isNullOrEmpty()) parent.bottom else members.top)
+                        height = Dimension.fillToConstraints
+                    }) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.08f)
+                        .background(MaterialTheme.colors.primary)
+                        .padding(horizontal = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(Modifier
-                        .fillMaxWidth()
-                        .clickable { viewModel.removeProject(navController) }) {
-                        Text(stringResource(R.string.project_delite), fontSize = 18.sp,
-                            modifier = Modifier.padding(all = 10.dp))
+                    Image(painter = painterResource(
+                        R.drawable.icon_back
+                    ),
+                        contentDescription = "",
+                        Modifier
+                            .fillMaxHeight()
+                            .clickable { viewModel.saveProject(navController) })
+
+
+
+                    Box() {
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(
+                                Icons.Default.MoreVert,
+                                tint = MaterialTheme.colors.background,
+                                contentDescription = ""
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier.fillMaxWidth(0.5f)
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable { viewModel.removeProject(navController) }) {
+                                Text(
+                                    stringResource(R.string.project_delite),
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(all = 10.dp)
+                                )
+                            }
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable { viewModel.createInvite() }) {
+                                Text(
+                                    stringResource(R.string.project_createinvite),
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(all = 10.dp)
+                                )
+                            }
+                        }
                     }
-                    Row(Modifier
+                }
+
+                Column(
+                    Modifier
                         .fillMaxWidth()
-                        .clickable { viewModel.createInvite() }) {
+                        .fillMaxHeight(0.25f)
+                ) {
+                    uiState.projectData?.let {
+                        BasicTextField(
+                            value = it.name,
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp, vertical = 15.dp),
+                            textStyle = TextStyle.Default.copy(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            onValueChange = { viewModel.updateProjectName(it) },
+                            maxLines = 2,
+                            decorationBox = { innerTextField ->
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    if (uiState.projectData!!.name.isEmpty()) {
+                                        Text(
+                                            text = stringResource(R.string.project_name),
+                                            color = MaterialTheme.colors.surface,
+                                            fontSize = 20.sp
+                                        )
+                                    }
+                                    innerTextField()
+                                }
+                            }
+                        )
+                    }
+
+                    uiState.projectData?.let {
+                        BasicTextField(
+                            value = it.description,
+                            modifier = Modifier
+                                .padding(horizontal = 20.dp)
+                                .fillMaxHeight(),
+                            textStyle = TextStyle.Default.copy(fontSize = 18.sp),
+                            onValueChange = { viewModel.updateProjectDescription(it) },
+                            decorationBox = { innerTextField ->
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    if (uiState.projectData!!.description.isEmpty()) {
+                                        Text(
+                                            text = stringResource(R.string.project_description),
+                                            color = MaterialTheme.colors.surface,
+                                            fontSize = 18.sp
+                                        )
+                                    }
+                                    innerTextField()
+                                }
+                            }
+                        )
+                    }
+                }
+
+                //отображение тасков, добавленных в проект
+                LazyRow(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(all = 5.dp)
+                ) {
+                    if (uiState.projectData != null) {
+                        if (!uiState.projectData.tasks.isNullOrEmpty()) {
+                            val projectData = uiState.projectData.tasks
+                            val count = uiState.projectData?.tasks?.size ?: 0
+                            items(count) { rowIndex ->
+                                Column(
+                                    Modifier.width(
+                                        200.dp
+                                    )
+                                ) {
+                                    TaskCard(navController,
+                                        viewModel.getPriority(projectData[rowIndex].priority),
+                                        viewModel.getStatusName(projectData[rowIndex].status),
+                                        projectData[rowIndex], {}, {})
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = { viewModel.addingTask() },
+                        shape = CircleShape,
+                        modifier = Modifier
+                            .fillMaxWidth(0.65f)
+                            .padding(vertical = 10.dp),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)
+                    ) {
                         Text(
-                            stringResource(R.string.project_createinvite), fontSize = 18.sp,
-                            modifier = Modifier.padding(all = 10.dp)
+                            text = stringResource(R.string.projectedit_addtask),
+                            color = MaterialTheme.colors.background,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }
             }
-        }
 
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.25f)
-        ) {
-            uiState.projectData?.let {
-                BasicTextField(
-                    value = it.name,
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp, vertical = 15.dp),
-                    textStyle = TextStyle.Default.copy(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    onValueChange = { viewModel.updateProjectName(it) },
-                    maxLines = 2,
-                    decorationBox = { innerTextField ->
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            if (uiState.projectData!!.name.isEmpty()) {
-                                Text(
-                                    text = stringResource(R.string.project_name),
-                                    color = MaterialTheme.colors.surface, fontSize = 20.sp
-                                )
-                            }
-                            innerTextField()
-                        }
-                    }
-                )
-            }
-
-            uiState.projectData?.let {
-                BasicTextField(
-                    value = it.description,
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .fillMaxHeight(),
-                    textStyle = TextStyle.Default.copy(fontSize = 18.sp),
-                    onValueChange = { viewModel.updateProjectDescription(it) },
-                    decorationBox = { innerTextField ->
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            if (uiState.projectData!!.description.isEmpty()) {
-                                Text(
-                                    text = stringResource(R.string.project_description),
-                                    color = MaterialTheme.colors.surface, fontSize = 18.sp
-                                )
-                            }
-                            innerTextField()
-                        }
-                    }
-                )
-            }
-        }
-
-        //отображение тасков, добавленных в проект
-        LazyRow(
-            Modifier
-                .fillMaxWidth()
-                .padding(all = 5.dp)
-        ) {
-            if (uiState.projectData!=null) {
-                if (!uiState.projectData.tasks.isNullOrEmpty()) {
-                    val projectData = uiState.projectData.tasks
-                    val count = uiState.projectData?.tasks?.size ?: 0
-                    items(count) { rowIndex ->
-                        Column(Modifier.width(200.dp)) {
-                            TaskCard(navController,
-                                viewModel.getPriority(projectData[rowIndex].priority),
-                                viewModel.getStatusName(projectData[rowIndex].status),
-                                projectData[rowIndex], {}, {})
-                        }
-                    }
-                }
-            }
-        }
-
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Button(
-                onClick = { viewModel.addingTask() },
-                shape = CircleShape,
-                modifier = Modifier
-                    .fillMaxWidth(0.65f)
-                    .padding(vertical = 10.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)
-            ) {
-                Text(
-                    text = stringResource(R.string.projectedit_addtask),
-                    color = MaterialTheme.colors.background,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-
-        //мемберы
-        if (!uiState.members.isNullOrEmpty()) {
-            Column(Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom) {
-
+            // мемберы
+            if (!uiState.members.isNullOrEmpty()) {
                 Column(
                     Modifier
-                        .padding(top = 20.dp)
-                        .clip(RoundedCornerShape(25.dp, 25.dp))
-                        .background(color = MaterialTheme.colors.secondary),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom) {
+                        .fillMaxWidth()
+                        .constrainAs(members) {
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                        .padding(top = 5.dp)
+                        .clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
+                        .background(color = MaterialTheme.colors.secondary)
+                        .wrapContentHeight(), // Это ограничит высоту содержимым
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Column(Modifier.padding(start = 15.dp)) {
+                        Spacer(modifier = Modifier.height(20.dp))
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            text = stringResource(R.string.projectedit_members),
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 18.sp,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
 
-                    Text(text = stringResource(R.string.projectedit_members),
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 18.sp)
-
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 20.dp)) {
-                        for (item in uiState.members!!)
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-
-                                Column() {
+                        Column(
+                            Modifier
+                                .padding(
+                                    horizontal = 20.dp,
+                                    vertical = 10.dp
+                                ) // Добавлен вертикальный отступ
+                        ) {
+                            uiState.members?.forEach { item ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(vertical = 5.dp) // Добавлен отступ между элементами
+                                ) {
                                     Text(
                                         text = stringResource(R.string.common_dash),
                                         fontSize = 55.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = MaterialTheme.colors.background
                                     )
-                                }
-                                Spacer(modifier = Modifier.width(10.dp))
+                                    Spacer(modifier = Modifier.width(10.dp))
 
-                                Column {
-                                    Text(text = stringResource(R.string.groupeditor_name) + " " + item.user.name)
-                                    Text(text = stringResource(R.string.groupeditor_role) + " " + item.roleId.name)
+                                    Column {
+                                        Text(text = stringResource(R.string.groupeditor_name) + " " + item.user.name)
+                                        Text(text = stringResource(R.string.groupeditor_role) + " " + item.roleId.name)
+                                    }
                                 }
                             }
-                        Spacer(modifier = Modifier.height(10.dp))
+                        }
                     }
+
                 }
             }
         }
-    }
-    if (uiState.isInvite) {
+
+            if (uiState.isInvite) {
         SetInviteWindow(uiState, viewModel, { viewModel.newInvite() })
     }
     if (uiState.isAdding) {
@@ -349,7 +391,9 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                         })
                     BasicTextField(
                         value = uiState.taskText,
-                        modifier = Modifier.fillMaxHeight(0.25f).padding(horizontal = 18.dp),
+                        modifier = Modifier
+                            .fillMaxHeight(0.25f)
+                            .padding(horizontal = 18.dp),
                         textStyle = TextStyle.Default.copy(fontSize = 18.sp),
                         onValueChange = { viewModel.updateTaskText(it) },
                         decorationBox = { innerTextField ->
