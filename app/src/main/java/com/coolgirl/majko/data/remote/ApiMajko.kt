@@ -50,7 +50,7 @@ interface ApiMajko{
     suspend fun getTaskById(@Body taskId: TaskById): Response<TaskDataResponse>
 
     @HTTP(method = "DELETE", path = "api/task/delete", hasBody = true)
-    suspend fun removeTask(@Body taskId: TaskBy_Id) : Response<Unit>
+    suspend fun removeTask(@Body taskId: TaskByIdUnderscore) : Response<Unit>
 
     @POST("api/task/update")
     suspend fun updateTask(@Body taskData: TaskUpdateData) : Response<TaskDataResponse>
@@ -90,7 +90,7 @@ interface ApiMajko{
     suspend fun removeProject(@Body projectId: ProjectById) : Response<Unit>
 
     @POST("api/project/createInvite")
-    suspend fun createInvitetoProject(@Body projectById: ProjectBy_Id) : Response<ProjectCreateInviteResponse>
+    suspend fun createInvitetoProject(@Body projectById: ProjectByIdUnderscore) : Response<ProjectCreateInviteResponse>
 
     @POST("api/project/joinByInvitation")
     suspend fun joinByInvitation(@Body invite: JoinByInviteProjectData) : Response<MessageData>
@@ -133,7 +133,7 @@ interface ApiMajko{
     suspend fun addProjectInGroup(@Body group: ProjectInGroup): Response<ProjectDataResponse>
 
     @POST("api/group/createInvite")
-    suspend fun createInvitetoGroup(@Body groupId: GroupBy_Id) : Response<GroupInviteResponse>
+    suspend fun createInvitetoGroup(@Body groupId: GroupByIdUnderscore) : Response<GroupInviteResponse>
 
     @POST("api/group/joinByInvitation")
     suspend fun joinGroupByInvitation(@Body invite: JoinByInviteProjectData) : Response<MessageData>

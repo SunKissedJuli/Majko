@@ -189,7 +189,7 @@ private fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
                     focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.profile_oldpassword), color = MaterialTheme.colors.surface)})
+                placeholder = {Text(text = stringResource(R.string.profile_oldpassword), color = MaterialTheme.colors.onSurface)})
 
             OutlinedTextField(
                 value = uiState.newPassword,
@@ -199,7 +199,7 @@ private fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
                     focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.profile_newpassword), color = MaterialTheme.colors.surface)})
+                placeholder = {Text(text = stringResource(R.string.profile_newpassword), color = MaterialTheme.colors.onSurface)})
 
             OutlinedTextField(
                 value = uiState.confirmPassword,
@@ -209,7 +209,7 @@ private fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
                     focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.profile_confirmpassword), color = MaterialTheme.colors.surface)})
+                placeholder = {Text(text = stringResource(R.string.profile_confirmpassword), color = MaterialTheme.colors.onSurface)})
 
 
             Row(Modifier.fillMaxSize(),

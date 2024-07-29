@@ -6,6 +6,6 @@ data class ProjectById(
     val projectId : String,
 )
 
-data class ProjectBy_Id(
+data class ProjectByIdUnderscore (
     @SerializedName("project_id") val projectId : String,
 )

@@ -37,7 +37,7 @@ class MajkoProjectRepository @Inject constructor(
         emit(handler { api.removeProject(projectId)})
     }
 
-    override fun createInvitetoProject(projectById: ProjectBy_Id): Flow<ApiResult<ProjectCreateInviteResponse>> = flow {
+    override fun createInvitetoProject(projectById: ProjectByIdUnderscore): Flow<ApiResult<ProjectCreateInviteResponse>> = flow {
         emit(handler { api.createInvitetoProject(projectById)})
     }
 

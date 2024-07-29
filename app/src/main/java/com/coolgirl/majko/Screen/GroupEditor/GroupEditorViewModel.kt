@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
-                           private val majkoProjectRepository: MajkoProjectRepository, private val groupId: String) : ViewModel() {
+                           private val majkoProjectRepository: MajkoProjectRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(GroupEditorUiState())
     val uiState: StateFlow<GroupEditorUiState> = _uiState.asStateFlow()
 
@@ -48,6 +48,15 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
         }
     }
 
+    fun showMembers(){
+        if(uiState.value.isMembers){
+            _uiState.update { it.copy(isMembers = false) }
+        }else{
+            _uiState.update { it.copy(isMembers = true) }
+        }
+    }
+
+
     fun updateGroupDescription(description: String){
         _uiState.update { currentState ->
             currentState.groupData?.let { currentProjectData ->
@@ -58,7 +67,7 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
         }
     }
 
-    fun loadData(){
+    fun loadData(groupId: String){
         _uiState.update { it.copy(groupId = groupId) }
         viewModelScope.launch {
             majkoRepository.getGroupById(GroupById(uiState.value.groupId)).collect() { response ->
@@ -102,13 +111,12 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
     }
 
     fun saveProject(project_id: String){
-        _uiState.update { it.copy(groupId = groupId) }
         viewModelScope.launch {
             majkoRepository.addProjectInGroup(ProjectInGroup(project_id, uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         addingProject()
-                        loadData() }
+                        loadData(uiState.value.groupId) }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
@@ -137,7 +145,7 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
 
     fun createInvite(){
         viewModelScope.launch {
-            majkoRepository.createInvitetoGroup(GroupBy_Id(uiState.value.groupId)).collect() { response ->
+            majkoRepository.createInvitetoGroup(GroupByIdUnderscore(uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(invite = response.data!!.invite) }

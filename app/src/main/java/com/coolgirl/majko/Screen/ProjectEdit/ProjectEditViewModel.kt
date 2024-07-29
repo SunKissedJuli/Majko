@@ -20,8 +20,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
-                           private val majkoInfoRepository: MajkoInfoRepository,  private val majkoTaskRepository: MajkoTaskRepository,
-                           private val projectId : String) : ViewModel() {
+                           private val majkoInfoRepository: MajkoInfoRepository,
+                           private val majkoTaskRepository: MajkoTaskRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(ProjectEditUiState())
     val uiState: StateFlow<ProjectEditUiState> = _uiState.asStateFlow()
 
@@ -90,6 +90,13 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
         }
     }
 
+    fun showMembers(){
+        if(uiState.value.isMembers){
+            _uiState.update { it.copy(isMembers = false) }
+        }else{
+            _uiState.update { it.copy(isMembers = true) }
+        }
+    }
 
     fun getStatus() : List<SpinnerItems>{
         val list = mutableListOf<SpinnerItems>()
@@ -133,7 +140,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
         return "Нет"
     }
 
-    fun loadData(){
+    fun loadData(projectId: String){
         _uiState.update { it.copy(projectId = projectId) }
         loadProject()
         loadPriorities()
@@ -196,8 +203,10 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
             majkoRepository.updateProject(updateProject).collect() { response ->
                 when(response){
                     is ApiSuccess ->{ navHostController.navigate(Screen.Project.route) }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    is ApiError -> { Log.d("TAG", "error message = " + response.message)
+                        navHostController.navigate(Screen.Project.route)}
+                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e)
+                        navHostController.navigate(Screen.Project.route) }
                 }
             }
         }
@@ -216,7 +225,6 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
     }
 
     fun saveTask(){
-        _uiState.update { it.copy(projectId = projectId) }
         viewModelScope.launch {
             val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
                 uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.projectId,"")
@@ -224,7 +232,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
                 when(response){
                     is ApiSuccess ->{
                         addingTask()
-                        loadData()
+                        loadData(uiState.value.projectId)
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
@@ -235,7 +243,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
 
     fun createInvite(){
         viewModelScope.launch {
-            majkoRepository.createInvitetoProject(ProjectBy_Id(uiState.value.projectId)).collect() { response ->
+            majkoRepository.createInvitetoProject(ProjectByIdUnderscore(uiState.value.projectId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         _uiState.update { it.copy(invite = response.data!!.invite) }

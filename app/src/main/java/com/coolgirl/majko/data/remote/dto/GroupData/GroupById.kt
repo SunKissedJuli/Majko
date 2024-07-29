@@ -6,6 +6,6 @@ data class GroupById(
     val groupId: String
 )
 
-data class GroupBy_Id(
+data class GroupByIdUnderscore(
     @SerializedName("group_id") val groupId: String
 )

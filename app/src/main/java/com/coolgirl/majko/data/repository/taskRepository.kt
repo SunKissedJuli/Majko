@@ -35,7 +35,7 @@ class MajkoTaskRepository @Inject constructor(
         emit(handler { api.updateTask(taskData) })
     }
 
-    override fun removeTask(taskId: TaskBy_Id): Flow<ApiResult<Unit>> = flow {
+    override fun removeTask(taskId: TaskByIdUnderscore): Flow<ApiResult<Unit>> = flow {
         emit(handler { api.removeTask(taskId) })
     }
 

@@ -25,11 +25,12 @@ val dataStoreModule = module {
 }
 
 val apiModule = module {
-    single { MajkoUserRepository(ApiClient(androidContext())) }
-    single { MajkoTaskRepository(ApiClient(androidContext())) }
-    single { MajkoInfoRepository(ApiClient(androidContext())) }
-    single { MajkoProjectRepository(ApiClient(androidContext())) }
-    single { MajkoGroupRepository(ApiClient(androidContext())) }
+    single { ApiClient(androidContext()) }
+    single { MajkoUserRepository(get()) }
+    single { MajkoTaskRepository(ApiClient(get())) }
+    single { MajkoInfoRepository(ApiClient(get())) }
+    single { MajkoProjectRepository(ApiClient(get())) }
+    single { MajkoGroupRepository(ApiClient(get())) }
 }
 
 val appModule = module {
@@ -40,7 +41,7 @@ val appModule = module {
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { ProjectViewModel(get()) }
     viewModel { TaskViewModel(get(), get()) }
-    viewModel { (taskId: String) -> TaskEditorViewModel(get(), get(),taskId) }
-    viewModel { (projectId: String) -> ProjectEditViewModel(get(),get(), get(), projectId) }
-    viewModel { (groupId: String) -> GroupEditorViewModel(get(), get(), groupId) }
+    viewModel { TaskEditorViewModel(get(), get())}
+    viewModel { ProjectEditViewModel(get(),get(), get()) }
+    viewModel { GroupEditorViewModel(get(), get()) }
 }

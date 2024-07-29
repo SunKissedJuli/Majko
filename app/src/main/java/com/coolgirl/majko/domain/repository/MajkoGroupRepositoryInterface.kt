@@ -23,7 +23,7 @@ interface MajkoGroupRepositoryInterface {
 
     fun addProjectInGroup(group: ProjectInGroup) : Flow<ApiResult<ProjectDataResponse>>
 
-    fun createInvitetoGroup(groupId: GroupBy_Id) : Flow<ApiResult<GroupInviteResponse>>
+    fun createInvitetoGroup(groupId: GroupByIdUnderscore) : Flow<ApiResult<GroupInviteResponse>>
 
     fun joinGroupByInvitation(invite: JoinByInviteProjectData) : Flow<ApiResult<MessageData>>
 }

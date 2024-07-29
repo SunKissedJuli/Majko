@@ -1,5 +1,7 @@
 package com.coolgirl.majko.data.remote.dto.NoteData
 
+import com.google.gson.annotations.SerializedName
+
 data class NoteById(
-    val note_id: String
+    @SerializedName("note_id") val noteId: String
 )

@@ -113,9 +113,8 @@ fun SetArchiveScreen(uiState: ArchiveUiState, navController: NavHostController, 
                         tint = MaterialTheme.colors.surface)
                 }
                 FilterDropdown(expanded = expandedFilter,  onDismissRequest = { expandedFilter = it },
-                    R.string.filter_project_group, { viewModel.updateSearchString(uiState.searchString, 1) },
-                    R.string.filter_group_personal, {viewModel.updateSearchString(uiState.searchString, 0)},
-                    R.string.filter_all, {viewModel.updateSearchString(uiState.searchString, 2)})
+                    R.string.filter_project_group, { viewModel.updateSearchString(uiState.searchString, it) },
+                    R.string.filter_group_personal, R.string.filter_all,)
             }
 
             Spacer(modifier = Modifier.width(5.dp))

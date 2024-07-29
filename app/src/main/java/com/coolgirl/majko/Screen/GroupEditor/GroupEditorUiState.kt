@@ -12,5 +12,6 @@ data class GroupEditorUiState(
     val taskProjectName: String = "",
     val isInvite: Boolean = false,
     val invite: String = "",
+    val isMembers: Boolean = false,
     val members: List<GroupMember>? = listOf(),
 )

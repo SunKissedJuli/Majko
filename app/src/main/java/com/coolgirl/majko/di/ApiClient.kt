@@ -26,8 +26,6 @@ fun ApiClient(context: Context): ApiMajko {
         "Bearer " + (userDataStore.getAccessToken().first() ?: "")
     }
 
-    Log.d("tag", "токен = $token")
-
     val interceptor = Interceptor { chain ->
         val request = chain.request().newBuilder()
             .addHeader("Accept", "application/json")

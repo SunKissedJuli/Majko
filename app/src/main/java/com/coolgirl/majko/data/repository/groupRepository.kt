@@ -44,7 +44,7 @@ class MajkoGroupRepository @Inject constructor(
         emit(handler { api.addProjectInGroup(group)})
     }
 
-    override fun createInvitetoGroup(groupId: GroupBy_Id): Flow<ApiResult<GroupInviteResponse>> = flow {
+    override fun createInvitetoGroup(groupId: GroupByIdUnderscore): Flow<ApiResult<GroupInviteResponse>> = flow {
         emit(handler { api.createInvitetoGroup(groupId)})
     }
 

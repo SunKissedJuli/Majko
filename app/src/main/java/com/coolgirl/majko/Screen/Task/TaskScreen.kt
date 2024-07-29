@@ -80,9 +80,8 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                         tint = MaterialTheme.colors.surface)
                 }
                 FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
-                    R.string.filter_task_fav, { viewModel.updateSearchString(uiState.searchString, 1) },
-                    R.string.filter_task_each, {viewModel.updateSearchString(uiState.searchString, 0)},
-                    R.string.filter_all, {viewModel.updateSearchString(uiState.searchString, 2)})
+                    R.string.filter_task_fav, { viewModel.updateSearchString(uiState.searchString, it) },
+                    R.string.filter_task_each, R.string.filter_all)
             }
 
             Spacer(modifier = Modifier.width(5.dp))

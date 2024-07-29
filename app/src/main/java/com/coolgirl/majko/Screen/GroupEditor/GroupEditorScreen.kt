@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditUiState
+import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditViewModel
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorViewModel
 import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
@@ -39,14 +41,12 @@ import org.koin.java.KoinJavaComponent.inject
 @Composable
 fun GroupEditorScreen(navController: NavHostController, groupId: String){
 
-    val viewModel = getViewModel<GroupEditorViewModel>(
-        parameters = { parametersOf(groupId) }
-    )
+    val viewModel = getViewModel<GroupEditorViewModel>()
 
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit){
         coroutineScope.launch {
-            viewModel.loadData()
+            viewModel.loadData(groupId)
         }
     }
 
@@ -82,6 +82,18 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier.fillMaxWidth(0.5f)) {
+                    if(!uiState.members.isNullOrEmpty()){
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.showMembers() }) {
+                            Text(
+                                stringResource(R.string.projectedit_showmembers),
+                                fontSize = 18.sp,
+                                modifier = Modifier.padding(all = 10.dp)
+                            )
+                        }
+                    }
                     Row(Modifier
                         .fillMaxWidth()
                         .clickable { viewModel.removeGroup(navController) }) {
@@ -204,38 +216,55 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 }
             }
         }
+    }
 
-        //мемберы
-        if(!uiState.groupData?.members.isNullOrEmpty()){
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(top = 20.dp)
-                    .clip(RoundedCornerShape(25.dp, 25.dp))
-                    .background(color = MaterialTheme.colors.secondary),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top) {
+    if(uiState.isInvite){
+        SetInviteWindow(uiState, viewModel, { viewModel.newInvite()})
+    }
 
-                Spacer(modifier = Modifier.height(20.dp))
+    if(uiState.isMembers){
+        SetMembersWindow(uiState, { viewModel.showMembers()})
+    }
+}
 
-                Text(text = stringResource(R.string.projectedit_members),
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 18.sp)
+@Composable
+private fun SetMembersWindow(uiState: GroupEditorUiState, onDismissRequest: () -> Unit){
+    if (!uiState.members.isNullOrEmpty()) {
+        Dialog(onDismissRequest = { onDismissRequest() }) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(25.dp))
+                    .background(MaterialTheme.colors.secondary)
+            ) {
+                Column(Modifier.padding(start = 15.dp)) {
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                Column(Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 20.dp)) {
-                    if(!uiState.members.isNullOrEmpty()){
-                        for(item in uiState.members!!){
-                            Row(verticalAlignment = Alignment.CenterVertically){
-                                Column {
-                                    Text(
-                                        text = stringResource(R.string.common_dash),
-                                        fontSize = 55.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        color = MaterialTheme.colors.background
-                                    )
-                                }
+                    Text(
+                        text = stringResource(R.string.projectedit_members),
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 18.sp,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+
+                    Column(
+                        Modifier
+                            .padding(
+                                horizontal = 20.dp,
+                                vertical = 10.dp
+                            )
+                    ) {
+                        uiState.members?.forEach { item ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(vertical = 5.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.icon_line),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colors.background
+                                )
                                 Spacer(modifier = Modifier.width(10.dp))
 
                                 Column {
@@ -245,14 +274,24 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
     }
-
-    if(uiState.isInvite){
-        SetInviteWindow(uiState, viewModel, { viewModel.newInvite()})
+    else{
+        Dialog(onDismissRequest = { onDismissRequest() }) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(25.dp))
+                    .background(MaterialTheme.colors.secondary)
+            ) {
+                Text(text = stringResource(R.string.projectedit_membersempty), color = MaterialTheme.colors.background,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    fontSize = 18.sp, fontWeight = FontWeight.Medium)
+            }
+        }
     }
 }
 

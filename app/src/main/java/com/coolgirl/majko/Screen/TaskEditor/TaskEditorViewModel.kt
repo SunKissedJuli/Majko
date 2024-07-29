@@ -21,7 +21,7 @@ import com.coolgirl.majko.data.repository.MajkoTaskRepository
 import com.coolgirl.majko.navigation.Screen
 
 class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
-    private val majkoInfoRepository: MajkoInfoRepository, private val taskId : String) : ViewModel(){
+    private val majkoInfoRepository: MajkoInfoRepository) : ViewModel(){
     private val _uiState = MutableStateFlow(TaskEditorUiState())
     val uiState: StateFlow<TaskEditorUiState> = _uiState.asStateFlow()
 
@@ -197,7 +197,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     }
 
     fun saveTask(navHostController: NavHostController){
-        if(!taskId.equals("0")){
+        if(!uiState.value.taskId.equals("0")){
            updateTask(navHostController)
         }else{
             viewModelScope.launch {
@@ -246,9 +246,9 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     }
 
     fun removeTask(navHostController: NavHostController){
-       if(!taskId.equals("0")) {
+       if(!uiState.value.taskId.equals("0")) {
            viewModelScope.launch {
-               majkoRepository.removeTask(TaskBy_Id(taskId)).collect() { response ->
+               majkoRepository.removeTask(TaskByIdUnderscore(uiState.value.taskId)).collect() { response ->
                    when(response){
                        is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -259,7 +259,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
        }
     }
 
-    fun loadData() {
+    fun loadData(taskId: String) {
         loadStatuses()
         loadPriorities()
 
@@ -346,8 +346,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     }
 
     fun loadSubtaskData() {
-        if(!taskId.equals("0")){
-            _uiState.update { it.copy(taskId = taskId) }
+        if(!uiState.value.taskId.equals("0")){
             viewModelScope.launch {
                 majkoRepository.getSubtask(TaskById(uiState.value.taskId)).collect() { response ->
                     when(response){

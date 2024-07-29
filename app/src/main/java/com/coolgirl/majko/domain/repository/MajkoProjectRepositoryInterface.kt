@@ -19,7 +19,7 @@ interface MajkoProjectRepositoryInterface {
 
     fun removeProject(projectId: ProjectById): Flow<ApiResult<Unit>>
 
-    fun createInvitetoProject(projectById: ProjectBy_Id): Flow<ApiResult<ProjectCreateInviteResponse>>
+    fun createInvitetoProject(projectById: ProjectByIdUnderscore): Flow<ApiResult<ProjectCreateInviteResponse>>
 
     fun joinByInvitation(invite: JoinByInviteProjectData): Flow<ApiResult<MessageData>>
 }

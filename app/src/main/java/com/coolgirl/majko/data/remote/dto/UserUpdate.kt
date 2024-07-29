@@ -1,10 +1,11 @@
 package com.coolgirl.majko.data.remote.dto
 
+import com.google.gson.annotations.SerializedName
 import java.io.File
 
 data class UserUpdateEmail(
     val name : String?,
-    val new_email : String?,
+    @SerializedName("new_email") val newEmail : String?,
 )
 
 data class UserUpdateName(
@@ -18,7 +19,7 @@ data class UserUpdateImage(
 
 data class UserUpdatePassword(
     val name : String?,
-    val new_password : String?,
-    val confirm_password : String?,
-    val old_password : String?,
+    @SerializedName("new_password") val newPassword : String?,
+    @SerializedName("confirm_password") val confirmPassword : String?,
+    @SerializedName("old_password") val oldPassword : String?,
 )

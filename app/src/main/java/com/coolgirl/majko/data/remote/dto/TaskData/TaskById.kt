@@ -6,6 +6,6 @@ data class TaskById(
     val taskId: String,
 )
 
-data class TaskBy_Id(
+data class TaskByIdUnderscore(
     @SerializedName("task_id") val taskId: String,
 )

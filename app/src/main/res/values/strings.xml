@@ -33,6 +33,8 @@
     <string name="projectedit_project">Проект:</string>
     <string name="projectedit_close">Закрыть</string>
     <string name="projectedit_members">Мемберы:</string>
+    <string name="projectedit_showmembers">Показать мемберов</string>
+    <string name="projectedit_membersempty">Список мемберов пуст</string>
     <string name="projectedit_addtask">Добавить задачу</string>
     <string name="taskeditor_addtask">Добавить субзадачу</string>
     <string name="profile_login">Логин:</string>
@@ -56,7 +58,6 @@
     <string name="common_noname">Без названия</string>
     <string name="common_nonote">Без записей</string>
     <string name="common_nodescription">Без описания</string>
-    <string name="common_dash">-</string>
     <string name="common_no">нет</string>
     <string name="bottomBar_project">Проекты</string>
     <string name="bottomBar_group">Группы</string>

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditViewModel
 import com.coolgirl.majko.components.HorizontalLine
 import com.coolgirl.majko.components.SpinnerSample
 import com.coolgirl.majko.components.TaskCard
@@ -40,14 +41,12 @@ import java.util.*
 
 @Composable
 fun TaskEditorScreen(navController: NavHostController, taskId : String){
-    val viewModel = getViewModel<TaskEditorViewModel>(
-        parameters = { parametersOf(taskId) }
-    )
+    val viewModel = getViewModel<TaskEditorViewModel>()
 
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit){
         coroutineScope.launch {
-            viewModel.loadData()
+            viewModel.loadData(taskId)
         }
     }
 
@@ -94,7 +93,8 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 }
             }
         }
-        Column(Modifier
+        Column(
+            Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.4f)) {
             BasicTextField(
@@ -128,13 +128,14 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
             if(!uiState.taskId.equals("0")){
                 Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start) {
                     Column(Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp)) {
-                        Row(Modifier
+                        Row(
+                            Modifier
                                 .fillMaxHeight()
                                 .clickable { viewModel.addNewNote() },
                             verticalAlignment = Alignment.CenterVertically) {
 
-                            Image(painter = painterResource(R.drawable.icon_plus),
-                                contentDescription = "")
+                            Icon(painter = painterResource(R.drawable.icon_plus),
+                                contentDescription = "", tint = MaterialTheme.colors.background)
 
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
@@ -217,7 +218,8 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
             }
         }
 
-        Column(Modifier
+        Column(
+            Modifier
                 .fillMaxWidth()
                 .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 15.dp)
                 .clip(RoundedCornerShape(20.dp))
@@ -328,7 +330,9 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         })
                     BasicTextField(
                         value = uiState.subtaskText,
-                        modifier = Modifier.fillMaxHeight(0.25f).padding(horizontal = 18.dp),
+                        modifier = Modifier
+                            .fillMaxHeight(0.25f)
+                            .padding(horizontal = 18.dp),
                         textStyle = TextStyle.Default.copy(fontSize = 18.sp),
                         onValueChange = { viewModel.updateSubtaskText(it) },
                         decorationBox = { innerTextField ->
@@ -345,7 +349,8 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         }
                     )
                 }
-                Column(Modifier
+                Column(
+                    Modifier
                         .fillMaxWidth()
                         .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
@@ -443,12 +448,11 @@ private fun SetNotes(uiState: TaskEditorUiState, viewModel: TaskEditorViewModel)
         for(item in uiState.notes!!){
             Row(Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = stringResource(R.string.common_dash),
-                    fontSize = 55.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colors.background
-                )
+
+                Icon(painter = painterResource(R.drawable.icon_line),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.background)
+
                 Spacer(modifier = Modifier.width(10.dp))
 
                 BasicTextField(

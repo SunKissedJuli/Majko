@@ -15,11 +15,9 @@ fun FilterDropdown(
     expanded: Boolean,
     onDismissRequest: (Boolean) -> Unit,
     firstText: Int,
-    onFirstClick:()-> Unit,
+    onClick:(Int)-> Unit,
     secondText: Int,
-    onSecondClick:()-> Unit,
-    thirdText: Int,
-    onThirdClick:()-> Unit) {
+    thirdText: Int,) {
 
     DropdownMenu(
         expanded = expanded,
@@ -27,20 +25,20 @@ fun FilterDropdown(
         modifier = Modifier.fillMaxWidth(0.6f)) {
 
         DropdownMenuItem(onClick = {
-            onFirstClick()
+            onClick(1)
             onDismissRequest(false)
         }) {
             Text(stringResource(firstText))
         }
         DropdownMenuItem(onClick = {
-            onSecondClick()
+            onClick(0)
             onDismissRequest(false) }
         ) {
             Text(stringResource(secondText))
         }
 
         DropdownMenuItem(onClick = {
-            onThirdClick()
+            onClick(2)
             onDismissRequest(false)}
         ) {
             Text(stringResource(thirdText))

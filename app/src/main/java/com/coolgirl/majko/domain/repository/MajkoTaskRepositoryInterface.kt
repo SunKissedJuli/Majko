@@ -17,7 +17,7 @@ interface MajkoTaskRepositoryInterface {
 
     fun getTaskById(taskId: TaskById): Flow<ApiResult<TaskDataResponse>>
 
-    fun removeTask(taskId: TaskBy_Id): Flow<ApiResult<Unit>>
+    fun removeTask(taskId: TaskByIdUnderscore): Flow<ApiResult<Unit>>
 
     fun updateTask(taskData: TaskUpdateData): Flow<ApiResult<TaskDataResponse>>
 

@@ -18,6 +18,7 @@ data class ProjectEditUiState(
     val isInvite: Boolean = false,
     val invite: String = "",
     val members: List<Member>? = listOf(),
+    val isMembers: Boolean = false,
     val statuses: List<Info>? = listOf(),
     val proprieties: List<Info>? = listOf(),
 )
