@@ -3,11 +3,12 @@ package com.coolgirl.majko.Screen.Archive
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.components.ProjectCardUiState
-import com.coolgirl.majko.data.dataStore.UserDataStore
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
 import com.coolgirl.majko.data.repository.MajkoProjectRepository
@@ -22,12 +23,15 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
     val uiStateCard: StateFlow<ProjectCardUiState> = _uiStateCard.asStateFlow()
 
     fun openPanel(id: String) {
-        if (uiState.value.longtapProjectId.contains(id)) {
-            val updatedIds = uiState.value.longtapProjectId.split(",").filter { it != id }.joinToString(",")
-            _uiState.update { it.copy(isLongtap = updatedIds.isNotEmpty(), longtapProjectId = updatedIds) }
+        val idLength = 36
+        val currentIds = uiState.value.longtapProjectId.chunked(idLength)
+        val updatedIds = if (currentIds.contains(id)) {
+            currentIds.filter { it != id }
         } else {
-            _uiState.update { it.copy(isLongtap = true, longtapProjectId = uiState.value.longtapProjectId + id) }
-        }
+            currentIds + id
+        }.joinToString("")
+
+        _uiState.update { it.copy(isLongtap = updatedIds.isNotEmpty(), longtapProjectId = updatedIds) }
     }
 
     fun updateSearchString(newSearchString:String, whatFilter: Int){
@@ -88,8 +92,26 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         }
     }
 
+    fun isError(message: Int?){
+        if(uiState.value.isError){
+            _uiState.update { it.copy(isError = false)}
+        }else{
+            _uiState.update { it.copy(errorMessage = message)}
+            _uiState.update { it.copy(isError = true)}
+        }
+    }
+
+    fun isMessage(message: Int?){
+        if(uiState.value.isMessage){
+            _uiState.update { it.copy(isMessage = false)}
+        }else{
+            _uiState.update { it.copy(message = message)}
+            _uiState.update { it.copy(isMessage = true)}
+        }
+    }
+
     fun fromArchive(){
-        val projectIds = uiState.value.longtapProjectId.chunked(36) // Разделяем строку на ID длиной 36 символов
+        val projectIds = uiState.value.longtapProjectId.chunked(36)
         projectIds.mapNotNull { id ->
             val project = uiState.value.personalProject?.find { it.id == id }
                 ?: uiState.value.groupProject?.find { it.id == id }
@@ -101,11 +123,12 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                     description = it.description,
                     isArchive = 0
                 )
+
                 viewModelScope.launch {
                     majkoRepository.updateProject(updateProject).collect() { response ->
                         when(response){
-                            is ApiSuccess ->{
-                                openPanel("")
+                            is ApiSuccess -> {
+                                isMessage(R.string.message_fromarchive)
                                 loadData()
                             }
                             is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -115,8 +138,38 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                 }
             }
         }
-        _uiState.update { it.copy(longtapProjectId = "") }
+
+        _uiState.update { it.copy(longtapProjectId = "", isLongtap = false) }
+        loadData()
     }
+
+    fun removeProjects() {
+        val projectIds = uiState.value.longtapProjectId.chunked(36)
+        projectIds.mapNotNull { id ->
+            val project = uiState.value.personalProject?.find { it.id == id }
+                ?: uiState.value.groupProject?.find { it.id == id }
+
+            project?.let {
+                val removeProject = ProjectById(it.id)
+
+                viewModelScope.launch {
+                    majkoRepository.removeProject(removeProject).collect { response ->
+                        when(response){
+                            is ApiSuccess -> {
+                                isMessage(R.string.message_remove_project)
+                                loadData()}
+                            is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                            is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                        }
+                    }
+                }
+            }
+        }
+
+        _uiState.update { it.copy(longtapProjectId = "", isLongtap = false) }
+        loadData()
+    }
+
 
     fun loadData(){
         loadPersonalProject()

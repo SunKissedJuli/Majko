@@ -36,7 +36,6 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         }else{
             _uiState.update { it.copy(isAdding = true)}
         }
-
     }
 
     fun openInviteWindow(){

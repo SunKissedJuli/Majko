@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
@@ -41,25 +42,48 @@ class RegisterViewModel(private val dataStore : UserDataStore, private val majko
         }
     }
 
-    fun signUp(navController: NavController){
-        viewModelScope.launch {
-            majkoRepository.signUp(UserSignUpData(uiState.value.userLogin, uiState.value.userPassword, uiState.value.userName))
-                .collect() { response ->
-                    when (response) {
-                        is ApiSuccess -> {
-                            setAccesToken(response.data!!.accessToken!!)
-                            navController.navigate(Screen.Task.route) {
-                                launchSingleTop = true
-                                popUpTo(navController.graph.id) {
-                                    inclusive = true
-                                }
-                            }
-                        }
-                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                        is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
-                    }
-                }
+    fun isError(message: Int?){
+        if(uiState.value.isError){
+            _uiState.update { it.copy(isError = false)}
+        }else{
+            _uiState.update { it.copy(errorMessage = message)}
+            _uiState.update { it.copy(isError = true)}
         }
     }
 
+    fun signUp(navController: NavController) {
+        if (uiState.value.userPassword.isNullOrEmpty() || uiState.value.userLogin.isNullOrEmpty()
+            || uiState.value.userName.isNullOrEmpty() || uiState.value.userPasswordRepeat.isNullOrEmpty()) {
+            isError(R.string.error_moredata)
+        }else if(!uiState.value.userPassword.equals(uiState.value.userPasswordRepeat)){
+            isError(R.string.error_login_passwordsnotsame)
+        }else if(uiState.value.userPassword.length<8){
+            isError(R.string.error_login_passwordlenght)
+        } else{
+            viewModelScope.launch {
+                majkoRepository.signUp(
+                    UserSignUpData(uiState.value.userLogin, uiState.value.userPassword, uiState.value.userName)).collect() { response ->
+                        when (response) {
+                            is ApiSuccess -> {
+                                setAccesToken(response.data!!.accessToken!!)
+                                navController.navigate(Screen.Task.route) {
+                                    launchSingleTop = true
+                                    popUpTo(navController.graph.id) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                            is ApiError -> {
+                                isError(R.string.error_register)
+                                Log.d("TAG", "error message = " + response.message)
+                            }
+                            is ApiExeption -> {
+                                isError(R.string.error_register)
+                                Log.d("TAG", "exeption e = " + response.e)
+                            }
+                        }
+                    }
+            }
+        }
+    }
 }

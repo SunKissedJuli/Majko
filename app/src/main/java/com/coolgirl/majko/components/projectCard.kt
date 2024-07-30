@@ -22,8 +22,6 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.navigation.Screen
 
-
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProjectCard(
@@ -34,7 +32,7 @@ fun ProjectCard(
     onLongTapRelease: (String) -> Unit,
     isSelected: Boolean
 ) {
-    var tapType by remember { mutableStateOf(if (isSelected) R.color.purple else R.color.gray) }
+    val borderColor = if (isSelected) R.color.purple else R.color.gray
 
     Column(
         modifier = Modifier
@@ -44,7 +42,7 @@ fun ProjectCard(
             .clip(RoundedCornerShape(20.dp))
             .border(
                 3.dp,
-                color = colorResource(tapType),
+                color = colorResource(borderColor),
                 shape = RoundedCornerShape(20.dp)
             )
             .background(color = colorResource(priorityColor))
@@ -52,10 +50,8 @@ fun ProjectCard(
                 onClick = { navHostController.navigate(Screen.ProjectEditor.createRoute(projectData.id)) },
                 onLongClick = {
                     if (isSelected) {
-                        tapType = R.color.gray
                         onLongTapRelease(projectData.id)
                     } else {
-                        tapType = R.color.purple
                         onLongTap(projectData.id)
                     }
                 },

@@ -70,4 +70,16 @@
     <string name="filter_task_fav">Только избранные</string>
     <string name="filter_task_each">Только другие</string>
     <string name="filter_all">Все</string>
+    <string name="error_email_notnew">Новый email уже есть в системе</string>
+    <string name="error_data">Не удалось oбновить данные</string>
+    <string name="error_login">Не удалось войти в аккаунт</string>
+    <string name="error_register">Не удалось создать аккаунт</string>
+    <string name="error_login_datanotfound">Введите действительные данные</string>
+    <string name="error_login_passwordsnotsame">Пароли должны совпадать</string>
+    <string name="error_login_passwordlenght">Минимальный пароль - 8 символов</string>
+    <string name="error_moredata">Заполните все поля с данными</string>
+    <string name="message_success">Данные успешно обновлены</string>
+    <string name="message_remove_project">Проекты успешно удалены</string>
+    <string name="message_toarchive">Проекты успешно добавлены в завершённые</string>
+    <string name="message_fromarchive">Проекты успешно убраны из завершённых</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.coolgirl.majko.Screen.Archive
 
+import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 
 data class ArchiveUiState(
@@ -9,5 +10,9 @@ data class ArchiveUiState(
     val searchGroupProject : List<ProjectDataResponse>? = listOf(),
     val searchString: String = "",
     val isLongtap: Boolean = false,
-    val longtapProjectId: String = ""
+    val longtapProjectId: String = "",
+    val isError: Boolean = false,
+    val errorMessage: Int? = null,
+    val isMessage: Boolean = false,
+    val message: Int? = null
 )

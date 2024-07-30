@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.components.ErrorSnackbar
 import com.coolgirl.majko.navigation.Screen
 import org.koin.androidx.compose.getViewModel
 
@@ -28,6 +29,14 @@ fun RegisterScreen(navController: NavController){
     val uiState by viewModel.uiState.collectAsState()
 
     SetRegisterScreen(navController, viewModel, uiState)
+
+    Box(Modifier.fillMaxSize()) {
+        if(uiState.isError){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.errorMessage?.let { ErrorSnackbar(it, { viewModel.isError(null) }) }
+            }
+        }
+    }
 }
 
 @Composable

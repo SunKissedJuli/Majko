@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
@@ -35,8 +36,17 @@ class LoginViewModel(private val dataStore : UserDataStore, private val majkoRep
         }
     }
 
+    fun isError(message: Int?){
+        if(uiState.value.isError){
+            _uiState.update { it.copy(isError = false)}
+        }else{
+            _uiState.update { it.copy(errorMessage = message)}
+            _uiState.update { it.copy(isError = true)}
+        }
+    }
+
     fun signIn(navController: NavController){
-        if(!uiState.value.userPassword.equals("")&&!uiState.value.userLogin.equals("")){
+        if(!uiState.value.userPassword.isNullOrEmpty()&&!uiState.value.userLogin.isNullOrEmpty()){
             viewModelScope.launch {
                 majkoRepository.signIn(UserSignInData(uiState.value.userLogin, uiState.value.userPassword))
                     .collect() { response ->
@@ -50,11 +60,20 @@ class LoginViewModel(private val dataStore : UserDataStore, private val majkoRep
                                     }
                                 }
                             }
-                            is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                            is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                            is ApiError -> {
+                                if (response.code == 422) {
+                                    isError(R.string.error_login_datanotfound) }
+                                else { isError(R.string.error_login) }
+                            }
+                            is ApiExeption -> {
+                                isError(R.string.error_login)
+                            }
                         }
                     }
             }
+        }
+        else{
+            isError(R.string.error_moredata)
         }
     }
 }

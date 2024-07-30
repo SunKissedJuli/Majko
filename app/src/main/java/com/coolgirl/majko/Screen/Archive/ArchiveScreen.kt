@@ -19,10 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.components.FilterDropdown
-import com.coolgirl.majko.components.ProjectCard
-import com.coolgirl.majko.components.ProjectCardUiState
-import com.coolgirl.majko.components.SearchBox
+import com.coolgirl.majko.components.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
@@ -78,7 +75,31 @@ fun ArchiveScreen(navController: NavHostController){
                             modifier = Modifier.padding(all = 10.dp)
                         )
                     }
+                    Row(Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.removeProjects()
+                            expanded = false}){
+                        Text(
+                            stringResource(R.string.project_delite),
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(all = 10.dp)
+                        )
+                    }
                 }
+            }
+        }
+    }
+
+    //снекбары
+    Box(Modifier.fillMaxSize()) {
+        if(uiState.isError){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.errorMessage?.let { ErrorSnackbar(it, { viewModel.isError(null) }) }
+            }
+        }
+        if(uiState.isMessage){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.message?.let { MessageSnackbar(it, { viewModel.isMessage(null) }) }
             }
         }
     }

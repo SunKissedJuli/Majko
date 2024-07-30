@@ -78,9 +78,19 @@ fun ProjectScreen(navController: NavHostController){
                         Row(Modifier
                             .fillMaxWidth()
                             .clickable { viewModel.toArchive()
-                            expanded = false }) {
+                                expanded = false }) {
                             Text(
                                 stringResource(R.string.project_to_archive),
+                                fontSize = 18.sp,
+                                modifier = Modifier.padding(all = 10.dp)
+                            )
+                        }
+                        Row(Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.removeProjects()
+                                expanded = false }) {
+                            Text(
+                                stringResource(R.string.project_delite),
                                 fontSize = 18.sp,
                                 modifier = Modifier.padding(all = 10.dp)
                             )
@@ -96,8 +106,23 @@ fun ProjectScreen(navController: NavHostController){
         AddProject(uiState, viewModel, { viewModel.notAddingProjectYet()})
     }
 
+    //экран для ввода инвайта
     if(uiState.isInvite){
         JoinByInviteWindow(uiState, viewModel, { viewModel.openInviteWindow()})
+    }
+
+    //снекбары
+    Box(Modifier.fillMaxSize()) {
+        if(uiState.isError){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.errorMessage?.let { ErrorSnackbar(it, { viewModel.isError(null) }) }
+            }
+        }
+        if(uiState.isMessage){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.message?.let { MessageSnackbar(it, { viewModel.isMessage(null) }) }
+            }
+        }
     }
 
 }

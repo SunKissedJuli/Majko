@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import com.coolgirl.majko.R
 
 class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoUserRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -50,14 +51,42 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
     }
 
     fun updateNameData() {
-        viewModelScope.launch {
-            majkoRepository.updateUserName(UserUpdateName(uiState.value.userName)).collect() { response ->
-                when(response){
-                    is ApiSuccess ->{}
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
-                }
+        if(!uiState.value.userName.equals(uiState.value.currentUser!!.name)){
+            viewModelScope.launch {
+                majkoRepository.updateUserName(UserUpdateName(uiState.value.userName))
+                    .collect() { response ->
+                        when (response) {
+                            is ApiSuccess -> {
+                                _uiState.update { it.copy(currentUser = response.data) }
+                                isMessage(R.string.message_success)
+                            }
+                            is ApiError -> {
+                                Log.d("TAG", "error message = " + response.message)
+                            }
+                            is ApiExeption -> {
+                                Log.d("TAG", "exeption e = " + response.e)
+                            }
+                        }
+                    }
             }
+        }
+    }
+
+    fun isError(message: Int?){
+        if(uiState.value.isError){
+            _uiState.update { it.copy(isError = false)}
+        }else{
+            _uiState.update { it.copy(errorMessage = message)}
+            _uiState.update { it.copy(isError = true)}
+        }
+    }
+
+    fun isMessage(message: Int?){
+        if(uiState.value.isMessage){
+            _uiState.update { it.copy(isMessage = false)}
+        }else{
+            _uiState.update { it.copy(message = message)}
+            _uiState.update { it.copy(isMessage = true)}
         }
     }
 
@@ -65,9 +94,21 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
         viewModelScope.launch {
             majkoRepository.updateUserEmail(UserUpdateEmail(uiState.value.userName, uiState.value.userEmail)).collect() { response ->
                 when(response){
-                    is ApiSuccess ->{}
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    is ApiSuccess ->{
+                        _uiState.update { it.copy(currentUser = response.data) }
+                        isMessage(R.string.message_success)
+                    }
+                    is ApiError -> {
+                        if(response.code==422){
+                            isError(R.string.error_email_notnew)
+                        }else{
+                            isError(R.string.error_data)
+                        }
+                        Log.d("TAG", "error message = " + response.message)
+                    }
+                    is ApiExeption -> {
+                        isError(R.string.error_data)
+                        Log.d("TAG", "exeption e = " + response.e)}
                 }
             }
         }
@@ -95,6 +136,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
                     is ApiSuccess ->{
                         updateUserEmail(response.data?.email.toString())
                         updateUserName(response.data?.name.toString())
+                        _uiState.update { it.copy(currentUser = response.data) }
                 }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

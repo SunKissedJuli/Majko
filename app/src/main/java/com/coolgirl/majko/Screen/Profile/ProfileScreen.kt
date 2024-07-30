@@ -1,6 +1,7 @@
 package com.coolgirl.majko.Screen.Profile
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,16 +10,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -30,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.components.ErrorSnackbar
+import com.coolgirl.majko.components.MessageSnackbar
 import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -64,10 +63,23 @@ fun ProfileScreen( navController: NavHostController) {
         ChangePassword(uiState, viewModel, {viewModel.changePasswordScreen()})
     }
 
+    Box(Modifier.fillMaxSize()) {
+        if(uiState.isError){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.errorMessage?.let { ErrorSnackbar(it, { viewModel.isError(null) }) }
+            }
+        }
+        if(uiState.isMessage){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.message?.let { MessageSnackbar(it, { viewModel.isMessage(null) }) }
+            }
+        }
+    }
 }
 
 @Composable
 fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit, onUpdateUserEmail: (String) -> Unit, viewModel: ProfileViewModel, navController: NavHostController, launcher: ManagedActivityResultLauncher<String, Uri?> = viewModel.OpenGalery()) {
+
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -166,10 +178,15 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
                         }
                     }
                 })
-
         }
+
+
+
     }
+
+
 }
+
 
 @Composable
 private fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel, onDismissRequest: () -> Unit){

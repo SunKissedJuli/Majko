@@ -1,5 +1,7 @@
 package com.coolgirl.majko.Screen.Project
 
+import com.coolgirl.majko.R
+import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 
 data class ProjectUiState(
@@ -16,4 +18,8 @@ data class ProjectUiState(
     val isInvite: Boolean =  false,
     val invite: String = "",
     val invite_message: String = "",
+    val isError: Boolean = false,
+    val errorMessage: Int? = null,
+    val isMessage: Boolean = false,
+    val message: Int? = null
 )
