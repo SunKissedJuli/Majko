@@ -1,9 +1,6 @@
 package com.coolgirl.majko.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,21 +22,34 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.navigation.Screen
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GroupCard(navHostController: NavHostController,
               priorityColor : Int = R.color.white,
-              groupData: GroupResponse, ) {
+              groupData: GroupResponse,
+              onLongTap: (String) -> Unit,
+              onLongTapRelease: (String) -> Unit,
+              isSelected: Boolean){
 
-    var tapType by remember { mutableStateOf(R.color.gray) }
+    val borderColor = if (isSelected) R.color.purple else R.color.gray
 
     Column(modifier = Modifier
         .fillMaxWidth()
         .height(150.dp)
         .padding(start = 10.dp, top = 10.dp, end = 10.dp)
         .clip(RoundedCornerShape(20.dp))
-        .border(3.dp, color = colorResource(tapType), shape = RoundedCornerShape(20.dp))
         .background(color = colorResource(priorityColor))
-        .clickable { navHostController.navigate(Screen.GroupEditor.createRoute(groupData.id)) },
+        .border(3.dp, color = colorResource(borderColor), shape = RoundedCornerShape(20.dp))
+        .combinedClickable(
+            onClick = { navHostController.navigate(Screen.GroupEditor.createRoute(groupData.id)) },
+            onLongClick = {
+                if (isSelected) {
+                    onLongTapRelease(groupData.id)
+                } else {
+                    onLongTap(groupData.id)
+                }
+            },
+        ),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
         Row(
@@ -54,12 +64,6 @@ fun GroupCard(navHostController: NavHostController,
                 .size(25.dp)
                 .aspectRatio(1f)
                 .background(MaterialTheme.colors.primary, shape = CircleShape))
-           /* Image(painter = painterResource(R.drawable.icon_plug),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxHeight(0.8f)
-                    .clip(CircleShape))*/
             Spacer(Modifier.width(15.dp))
             Text(text= groupData.title?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
 

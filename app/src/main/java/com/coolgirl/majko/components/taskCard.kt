@@ -67,7 +67,6 @@ fun TaskCard(navHostController: NavHostController,
                 }
             },
         ),
-    //    .clickable { navHostController.navigate(Screen.TaskEditor.createRoute(taskData.id)) },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
         Row(
@@ -90,7 +89,7 @@ fun TaskCard(navHostController: NavHostController,
             if (taskData.isFavorite==true){
                 IconButton(onClick = { onBurnStarClick(taskData.id) }) {
                     Icon(imageVector = Icons.Filled.Star, contentDescription = "", tint = colorResource(
-                        R.color.yellow)
+                        R.color.yellow_star)
                     )
                 }
             }else{

@@ -24,10 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.components.FilterDropdown
-import com.coolgirl.majko.components.GroupCard
-import com.coolgirl.majko.components.SearchBox
-import com.coolgirl.majko.components.plusButton
+import com.coolgirl.majko.components.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
@@ -43,6 +40,7 @@ fun GroupScreen(navController: NavHostController) {
     }
 
     val uiState by viewModel.uiState.collectAsState()
+    var expanded by remember { mutableStateOf(false) }
 
     Box(
         Modifier
@@ -54,6 +52,40 @@ fun GroupScreen(navController: NavHostController) {
         Box(Modifier.align(Alignment.BottomEnd)){
             plusButton(onClick = { viewModel.addingGroup() }, id = "")
         }
+
+        //панель при длинном нажатии
+        if(uiState.isLongtap){
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.1f)
+                    .background(color = MaterialTheme.colors.secondary),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
+
+
+                Box(Modifier.padding(all = 10.dp)) {
+                    IconButton(onClick = { expanded = true }) {
+                        Image(painter = painterResource(R.drawable.icon_menu),
+                            contentDescription = "")
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.fillMaxWidth(0.5f)) {
+                        Row(Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.removeGroup()
+                                expanded = false }) {
+                            Text(
+                                stringResource(R.string.project_delite),
+                                fontSize = 18.sp,
+                                modifier = Modifier.padding(all = 10.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //экран добавления группы
@@ -61,8 +93,23 @@ fun GroupScreen(navController: NavHostController) {
         AddGroup(uiState, viewModel, { viewModel.addingGroup()})
     }
 
+    //экран вступления по инвайту
     if(uiState.isInvite){
         JoinByInviteWindow(uiState, viewModel, { viewModel.openInviteWindow()})
+    }
+
+    //снекбары
+    Box(Modifier.fillMaxSize()) {
+        if(uiState.isError){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.errorMessage?.let { ErrorSnackbar(it, { viewModel.isError(null) }) }
+            }
+        }
+        if(uiState.isMessage){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.message?.let { MessageSnackbar(it, { viewModel.isMessage(null) }) }
+            }
+        }
     }
 }
 
@@ -149,7 +196,10 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(groupGroup) { group ->
-                    GroupCard(navController, groupData = group)
+                    GroupCard(navController, groupData = group,
+                        onLongTap = { viewModel.openPanel(it) },
+                        onLongTapRelease = { viewModel.openPanel(it) },
+                        isSelected = uiState.longtapGroupId.contains(group.id))
                 }
             }
 
@@ -160,7 +210,10 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(personalGroup) { group ->
-                    GroupCard(navController, groupData = group)
+                    GroupCard(navController, groupData = group,
+                        onLongTap = { viewModel.openPanel(it) },
+                        onLongTapRelease = { viewModel.openPanel(it) },
+                        isSelected = uiState.longtapGroupId.contains(group.id))
                 }
             }
         }

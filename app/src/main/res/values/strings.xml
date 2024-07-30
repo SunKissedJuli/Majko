@@ -62,7 +62,7 @@
     <string name="common_no">нет</string>
     <string name="bottomBar_project">Проекты</string>
     <string name="bottomBar_group">Группы</string>
-    <string name="bottomBar_archive">Готовые</string>
+    <string name="bottomBar_archive">Готовое</string>
     <string name="bottomBar_profile">Профиль</string>
     <string name="bottomBar_task">Задачи</string>
     <string name="filter_group_group">Только общие</string>
@@ -85,4 +85,5 @@
     <string name="message_toarchive">Проекты успешно добавлены в завершённые</string>
     <string name="message_fromarchive">Проекты успешно убраны из завершённых</string>
     <string name="message_update_task">Задачи успешно завершены</string>
+    <string name="message_remove_group">Группы успешно удалены</string>
 </resources>

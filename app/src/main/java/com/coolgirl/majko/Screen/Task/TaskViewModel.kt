@@ -46,15 +46,9 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
 
     fun updateSearchString(newSearchString: String, whatFilter: Int) {
         when (whatFilter) {
-            0 -> {
-                updateEachTask(newSearchString)
-            }
-            1 -> {
-                updateFavTask(newSearchString)
-            }
-            else -> {
-                updateAllTask(newSearchString)
-            }
+            0 -> { updateEachTask(newSearchString) }
+            1 -> { updateFavTask(newSearchString) }
+            else -> { updateAllTask(newSearchString) }
         }
     }
 

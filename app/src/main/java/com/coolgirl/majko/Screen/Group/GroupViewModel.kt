@@ -3,13 +3,16 @@ package com.coolgirl.majko.Screen.Group
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import com.coolgirl.majko.data.remote.dto.GroupData.GroupById
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupData
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.JoinByInviteProjectData
+import com.coolgirl.majko.data.remote.dto.TaskData.TaskByIdUnderscore
 import com.coolgirl.majko.data.repository.MajkoGroupRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -43,6 +46,36 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
             _uiState.update { it.copy(isInvite = true)}
         }else{
             _uiState.update { it.copy(isInvite = false)}
+        }
+    }
+
+    fun openPanel(id: String) {
+        val idLength = 36
+        val currentIds = uiState.value.longtapGroupId.chunked(idLength)
+        val updatedIds = if (currentIds.contains(id)) {
+            currentIds.filter { it != id }
+        } else {
+            currentIds + id
+        }.joinToString("")
+
+        _uiState.update { it.copy(isLongtap = updatedIds.isNotEmpty(), longtapGroupId = updatedIds) }
+    }
+
+    fun isError(message: Int?) {
+        if (uiState.value.isError) {
+            _uiState.update { it.copy(isError = false) }
+        } else {
+            _uiState.update { it.copy(errorMessage = message) }
+            _uiState.update { it.copy(isError = true) }
+        }
+    }
+
+    fun isMessage(message: Int?) {
+        if (uiState.value.isMessage) {
+            _uiState.update { it.copy(isMessage = false) }
+        } else {
+            _uiState.update { it.copy(message = message) }
+            _uiState.update { it.copy(isMessage = true) }
         }
     }
 
@@ -103,6 +136,41 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
                 searchGroupGroup = filteredGroupGroup
             )
         }
+    }
+
+    fun removeGroup() {
+        Log.d("tag", "это групremoveGroup " + uiState.value.longtapGroupId)
+        val groupIds = uiState.value.longtapGroupId.chunked(36)
+        groupIds.mapNotNull { id ->
+            val group = uiState.value.groupGroup?.find { it.id == id }
+                ?: uiState.value.personalGroup?.find { it.id == id }
+
+            Log.d("tag", "это груп mapNotNull айди " + id)
+            group?.let {
+                val removeGroup = GroupById(it.id)
+                Log.d("tag", "это груп лет")
+
+                viewModelScope.launch {
+                    majkoRepository.removeGroup(removeGroup).collect { response ->
+                        when (response) {
+                            is ApiSuccess -> {
+                                isMessage(R.string.message_remove_group)
+                                loadData()
+                            }
+                            is ApiError -> {
+                                Log.d("TAG", "error message = " + response.message)
+                            }
+                            is ApiExeption -> {
+                                Log.d("TAG", "exeption e = " + response.e)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        _uiState.update { it.copy(longtapGroupId = "", isLongtap = false) }
+        loadData()
     }
 
 

@@ -239,7 +239,6 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
                         _uiState.update { it.copy(taskText = "") }
                         _uiState.update { it.copy(taskPriority = 1) }
                         _uiState.update { it.copy(taskStatus = 1) }
-
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

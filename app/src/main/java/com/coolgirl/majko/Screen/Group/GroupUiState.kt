@@ -15,4 +15,10 @@ data class GroupUiState(
     val isInvite: Boolean =  false,
     val invite: String = "",
     val inviteMessage: String = "",
+    val isError: Boolean = false,
+    val errorMessage: Int? = null,
+    val isMessage: Boolean = false,
+    val message: Int? = null,
+    val isLongtap: Boolean = false,
+    val longtapGroupId: String = "",
 )
