@@ -1,6 +1,7 @@
 package com.coolgirl.majko.Screen.Task
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,12 +17,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.R
-import com.coolgirl.majko.components.FilterDropdown
-import com.coolgirl.majko.components.SearchBox
-import com.coolgirl.majko.components.plusButton
+import com.coolgirl.majko.components.*
 import com.coolgirl.majko.navigation.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -37,6 +36,7 @@ fun TaskScreen(navController: NavHostController) {
         }
     }
     val uiState by viewModel.uiState.collectAsState()
+    var expanded by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -45,6 +45,54 @@ fun TaskScreen(navController: NavHostController) {
 
         Box(Modifier.align(Alignment.BottomEnd)){
             plusButton(onClick = {navController.navigate(Screen.TaskEditor.createRoute(it))}, id = "0")
+        }
+
+        //панель при длинном нажатии
+        if(uiState.isLongtap){
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.1f)
+                    .background(color = MaterialTheme.colors.secondary),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
+
+
+                Box(Modifier.padding(all = 10.dp)) {
+                    IconButton(onClick = { expanded = true }) {
+                        Image(painter = painterResource(R.drawable.icon_menu),
+                            contentDescription = "")
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.fillMaxWidth(0.5f)) {
+                        Row(Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.removeTask()
+                                expanded = false }) {
+                            androidx.compose.material3.Text(
+                                stringResource(R.string.project_delite),
+                                fontSize = 18.sp,
+                                modifier = Modifier.padding(all = 10.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //снекбары
+    Box(Modifier.fillMaxSize()) {
+        if(uiState.isError){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.errorMessage?.let { ErrorSnackbar(it, { viewModel.isError(null) }) }
+            }
+        }
+        if(uiState.isMessage){
+            Row(Modifier.align(Alignment.BottomCenter)) {
+                uiState.message?.let { MessageSnackbar(it, { viewModel.isMessage(null) }) }
+            }
         }
     }
 }
@@ -115,7 +163,10 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                             Column(Modifier.fillMaxWidth(0.5f)) {
                                 TaskCard(navController, viewModel.getPriority(favoritesTaskList[firstIndex].priority),
                                     viewModel.getStatus(favoritesTaskList[firstIndex].status), taskData = favoritesTaskList[firstIndex],
-                                    { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) }
+                                    { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) },
+                                    onLongTap = { viewModel.openPanel(it) },
+                                    onLongTapRelease = { viewModel.openPanel(it) },
+                                    isSelected = uiState.longtapTaskId.contains(favoritesTaskList[firstIndex].id)
                                 )
                             }
 
@@ -126,7 +177,10 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                             Column(Modifier.fillMaxWidth()) {
                                 TaskCard(navController, viewModel.getPriority(favoritesTaskList[secondIndex].priority),
                                     viewModel.getStatus(favoritesTaskList[secondIndex].status), taskData = favoritesTaskList[secondIndex],
-                                    { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) }
+                                    { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) },
+                                    onLongTap = { viewModel.openPanel(it) },
+                                    onLongTapRelease = { viewModel.openPanel(it) },
+                                    isSelected = uiState.longtapTaskId.contains(favoritesTaskList[secondIndex].id)
                                 )
                             }
 
@@ -150,7 +204,10 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                             Column(Modifier.fillMaxWidth(0.5f)) {
                                 TaskCard(navController, viewModel.getPriority(allTaskList[firstIndex].priority),
                                     viewModel.getStatus(allTaskList[firstIndex].status), taskData = allTaskList[firstIndex],
-                                    { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) }
+                                    { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) },
+                                onLongTap = { viewModel.openPanel(it) },
+                                onLongTapRelease = { viewModel.openPanel(it) },
+                                isSelected = uiState.longtapTaskId.contains(allTaskList[firstIndex].id)
                                 )
                             }
 
@@ -161,7 +218,10 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                             Column(Modifier.fillMaxWidth()) {
                                 TaskCard(navController, viewModel.getPriority(allTaskList[secondIndex].priority),
                                     viewModel.getStatus(allTaskList[secondIndex].status), taskData = allTaskList[secondIndex],
-                                    { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) }
+                                    { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) },
+                                    onLongTap = { viewModel.openPanel(it) },
+                                    onLongTapRelease = { viewModel.openPanel(it) },
+                                    isSelected = uiState.longtapTaskId.contains(allTaskList[secondIndex].id)
                                 )
                             }
                         }

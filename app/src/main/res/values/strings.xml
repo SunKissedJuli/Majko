@@ -80,6 +80,7 @@
     <string name="error_moredata">Заполните все поля с данными</string>
     <string name="message_success">Данные успешно обновлены</string>
     <string name="message_remove_project">Проекты успешно удалены</string>
+    <string name="message_remove_task">Задачи успешно удалены</string>
     <string name="message_toarchive">Проекты успешно добавлены в завершённые</string>
     <string name="message_fromarchive">Проекты успешно убраны из завершённых</string>
 </resources>

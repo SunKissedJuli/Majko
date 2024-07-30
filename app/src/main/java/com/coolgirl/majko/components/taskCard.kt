@@ -1,8 +1,6 @@
 package com.coolgirl.majko.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,20 +32,42 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.*
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TaskCard(navHostController: NavHostController,
              priorityColor : Int,
              statusName : String,
              taskData: TaskDataResponse,
              onBurnStarClick: (String) -> Unit,
-             onDeadStarClick: (String) -> Unit){
+             onDeadStarClick: (String) -> Unit,
+             onLongTap: (String) -> Unit,
+             onLongTapRelease: (String) -> Unit,
+             isSelected: Boolean){
+
+    val borderColor = if (isSelected) R.color.purple else R.color.white
+
     Column(modifier = Modifier
         .height(280.dp)
         .fillMaxWidth()
         .padding(5.dp)
         .clip(RoundedCornerShape(20.dp))
         .background(color = colorResource(priorityColor))
-        .clickable { navHostController.navigate(Screen.TaskEditor.createRoute(taskData.id)) },
+        .border(
+        3.dp,
+        color = colorResource(borderColor),
+        shape = RoundedCornerShape(20.dp)
+    )
+        .combinedClickable(
+            onClick = { navHostController.navigate(Screen.TaskEditor.createRoute(taskData.id)) },
+            onLongClick = {
+                if (isSelected) {
+                    onLongTapRelease(taskData.id)
+                } else {
+                    onLongTap(taskData.id)
+                }
+            },
+        ),
+    //    .clickable { navHostController.navigate(Screen.TaskEditor.createRoute(taskData.id)) },
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
         Row(
@@ -63,12 +83,7 @@ fun TaskCard(navHostController: NavHostController,
                 .size(27.dp)
                 .aspectRatio(1f)
                 .background(MaterialTheme.colors.primary, shape = CircleShape))
-           /* Image(painter = painterResource(R.drawable.icon_plug),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxHeight(0.8f)
-                    .clip(CircleShape))*/
+
             Spacer(Modifier.width(7.dp))
             Text(text= taskData.title?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
             Spacer(Modifier.width(5.dp))

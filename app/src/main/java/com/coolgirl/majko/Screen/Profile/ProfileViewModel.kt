@@ -109,6 +109,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
                     is ApiExeption -> {
                         isError(R.string.error_data)
                         Log.d("TAG", "exeption e = " + response.e)}
+                    else -> {}
                 }
             }
         }
@@ -120,7 +121,6 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
         }else{
             _uiState.update { it.copy(isChangePassword = true)}
         }
-
     }
 
     fun forgetAccount(){
@@ -140,6 +140,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
                 }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    else -> {}
                 }
             }
         }
@@ -153,6 +154,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
                     is ApiSuccess ->{ changePasswordScreen() }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    else -> {}
                 }
             }
         }
@@ -184,6 +186,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
                                 is ApiSuccess ->{  }
                                 is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                                 is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                                else -> {}
                             }
                         }
                     }

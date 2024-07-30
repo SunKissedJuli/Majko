@@ -77,8 +77,6 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     .fillMaxHeight()
                     .clickable { viewModel.saveTask(navController) })
 
-
-
             Box {
                 IconButton(onClick = { expanded = true }) {
                     Icon(Icons.Default.MoreVert, contentDescription = "", tint = MaterialTheme.colors.background)
@@ -87,9 +85,10 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                     modifier = Modifier.fillMaxWidth(0.5f)) {
-                    Text(stringResource(R.string.project_delite), fontSize=18.sp, modifier = Modifier
-                        .padding(all = 10.dp)
-                        .clickable { viewModel.removeTask(navController) })
+                    Row(Modifier.fillMaxWidth().clickable { viewModel.removeTask(navController) }){
+                        Text(stringResource(R.string.project_delite), fontSize=18.sp, color = MaterialTheme.colors.onSecondary,
+                            modifier = Modifier.padding(all = 10.dp))
+                    }
                 }
             }
         }
@@ -195,7 +194,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                         items(count) { rowIndex ->
                             Column(Modifier.width(200.dp)) {
                                 TaskCard(navController, viewModel.getPriority(subtask[rowIndex].priority),
-                                    viewModel.getStatus(subtask[rowIndex].status), subtask[rowIndex], {}, {})
+                                    viewModel.getStatus(subtask[rowIndex].status), subtask[rowIndex], {}, {}, {}, {}, false)
                             }
                         }
                     }

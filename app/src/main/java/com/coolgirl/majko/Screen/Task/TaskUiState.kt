@@ -9,5 +9,11 @@ data class TaskUiState(
     val searchAllTaskList: List<TaskDataResponse>? = listOf(),
     val searchFavoritesTaskList: List<TaskDataResponse>? = listOf(),
     val searchString: String = "",
-    val statuses: List<Info>? = null
+    val statuses: List<Info>? = null,
+    val isError: Boolean = false,
+    val errorMessage: Int? = null,
+    val isMessage: Boolean = false,
+    val message: Int? = null,
+    val isLongtap: Boolean = false,
+    val longtapTaskId: String = "",
 )

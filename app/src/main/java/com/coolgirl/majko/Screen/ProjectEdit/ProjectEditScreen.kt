@@ -205,8 +205,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                                 navController,
                                 viewModel.getPriority(projectData[rowIndex].priority),
                                 viewModel.getStatusName(projectData[rowIndex].status),
-                                projectData[rowIndex], {}, {}
-                            )
+                                projectData[rowIndex], {}, {}, {}, {}, false)
                         }
                     }
                 }

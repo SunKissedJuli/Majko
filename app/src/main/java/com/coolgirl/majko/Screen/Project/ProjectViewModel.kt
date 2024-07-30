@@ -149,6 +149,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    else -> {}
                 }
             }
         }
@@ -177,6 +178,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                             }
                             is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                             is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                            else -> {}
                         }
                     }
                 }
@@ -204,6 +206,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                                 loadData()}
                             is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                             is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                            else -> {}
                         }
                     }
                 }
@@ -224,6 +227,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    else -> {}
                 }
             }
         }
@@ -250,6 +254,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    else -> {}
                 }
             }
         }
@@ -275,6 +280,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                     is ApiExeption -> {
                         Log.d("TAG", "exeption e = " + response.e)
                     }
+                    else -> {}
                 }
             }
         }

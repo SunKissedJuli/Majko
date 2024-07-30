@@ -179,12 +179,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
                     }
                 })
         }
-
-
-
     }
-
-
 }
 
 

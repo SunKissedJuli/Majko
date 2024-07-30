@@ -8,7 +8,9 @@ import com.coolgirl.majko.commons.ApiError
 import com.coolgirl.majko.commons.ApiExeption
 import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.data.dataStore.UserDataStore
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
+import com.coolgirl.majko.data.remote.dto.TaskData.TaskByIdUnderscore
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.data.repository.MajkoInfoRepository
 import com.coolgirl.majko.data.repository.MajkoTaskRepository
@@ -19,9 +21,9 @@ import kotlinx.coroutines.launch
 class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
                     private val majkoInfoRepository: MajkoInfoRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskUiState())
-    val uiState:StateFlow<TaskUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<TaskUiState> = _uiState.asStateFlow()
 
-    fun updateSearchString(newSearchString:String){
+    fun updateSearchString(newSearchString: String) {
         _uiState.update { currentState ->
             val filteredAllTasks = currentState.allTaskList?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
@@ -41,15 +43,21 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun updateSearchString(newSearchString:String, whatFilter: Int){
+    fun updateSearchString(newSearchString: String, whatFilter: Int) {
         when (whatFilter) {
-            0 -> { updateEachTask(newSearchString) }
-            1 -> { updateFavTask(newSearchString) }
-            else -> { updateAllTask(newSearchString) }
+            0 -> {
+                updateEachTask(newSearchString)
+            }
+            1 -> {
+                updateFavTask(newSearchString)
+            }
+            else -> {
+                updateAllTask(newSearchString)
+            }
         }
     }
 
-    fun updateEachTask(newSearchString:String){
+    fun updateEachTask(newSearchString: String) {
         _uiState.update { currentState ->
             val filteredAllTasks = currentState.allTaskList?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
@@ -64,7 +72,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun updateFavTask(newSearchString:String){
+    fun updateFavTask(newSearchString: String) {
         _uiState.update { currentState ->
             val filteredFavoritesTasks = currentState.favoritesTaskList?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
@@ -79,7 +87,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun updateAllTask(newSearchString:String){
+    fun updateAllTask(newSearchString: String) {
         _uiState.update { currentState ->
             val filteredAllTasks = currentState.allTaskList?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
@@ -99,7 +107,37 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun getPriority(priorityId: Int): Int{
+    fun openPanel(id: String) {
+        val idLength = 36
+        val currentIds = uiState.value.longtapTaskId.chunked(idLength)
+        val updatedIds = if (currentIds.contains(id)) {
+            currentIds.filter { it != id }
+        } else {
+            currentIds + id
+        }.joinToString("")
+
+        _uiState.update { it.copy(isLongtap = updatedIds.isNotEmpty(), longtapTaskId = updatedIds) }
+    }
+
+    fun isError(message: Int?) {
+        if (uiState.value.isError) {
+            _uiState.update { it.copy(isError = false) }
+        } else {
+            _uiState.update { it.copy(errorMessage = message) }
+            _uiState.update { it.copy(isError = true) }
+        }
+    }
+
+    fun isMessage(message: Int?) {
+        if (uiState.value.isMessage) {
+            _uiState.update { it.copy(isMessage = false) }
+        } else {
+            _uiState.update { it.copy(message = message) }
+            _uiState.update { it.copy(isMessage = true) }
+        }
+    }
+
+    fun getPriority(priorityId: Int): Int {
         return when (priorityId) {
             1 -> R.color.green
             2 -> R.color.orange
@@ -108,10 +146,10 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun getStatus(statusId: Int): String{
-        if(!uiState.value.statuses.isNullOrEmpty()){
-            for(item in uiState.value.statuses!!){
-                if(item.id==statusId){
+    fun getStatus(statusId: Int): String {
+        if (!uiState.value.statuses.isNullOrEmpty()) {
+            for (item in uiState.value.statuses!!) {
+                if (item.id == statusId) {
                     return item.name
                 }
             }
@@ -125,78 +163,132 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         loadStatuses()
     }
 
-    fun loadFavTask(){
+    fun loadFavTask() {
         viewModelScope.launch {
             majkoRepository.getAllFavorites().collect() { response ->
-                when(response){
-                    is ApiSuccess ->{
-                        _uiState.update { it.copy(favoritesTaskList = response.data)}
-                        _uiState.update { it.copy(searchFavoritesTaskList =  response.data)}
+                when (response) {
+                    is ApiSuccess -> {
+                        _uiState.update { it.copy(favoritesTaskList = response.data) }
+                        _uiState.update { it.copy(searchFavoritesTaskList = response.data) }
                     }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    is ApiError -> {
+                        Log.d("TAG", "error message = " + response.message)
+                    }
+                    is ApiExeption -> {
+                        Log.d("TAG", "exeption e = " + response.e)
+                    }
                 }
             }
         }
-
     }
 
-    fun loadEachTask(){
+    fun loadEachTask() {
         viewModelScope.launch {
             majkoRepository.getAllUserTask().collect() { response ->
-                when(response){
-                    is ApiSuccess ->{
+                when (response) {
+                    is ApiSuccess -> {
                         val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (!item.isFavorite && item.mainTaskId==null) {
+                            if (!item.isFavorite && item.mainTaskId == null) {
                                 notFavorite.add(item)
                             }
                         }
-                        _uiState.update { it.copy(allTaskList = notFavorite)}
-                        _uiState.update { it.copy(searchAllTaskList = notFavorite)}
+                        _uiState.update { it.copy(allTaskList = notFavorite) }
+                        _uiState.update { it.copy(searchAllTaskList = notFavorite) }
                     }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    is ApiError -> {
+                        Log.d("TAG", "error message = " + response.message)
+                    }
+                    is ApiExeption -> {
+                        Log.d("TAG", "exeption e = " + response.e)
+                    }
                 }
             }
         }
     }
 
-    fun loadStatuses(){
+    fun loadStatuses() {
         viewModelScope.launch {
             majkoInfoRepository.getStatuses().collect() { response ->
-                when(response){
-                    is ApiSuccess ->{
+                when (response) {
+                    is ApiSuccess -> {
                         _uiState.update { it.copy(statuses = response.data!!) }
                     }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                    is ApiError -> {
+                        Log.d("TAG", "error message = " + response.message)
+                    }
+                    is ApiExeption -> {
+                        Log.d("TAG", "exeption e = " + response.e)
+                    }
                 }
             }
         }
     }
 
-    fun addFavotite(task_id: String){
+    fun addFavotite(task_id: String) {
         viewModelScope.launch {
             majkoRepository.addToFavorite(TaskById(task_id)).collect() { response ->
-                when(response){
-                    is ApiSuccess ->{ loadData() }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                when (response) {
+                    is ApiSuccess -> {
+                        loadData()
+                    }
+                    is ApiError -> {
+                        Log.d("TAG", "error message = " + response.message)
+                    }
+                    is ApiExeption -> {
+                        Log.d("TAG", "exeption e = " + response.e)
+                    }
                 }
             }
         }
     }
 
-    fun removeFavotite(task_id: String){
+    fun removeFavotite(task_id: String) {
         viewModelScope.launch {
             majkoRepository.removeFavotire(TaskById(task_id)).collect() { response ->
-                when(response){
-                    is ApiSuccess ->{ loadData() }
-                    is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                    is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
+                when (response) {
+                    is ApiSuccess -> {
+                        loadData()
+                    }
+                    is ApiError -> {
+                        Log.d("TAG", "error message = " + response.message)
+                    }
+                    is ApiExeption -> {
+                        Log.d("TAG", "exeption e = " + response.e)
+                    }
                 }
             }
         }
+    }
+
+    fun removeTask() {
+        val projectIds = uiState.value.longtapTaskId.chunked(36)
+        projectIds.mapNotNull { id ->
+            val task = uiState.value.allTaskList?.find { it.id == id }
+
+            task?.let {
+                val removeTask = TaskByIdUnderscore(it.id)
+
+                viewModelScope.launch {
+                    majkoRepository.removeTask(removeTask).collect { response ->
+                        when (response) {
+                            is ApiSuccess -> {
+                                isMessage(R.string.message_remove_task)
+                                loadData()
+                            }
+                            is ApiError -> {
+                                Log.d("TAG", "error message = " + response.message)
+                            }
+                            is ApiExeption -> {
+                                Log.d("TAG", "exeption e = " + response.e)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        _uiState.update { it.copy(longtapTaskId = "", isLongtap = false) }
+        loadData()
     }
 }

@@ -44,6 +44,7 @@ fun ProjectScreen(navController: NavHostController){
 
     val uiState by viewModel.uiState.collectAsState()
     val uiStateCard by viewModel.uiStateCard.collectAsState()
+    var expanded by remember { mutableStateOf(false) }
 
     Box(
         Modifier
@@ -64,7 +65,7 @@ fun ProjectScreen(navController: NavHostController){
                     .fillMaxHeight(0.1f)
                     .background(color = MaterialTheme.colors.secondary),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
-                var expanded by remember { mutableStateOf(false) }
+
 
                 Box(Modifier.padding(all = 10.dp)) {
                     IconButton(onClick = { expanded = true }) {
