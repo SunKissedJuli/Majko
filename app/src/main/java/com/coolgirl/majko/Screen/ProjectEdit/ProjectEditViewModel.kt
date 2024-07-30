@@ -81,11 +81,12 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
         _uiState.update { it.copy(taskPriority = prioryti.toInt()) }
     }
 
-    fun getPriority(priorityId: Int): Int{
+    fun getPriority(priorityId: Int): Int {
         return when (priorityId) {
             1 -> R.color.green
-            2 -> R.color.orange
-            3 -> R.color.red
+            2 -> R.color.yellow
+            3 -> R.color.orange
+            4 -> R.color.red
             else -> R.color.white
         }
     }
@@ -233,6 +234,12 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
                     is ApiSuccess ->{
                         addingTask()
                         loadData(uiState.value.projectId)
+                        _uiState.update { it.copy(taskDeadline = "") }
+                        _uiState.update { it.copy(taskName = "") }
+                        _uiState.update { it.copy(taskText = "") }
+                        _uiState.update { it.copy(taskPriority = 1) }
+                        _uiState.update { it.copy(taskStatus = 1) }
+
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

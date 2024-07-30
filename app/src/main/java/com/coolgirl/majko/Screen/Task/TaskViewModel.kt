@@ -12,6 +12,7 @@ import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskByIdUnderscore
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
+import com.coolgirl.majko.data.remote.dto.TaskData.TaskUpdateData
 import com.coolgirl.majko.data.repository.MajkoInfoRepository
 import com.coolgirl.majko.data.repository.MajkoTaskRepository
 import kotlinx.coroutines.flow.*
@@ -140,8 +141,9 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
     fun getPriority(priorityId: Int): Int {
         return when (priorityId) {
             1 -> R.color.green
-            2 -> R.color.orange
-            3 -> R.color.red
+            2 -> R.color.yellow
+            3 -> R.color.orange
+            4 -> R.color.red
             else -> R.color.white
         }
     }
@@ -168,8 +170,8 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoRepository.getAllFavorites().collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
-                        _uiState.update { it.copy(favoritesTaskList = response.data) }
-                        _uiState.update { it.copy(searchFavoritesTaskList = response.data) }
+                        _uiState.update { it.copy(favoritesTaskList = response.data.sortedBy { it.status }) }
+                        _uiState.update { it.copy(searchFavoritesTaskList = response.data.sortedBy { it.status }) }
                     }
                     is ApiError -> {
                         Log.d("TAG", "error message = " + response.message)
@@ -193,8 +195,8 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
                                 notFavorite.add(item)
                             }
                         }
-                        _uiState.update { it.copy(allTaskList = notFavorite) }
-                        _uiState.update { it.copy(searchAllTaskList = notFavorite) }
+                        _uiState.update { it.copy(allTaskList = notFavorite.sortedBy { it.status }) }
+                        _uiState.update { it.copy(searchAllTaskList = notFavorite.sortedBy { it.status }) }
                     }
                     is ApiError -> {
                         Log.d("TAG", "error message = " + response.message)
@@ -274,6 +276,44 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
                         when (response) {
                             is ApiSuccess -> {
                                 isMessage(R.string.message_remove_task)
+                                loadData()
+                            }
+                            is ApiError -> {
+                                Log.d("TAG", "error message = " + response.message)
+                            }
+                            is ApiExeption -> {
+                                Log.d("TAG", "exeption e = " + response.e)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        _uiState.update { it.copy(longtapTaskId = "", isLongtap = false) }
+        loadData()
+    }
+
+    fun updateStatus() {
+        val projectIds = uiState.value.longtapTaskId.chunked(36)
+        projectIds.mapNotNull { id ->
+            val task = uiState.value.allTaskList?.find { it.id == id }
+
+            task?.let {
+                val updateTask = TaskUpdateData(
+                    taskId = it.id,
+                    title = it.title!!,
+                    text = it.text!!,
+                    priorityId = it.priority,
+                    deadline = it.deadline,
+                    statusId = 5
+                )
+
+                viewModelScope.launch {
+                    majkoRepository.updateTask(updateTask).collect { response ->
+                        when (response) {
+                            is ApiSuccess -> {
+                                isMessage(R.string.message_update_task)
                                 loadData()
                             }
                             is ApiError -> {

@@ -68,6 +68,16 @@ fun TaskScreen(navController: NavHostController) {
                         modifier = Modifier.fillMaxWidth(0.5f)) {
                         Row(Modifier
                             .fillMaxWidth()
+                            .clickable { viewModel.updateStatus()
+                                expanded = false }) {
+                            androidx.compose.material3.Text(
+                                stringResource(R.string.task_updatestatus),
+                                fontSize = 18.sp,
+                                modifier = Modifier.padding(all = 10.dp)
+                            )
+                        }
+                        Row(Modifier
+                            .fillMaxWidth()
                             .clickable { viewModel.removeTask()
                                 expanded = false }) {
                             androidx.compose.material3.Text(

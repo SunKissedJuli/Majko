@@ -37,8 +37,9 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         _uiState.update { it.copy(taskPriority = prioryti.toInt()) }
         when (prioryti.toInt()) {
             1 -> _uiState.update { it.copy(backgroundColor = R.color.green) }
-            2 -> _uiState.update { it.copy(backgroundColor = R.color.orange) }
-            3 -> _uiState.update { it.copy(backgroundColor = R.color.red) }
+            2 -> _uiState.update { it.copy(backgroundColor = R.color.yellow) }
+            3 -> _uiState.update { it.copy(backgroundColor = R.color.orange) }
+            4 -> _uiState.update { it.copy(backgroundColor = R.color.red) }
             else -> _uiState.update { it.copy(backgroundColor = R.color.white) }
         }
     }
@@ -141,11 +142,12 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         return "Нет"
     }
 
-    fun getPriority(priorityId: Int): Int{
+    fun getPriority(priorityId: Int): Int {
         return when (priorityId) {
             1 -> R.color.green
-            2 -> R.color.orange
-            3 -> R.color.red
+            2 -> R.color.yellow
+            3 -> R.color.orange
+            4 -> R.color.red
             else -> R.color.white
         }
     }

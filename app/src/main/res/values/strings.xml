@@ -19,6 +19,7 @@
     <string name="task_favorites">Избранные</string>
     <string name="task_each">Другие</string>
     <string name="task_search">Искать в задачах</string>
+    <string name="task_updatestatus">Завершить задачи</string>
     <string name="project_search">Искать в проектах</string>
     <string name="project_personal">Личные проекты</string>
     <string name="project_group">Групповые проекты</string>
@@ -83,4 +84,5 @@
     <string name="message_remove_task">Задачи успешно удалены</string>
     <string name="message_toarchive">Проекты успешно добавлены в завершённые</string>
     <string name="message_fromarchive">Проекты успешно убраны из завершённых</string>
+    <string name="message_update_task">Задачи успешно завершены</string>
 </resources>
