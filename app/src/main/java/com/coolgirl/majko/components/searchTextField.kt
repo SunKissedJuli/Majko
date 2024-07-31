@@ -31,16 +31,17 @@ fun SearchBox(
                 .fillMaxWidth()
                 .padding(start = 20.dp),
             textStyle = TextStyle.Default.copy(fontSize = 17.sp, color = MaterialTheme.colors.background),
+            maxLines = 1,
             decorationBox = { innerTextField ->
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    if (value.isEmpty()) {
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentSize(Alignment.CenterStart)) {
-                            Text(text = stringResource(placeholder), fontSize = 17.sp)
-                        }
-                    }
+                Box(modifier = Modifier.fillMaxWidth()) {
                     innerTextField()
+                    if (value.isEmpty()) {
+                        Text(
+                            text = stringResource(placeholder),
+                            fontSize = 17.sp,
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        )
+                    }
                 }
             }
         )

@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import com.coolgirl.majko.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -35,7 +36,7 @@ fun ErrorSnackbar(
         Snackbar(
             action = {
                 TextButton(onClick = { data.dismiss() }) {
-                    Text("OK", color = MaterialTheme.colorScheme.onError)
+                    Text(stringResource(R.string.message_ok), color = MaterialTheme.colorScheme.onError)
                 }
             },
             containerColor = MaterialTheme.colorScheme.error,

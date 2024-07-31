@@ -1,5 +1,7 @@
 package com.coolgirl.majko.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -21,7 +23,9 @@ import com.coolgirl.majko.navigation.Screen.Archive.createStringArgument
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    startDestination: String = Screen.Login.route
+    startDestination: String = Screen.Login.route,
+    enterTransition: EnterTransition = EnterTransition.None,
+    exitTransition: ExitTransition = ExitTransition.None
 ) {
     NavHost(
         navController = navController,

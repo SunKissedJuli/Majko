@@ -127,7 +127,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
                 }
             }
         }
-        return "Нет"
+        return R.string.common_no.toString()
     }
 
     fun getPriorityName(priorityId: Int) : String{
@@ -138,7 +138,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
                 }
             }
         }
-        return "Нет"
+        return R.string.common_no.toString()
     }
 
     fun loadData(projectId: String){
@@ -199,11 +199,13 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
     }
 
     fun saveProject(navHostController: NavHostController){
+        navHostController.navigate(Screen.Project.route)
         viewModelScope.launch {
-            val updateProject = ProjectUpdate(uiState.value.projectId, uiState.value.projectData!!.name,uiState.value.projectData!!.description,0)
+            val updateProject = ProjectUpdate(uiState.value.projectId, uiState.value.projectData!!.name,
+                uiState.value.projectData!!.description, uiState.value.projectData!!.isArchive)
             majkoRepository.updateProject(updateProject).collect() { response ->
                 when(response){
-                    is ApiSuccess ->{ navHostController.navigate(Screen.Project.route) }
+                    is ApiSuccess ->{  }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message)
                         navHostController.navigate(Screen.Project.route)}
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e)
@@ -214,10 +216,11 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
     }
 
     fun removeProject(navHostController: NavHostController){
+        navHostController.navigate(Screen.Project.route)
         viewModelScope.launch {
             majkoRepository.removeProject(ProjectById(uiState.value.projectId)).collect() { response ->
                 when(response){
-                    is ApiSuccess ->{ navHostController.navigate(Screen.Project.route) }
+                    is ApiSuccess ->{ }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }

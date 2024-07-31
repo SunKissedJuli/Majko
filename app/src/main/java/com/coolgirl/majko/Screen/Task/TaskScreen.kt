@@ -37,60 +37,7 @@ fun TaskScreen(navController: NavHostController) {
     }
     val uiState by viewModel.uiState.collectAsState()
     var expanded by remember { mutableStateOf(false) }
-
-    Box(Modifier.fillMaxSize()) {
-        Column(Modifier.fillMaxSize()) {
-            SetTaskScreen(navController, viewModel, uiState)
-        }
-
-        Box(Modifier.align(Alignment.BottomEnd)){
-            plusButton(onClick = {navController.navigate(Screen.TaskEditor.createRoute(it))}, id = "0")
-        }
-
-        //панель при длинном нажатии
-        if(uiState.isLongtap){
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.1f)
-                    .background(color = MaterialTheme.colors.secondary),
-                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
-
-
-                Box(Modifier.padding(all = 10.dp)) {
-                    IconButton(onClick = { expanded = true }) {
-                        Image(painter = painterResource(R.drawable.icon_menu),
-                            contentDescription = "")
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier.fillMaxWidth(0.5f)) {
-                        Row(Modifier
-                            .fillMaxWidth()
-                            .clickable { viewModel.updateStatus()
-                                expanded = false }) {
-                            androidx.compose.material3.Text(
-                                stringResource(R.string.task_updatestatus),
-                                fontSize = 18.sp,
-                                modifier = Modifier.padding(all = 10.dp)
-                            )
-                        }
-                        Row(Modifier
-                            .fillMaxWidth()
-                            .clickable { viewModel.removeTask()
-                                expanded = false }) {
-                            androidx.compose.material3.Text(
-                                stringResource(R.string.project_delite),
-                                fontSize = 18.sp,
-                                modifier = Modifier.padding(all = 10.dp)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
+    var expandedFilter by remember { mutableStateOf(false) }
 
     //снекбары
     Box(Modifier.fillMaxSize()) {
@@ -105,13 +52,106 @@ fun TaskScreen(navController: NavHostController) {
             }
         }
     }
+
+    Scaffold (
+        topBar = {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.1f)
+                    .padding(all = 10.dp)
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(color = MaterialTheme.colors.primary),
+                verticalAlignment = Alignment.CenterVertically) {
+
+                SearchBox(uiState.searchString, {viewModel.updateSearchString(it)}, R.string.task_search )
+
+                Column {
+                    Row {
+                        Icon(painter = painterResource(R.drawable.icon_filter),
+                            modifier = Modifier.clickable {expandedFilter = !expandedFilter },
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.surface)
+                    }
+                    FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
+                        R.string.filter_task_fav, { viewModel.updateSearchString(uiState.searchString, it) },
+                        R.string.filter_task_each, R.string.filter_all)
+                }
+
+                Spacer(modifier = Modifier.width(5.dp))
+
+                Icon(painter = painterResource(R.drawable.icon_filter_off),
+                    modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
+                    contentDescription = "", tint = MaterialTheme.colors.surface)
+
+            }
+        }
+    ){
+        Box(Modifier.fillMaxSize().padding(it)) {
+            Column(Modifier.fillMaxSize()) {
+                SetTaskScreen(navController, viewModel, uiState)
+            }
+
+            Box(Modifier.align(Alignment.BottomEnd)){
+                AddButton(onClick = {navController.navigate(Screen.TaskEditor.createRoute(it))}, id = "0")
+            }
+
+            //панель при длинном нажатии
+            if(uiState.isLongtap){
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.1f)
+                        .background(color = MaterialTheme.colors.secondary),
+                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
+
+
+                    Box(Modifier.padding(all = 10.dp)) {
+                        IconButton(onClick = { expanded = true }) {
+                            Image(painter = painterResource(R.drawable.icon_menu),
+                                contentDescription = "")
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier.fillMaxWidth(0.5f)) {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        viewModel.updateStatus()
+                                        expanded = false
+                                    }) {
+                                androidx.compose.material3.Text(
+                                    stringResource(R.string.task_updatestatus),
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(all = 10.dp)
+                                )
+                            }
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        viewModel.removeTask()
+                                        expanded = false
+                                    }) {
+                                androidx.compose.material3.Text(
+                                    stringResource(R.string.project_delite),
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(all = 10.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, uiState: TaskUiState) {
-    var expandedFilter by remember { mutableStateOf(false) }
-
     val allTaskList = uiState.searchAllTaskList
     val favoritesTaskList = uiState.searchFavoritesTaskList
 
@@ -119,37 +159,6 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
             .fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.1f)
-                .padding(all = 10.dp)
-                .clip(RoundedCornerShape(30.dp))
-                .background(color = MaterialTheme.colors.primary),
-        verticalAlignment = Alignment.CenterVertically) {
-
-            SearchBox(uiState.searchString, {viewModel.updateSearchString(it)}, R.string.task_search )
-
-            Column {
-                Row {
-                    Icon(painter = painterResource(R.drawable.icon_filter),
-                        modifier = Modifier.clickable {expandedFilter = !expandedFilter },
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.surface)
-                }
-                FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
-                    R.string.filter_task_fav, { viewModel.updateSearchString(uiState.searchString, it) },
-                    R.string.filter_task_each, R.string.filter_all)
-            }
-
-            Spacer(modifier = Modifier.width(5.dp))
-
-            Icon(painter = painterResource(R.drawable.icon_filter_off),
-                modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
-                contentDescription = "", tint = MaterialTheme.colors.surface)
-
-        }
-
 
         LazyColumn(
             Modifier

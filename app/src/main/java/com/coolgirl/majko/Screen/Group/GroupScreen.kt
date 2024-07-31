@@ -41,52 +41,8 @@ fun GroupScreen(navController: NavHostController) {
 
     val uiState by viewModel.uiState.collectAsState()
     var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        Modifier
-            .fillMaxSize()) {
-        Column(Modifier.fillMaxSize()) {
-            SetGroupScreen(uiState, navController, viewModel)
-        }
-
-        Box(Modifier.align(Alignment.BottomEnd)){
-            plusButton(onClick = { viewModel.addingGroup() }, id = "")
-        }
-
-        //панель при длинном нажатии
-        if(uiState.isLongtap){
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.1f)
-                    .background(color = MaterialTheme.colors.secondary),
-                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
-
-
-                Box(Modifier.padding(all = 10.dp)) {
-                    IconButton(onClick = { expanded = true }) {
-                        Image(painter = painterResource(R.drawable.icon_menu),
-                            contentDescription = "")
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier.fillMaxWidth(0.5f)) {
-                        Row(Modifier
-                            .fillMaxWidth()
-                            .clickable { viewModel.removeGroup()
-                                expanded = false }) {
-                            Text(
-                                stringResource(R.string.project_delite),
-                                fontSize = 18.sp,
-                                modifier = Modifier.padding(all = 10.dp)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
+    var expandedLongPanel by remember { mutableStateOf(false) }
+    var expandedFilter by remember { mutableStateOf(false) }
 
     //экран добавления группы
     if(uiState.isAdding){
@@ -111,14 +67,120 @@ fun GroupScreen(navController: NavHostController) {
             }
         }
     }
+
+    Scaffold(
+        topBar = {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.1f)
+                    .padding(all = 10.dp)
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(color = MaterialTheme.colors.primary),
+                verticalAlignment = Alignment.CenterVertically) {
+
+                SearchBox(value = uiState.searchString,
+                    onValueChange = {viewModel.updateSearchString(it,2)},
+                    placeholder = R.string.group_search)
+
+                Column {
+                    Row {
+                        Icon(painter = painterResource(R.drawable.icon_filter),
+                            modifier = Modifier.clickable {expandedFilter = !expandedFilter },
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.surface)
+                    }
+                    FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
+                        R.string.filter_group_group,  { viewModel.updateSearchString(uiState.searchString, it) },
+                        R.string.filter_group_personal, R.string.filter_all)
+                }
+
+                Spacer(modifier = Modifier.width(5.dp))
+
+                Icon(painter = painterResource(R.drawable.icon_filter_off),
+                    modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
+                    contentDescription = "", tint = MaterialTheme.colors.surface)
+
+
+
+                Box(Modifier.padding(end = 10.dp)) {
+                    IconButton(onClick = { expanded = true }) {
+                        Image(painter = painterResource(R.drawable.icon_menu),
+                            contentDescription = "")
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.fillMaxWidth(0.5f)) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.openInviteWindow() }) {
+                            Text(
+                                stringResource(R.string.project_joininvite),
+                                fontSize = 18.sp,
+                                modifier = Modifier
+                                    .padding(all = 10.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    ) {
+        Box(
+            Modifier
+                .fillMaxSize().padding(it)) {
+            Column(Modifier.fillMaxSize()) {
+                SetGroupScreen(uiState, navController, viewModel)
+            }
+
+            Box(Modifier.align(Alignment.BottomEnd)){
+                AddButton(onClick = { viewModel.addingGroup() }, id = "")
+            }
+
+            //панель при длинном нажатии
+            if(uiState.isLongtap){
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.1f)
+                        .background(color = MaterialTheme.colors.secondary),
+                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
+
+
+                    Box(Modifier.padding(all = 10.dp)) {
+                        IconButton(onClick = { expandedLongPanel = true }) {
+                            Image(painter = painterResource(R.drawable.icon_menu),
+                                contentDescription = "")
+                        }
+                        DropdownMenu(
+                            expanded = expandedLongPanel,
+                            onDismissRequest = { expandedLongPanel = false },
+                            modifier = Modifier.fillMaxWidth(0.5f)) {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        viewModel.removeGroup()
+                                        expandedLongPanel = false
+                                    }) {
+                                Text(
+                                    stringResource(R.string.project_delite),
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(all = 10.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, viewModel: GroupViewModel) {
-
-    var expanded by remember { mutableStateOf(false) }
-    var expandedFilter by remember { mutableStateOf(false) }
-
     val personalGroup = uiState.searchPersonalGroup
     val groupGroup = uiState.searchGroupGroup
 
@@ -127,62 +189,6 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.1f)
-                .padding(all = 10.dp)
-                .clip(RoundedCornerShape(30.dp))
-                .background(color = MaterialTheme.colors.primary),
-            verticalAlignment = Alignment.CenterVertically) {
-
-            SearchBox(value = uiState.searchString,
-                onValueChange = {viewModel.updateSearchString(it,2)},
-                placeholder = R.string.group_search)
-
-            Column {
-                Row {
-                    Icon(painter = painterResource(R.drawable.icon_filter),
-                        modifier = Modifier.clickable {expandedFilter = !expandedFilter },
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.surface)
-                }
-                FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
-                    R.string.filter_group_group,  { viewModel.updateSearchString(uiState.searchString, it) },
-                    R.string.filter_group_personal, R.string.filter_all)
-            }
-
-            Spacer(modifier = Modifier.width(5.dp))
-
-            Icon(painter = painterResource(R.drawable.icon_filter_off),
-                modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
-                contentDescription = "", tint = MaterialTheme.colors.surface)
-
-
-
-            Box(Modifier.padding(end = 10.dp)) {
-                IconButton(onClick = { expanded = true }) {
-                    Image(painter = painterResource(R.drawable.icon_menu),
-                        contentDescription = "")
-                }
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.fillMaxWidth(0.5f)) {
-                    Row(Modifier
-                        .fillMaxWidth()
-                        .clickable { viewModel.openInviteWindow() }) {
-                        Text(
-                            stringResource(R.string.project_joininvite),
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .padding(all = 10.dp)
-                        )
-                    }
-                }
-            }
-        }
-
         LazyColumn(
             Modifier
                 .fillMaxWidth()

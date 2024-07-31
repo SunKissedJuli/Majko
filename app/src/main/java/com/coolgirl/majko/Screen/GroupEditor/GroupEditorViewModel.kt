@@ -86,11 +86,12 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
     }
 
     fun saveGroup(navHostController: NavHostController){
+        navHostController.navigate(Screen.Group.route)
         viewModelScope.launch {
             majkoRepository.updateGroup(GroupUpdate(uiState.value.groupId,
                 uiState.value.groupData!!.title, uiState.value.groupData!!.description)).collect() { response ->
                 when(response){
-                    is ApiSuccess ->{ navHostController.navigate(Screen.Group.route) }
+                    is ApiSuccess ->{  }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }
@@ -99,10 +100,11 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
     }
 
     fun removeGroup(navHostController: NavHostController){
+        navHostController.navigate(Screen.Group.route)
         viewModelScope.launch {
             majkoRepository.removeGroup(GroupById(uiState.value.groupId)).collect() { response ->
                 when(response){
-                    is ApiSuccess ->{ navHostController.navigate(Screen.Group.route) }
+                    is ApiSuccess -> { }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                 }

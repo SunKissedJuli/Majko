@@ -38,17 +38,12 @@ fun ArchiveScreen(navController: NavHostController){
     val uiState by viewModel.uiState.collectAsState()
     val uiStateCard by viewModel.uiStateCard.collectAsState()
 
-    var expanded by remember { mutableStateOf(false) }
-
-    Column(Modifier.fillMaxSize()) {
-        SetArchiveScreen(uiState, navController, viewModel, uiStateCard)
-
-    }
+    var expandedLongPanel by remember { mutableStateOf(false) }
+    var expandedFilter by remember { mutableStateOf(false) }
 
     //панель при длинном нажатии
     if(uiState.isLongtap){
-        Row(
-            Modifier
+        Row(Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.1f)
                 .background(color = MaterialTheme.colors.primaryVariant),
@@ -56,34 +51,30 @@ fun ArchiveScreen(navController: NavHostController){
 
 
             Box(Modifier.padding(all = 10.dp)) {
-                IconButton(onClick = { expanded = true }) {
+                IconButton(onClick = { expandedLongPanel = true }) {
                     Image(painter = painterResource(R.drawable.icon_menu),
                         contentDescription = "")
                 }
                 DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
+                    expanded = expandedLongPanel,
+                    onDismissRequest = { expandedLongPanel = false },
                     modifier = Modifier.fillMaxWidth(0.5f)) {
 
                     Row(Modifier
-                        .fillMaxWidth()
-                        .clickable { viewModel.fromArchive()
-                        expanded = false}){
-                        Text(
-                            stringResource(R.string.archive_to_project),
-                            fontSize = 18.sp,
-                            modifier = Modifier.padding(all = 10.dp)
-                        )
+                            .fillMaxWidth()
+                            .clickable {
+                                viewModel.fromArchive()
+                                expandedLongPanel = false
+                            }){
+                        Text(stringResource(R.string.archive_to_project), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                     }
                     Row(Modifier
-                        .fillMaxWidth()
-                        .clickable { viewModel.removeProjects()
-                            expanded = false}){
-                        Text(
-                            stringResource(R.string.project_delite),
-                            fontSize = 18.sp,
-                            modifier = Modifier.padding(all = 10.dp)
-                        )
+                            .fillMaxWidth()
+                            .clickable {
+                                viewModel.removeProjects()
+                                expandedLongPanel = false
+                            }){
+                        Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                     }
                 }
             }
@@ -103,12 +94,48 @@ fun ArchiveScreen(navController: NavHostController){
             }
         }
     }
+
+    Scaffold(
+        topBar = {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.1f)
+                    .padding(all = 10.dp)
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(color = MaterialTheme.colors.primary),
+                verticalAlignment = Alignment.CenterVertically) {
+
+                SearchBox(uiState.searchString, {viewModel.updateSearchString(it, 2)}, R.string.project_search )
+                Column {
+                    Row {
+                        Icon(painter = painterResource(R.drawable.icon_filter),
+                            modifier = Modifier.clickable {expandedFilter = !expandedFilter },
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.surface)
+                    }
+                    FilterDropdown(expanded = expandedFilter,  onDismissRequest = { expandedFilter = it },
+                        R.string.filter_project_group, { viewModel.updateSearchString(uiState.searchString, it) },
+                        R.string.filter_group_personal, R.string.filter_all,)
+                }
+
+                Spacer(modifier = Modifier.width(5.dp))
+
+                Icon(painter = painterResource(R.drawable.icon_filter_off),
+                    modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
+                    contentDescription = "", tint = MaterialTheme.colors.surface)
+            }
+
+        }
+    ) {
+        Column(Modifier.fillMaxSize().padding(it)) {
+            SetArchiveScreen(uiState, navController, viewModel, uiStateCard)
+        }
+    }
 }
 
 @Composable
 fun SetArchiveScreen(uiState: ArchiveUiState, navController: NavHostController, viewModel: ArchiveViewModel, uiStateCard: ProjectCardUiState) {
-    var expandedFilter by remember { mutableStateOf(false) }
-
     val personalProject = uiState.searchPersonalProject
     val groupProject = uiState.searchGroupProject
 
@@ -116,35 +143,6 @@ fun SetArchiveScreen(uiState: ArchiveUiState, navController: NavHostController, 
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.1f)
-                .padding(all = 10.dp)
-                .clip(RoundedCornerShape(30.dp))
-                .background(color = MaterialTheme.colors.primary),
-        verticalAlignment = Alignment.CenterVertically) {
-
-            SearchBox(uiState.searchString, {viewModel.updateSearchString(it, 2)}, R.string.project_search )
-            Column {
-                Row {
-                    Icon(painter = painterResource(R.drawable.icon_filter),
-                        modifier = Modifier.clickable {expandedFilter = !expandedFilter },
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.surface)
-                }
-                FilterDropdown(expanded = expandedFilter,  onDismissRequest = { expandedFilter = it },
-                    R.string.filter_project_group, { viewModel.updateSearchString(uiState.searchString, it) },
-                    R.string.filter_group_personal, R.string.filter_all,)
-            }
-
-            Spacer(modifier = Modifier.width(5.dp))
-
-            Icon(painter = painterResource(R.drawable.icon_filter_off),
-                modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
-                contentDescription = "", tint = MaterialTheme.colors.surface)
-        }
-
         LazyColumn(
             Modifier
                 .fillMaxWidth()

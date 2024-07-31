@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.material.MaterialTheme
+import com.coolgirl.majko.R
 
 @Composable
 fun MessageSnackbar(
@@ -38,7 +39,7 @@ fun MessageSnackbar(
         Snackbar(
             action = {
                 TextButton(onClick = { data.dismiss() }) {
-                    Text("OK", color = MaterialTheme.colors.onSecondary)
+                    Text(stringResource(R.string.message_ok), color = MaterialTheme.colors.onSecondary)
                 }
             },
             containerColor = MaterialTheme.colors.surface,

@@ -19,8 +19,7 @@ import org.koin.core.component.get
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-fun ApiClient(context: Context): ApiMajko {
-    val userDataStore = UserDataStore(context)
+fun ApiClient(userDataStore: UserDataStore): ApiMajko {
 
     val token = runBlocking {
         "Bearer " + (userDataStore.getAccessToken().first() ?: "")

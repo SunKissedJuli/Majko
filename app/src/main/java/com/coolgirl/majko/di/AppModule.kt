@@ -25,7 +25,7 @@ val dataStoreModule = module {
 }
 
 val apiModule = module {
-    single { ApiClient(androidContext()) }
+    single { ApiClient(get()) }
     single { MajkoUserRepository(get()) }
     single { MajkoTaskRepository(ApiClient(get())) }
     single { MajkoInfoRepository(ApiClient(get())) }
