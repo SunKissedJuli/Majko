@@ -291,7 +291,6 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.69f)
                 .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {

@@ -139,16 +139,13 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
     }
 
     fun removeGroup() {
-        Log.d("tag", "это групremoveGroup " + uiState.value.longtapGroupId)
-        val groupIds = uiState.value.longtapGroupId.chunked(36)
+       val groupIds = uiState.value.longtapGroupId.chunked(36)
         groupIds.mapNotNull { id ->
             val group = uiState.value.groupGroup?.find { it.id == id }
                 ?: uiState.value.personalGroup?.find { it.id == id }
 
-            Log.d("tag", "это груп mapNotNull айди " + id)
             group?.let {
                 val removeGroup = GroupById(it.id)
-                Log.d("tag", "это груп лет")
 
                 viewModelScope.launch {
                     majkoRepository.removeGroup(removeGroup).collect { response ->
