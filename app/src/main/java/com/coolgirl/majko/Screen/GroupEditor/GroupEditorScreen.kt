@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -31,8 +32,10 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditUiState
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditViewModel
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorViewModel
+import com.coolgirl.majko.components.BlueRoundedButton
 import com.coolgirl.majko.components.ButtonBack
 import com.coolgirl.majko.components.ProjectCard
+import com.coolgirl.majko.components.WhiteRoundedTextField
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getKoin
@@ -200,15 +203,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
             }
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
-                Button(onClick = { viewModel.addingProject() },
-                    shape = RoundedCornerShape(15.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(0.65f)
-                        .padding(vertical = 10.dp),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-                    Text(text = stringResource(R.string.groupeditor_addproject), color = MaterialTheme.colors.background,
-                        fontSize = 18.sp, fontWeight = FontWeight.Medium)
-                }
+                BlueRoundedButton({ viewModel.addingProject() }, stringResource(R.string.groupeditor_addproject))
             }
 
             //добавление проекта в группу
@@ -322,30 +317,16 @@ private fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditor
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
 
-            OutlinedTextField(
-                value = uiState.invite,
-                onValueChange = { },
-                Modifier.padding(all = 20.dp),
-                enabled = true,
-                shape = RoundedCornerShape(30.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colors.background,
-                    unfocusedContainerColor = MaterialTheme.colors.background,
-                    focusedBorderColor = MaterialTheme.colors.background,
-                    unfocusedBorderColor = MaterialTheme.colors.background
-                ),
-            )
+            WhiteRoundedTextField(uiState.invite, { },
+                stringResource(R.string.invite), Modifier.padding(bottom = 20.dp), enabled = true)
 
-            Button(onClick = { viewModel.newInvite()},
-                shape = CircleShape,
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .padding(vertical = 10.dp)
-                    .align(Alignment.CenterHorizontally),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-                Text(text = stringResource(R.string.projectedit_close), color = MaterialTheme.colors.background,
-                    fontSize = 18.sp, fontWeight = FontWeight.Medium)
+            Row(Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically){
+                BlueRoundedButton({ viewModel.newInvite() }, stringResource(R.string.projectedit_close),
+                    modifier = Modifier.padding(bottom = 15.dp))
             }
+
         }
     }
 }

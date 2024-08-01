@@ -27,8 +27,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.components.BlueRoundedButton
 import com.coolgirl.majko.components.ErrorSnackbar
 import com.coolgirl.majko.components.MessageSnackbar
+import com.coolgirl.majko.components.WhiteRoundedTextField
 import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -144,21 +146,8 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom){
-            Button(
-                onClick = { viewModel.changePasswordScreen() },
-                shape = CircleShape,
-                modifier = Modifier
-                    .fillMaxWidth(0.65f)
-                    .padding(vertical = 10.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)
-            ) {
-                Text(
-                    text = stringResource(R.string.profile_forget),
-                    color = MaterialTheme.colors.background,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+            BlueRoundedButton({ viewModel.changePasswordScreen() }, stringResource(R.string.profile_forget),
+                modifier = Modifier.padding(bottom = 10.dp))
         }
 
         Row(
@@ -194,49 +183,19 @@ private fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel,
                 .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
-            OutlinedTextField(
-                value = uiState.oldPassword,
-                onValueChange = {viewModel.updateOldPassword(it)},
-                Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
-                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.profile_oldpassword), color = MaterialTheme.colors.onSurface)})
 
-            OutlinedTextField(
-                value = uiState.newPassword,
-                onValueChange = {viewModel.updateNewPassword(it)},
-                Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
-                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.profile_newpassword), color = MaterialTheme.colors.onSurface)})
-
-            OutlinedTextField(
-                value = uiState.confirmPassword,
-                onValueChange = {viewModel.updateConfirmPassword(it)},
-                Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
-                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.profile_confirmpassword), color = MaterialTheme.colors.onSurface)})
+            WhiteRoundedTextField(uiState.oldPassword, { viewModel.updateOldPassword(it)},
+                stringResource(R.string.profile_oldpassword) )
+            WhiteRoundedTextField(uiState.newPassword, { viewModel.updateNewPassword(it)},
+                stringResource(R.string.profile_newpassword) )
+            WhiteRoundedTextField(uiState.confirmPassword, { viewModel.updateConfirmPassword(it)},
+                stringResource(R.string.profile_confirmpassword) )
 
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically){
-                Button(onClick = { viewModel.changePassword()},
-                    shape = RoundedCornerShape(30.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .border(3.dp, colorResource(R.color.white), RoundedCornerShape(30.dp)),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-                    Text(text = stringResource(R.string.profile_save), color = MaterialTheme.colors.background,
-                        fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                }
+                BlueRoundedButton({ viewModel.changePassword() }, stringResource(R.string.profile_save))
             }
         }
     }

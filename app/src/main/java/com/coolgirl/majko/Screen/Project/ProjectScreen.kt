@@ -238,53 +238,22 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel, onD
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
 
-            OutlinedTextField(
-                value = uiState.invite,
-                onValueChange = { viewModel.updateInvite(it) },
-                Modifier.padding(all = 20.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colors.background,
-                    unfocusedContainerColor = MaterialTheme.colors.background,
-                    focusedBorderColor = MaterialTheme.colors.background,
-                    unfocusedBorderColor = MaterialTheme.colors.background
-                ),
-            )
+            WhiteRoundedTextField(uiState.invite, { viewModel.updateInvite(it)},
+                stringResource(R.string.invite), Modifier.padding(bottom = 20.dp))
 
-            if(uiState.invite_message.equals("")){
-                Button(onClick = { viewModel.joinByInvite() },
-                    shape = CircleShape,
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .padding(vertical = 10.dp)
-                        .align(Alignment.CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-                    Text(text = stringResource(R.string.project_joininvite), color = MaterialTheme.colors.background,
-                        fontSize = 18.sp, fontWeight = FontWeight.Medium)
-                }
-            }else {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(all = 10.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically){
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(all = 10.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically){
+                if(uiState.invite_message.equals("")){
+                    BlueRoundedButton({ viewModel.joinByInvite() }, stringResource(R.string.project_joininvite))
+                }else {
                     Text(text = uiState.invite_message, color = MaterialTheme.colors.background)
-                }
-
-                Button(onClick = { viewModel.openInviteWindow() },
-                    shape = CircleShape,
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .padding(vertical = 10.dp)
-                        .align(Alignment.CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-                    Text(text = stringResource(R.string.projectedit_close), color = MaterialTheme.colors.background,
-                        fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                    BlueRoundedButton({ viewModel.openInviteWindow() }, stringResource(R.string.projectedit_close))
                 }
             }
-
-
         }
     }
 }
@@ -300,38 +269,15 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRe
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
 
-            OutlinedTextField(
-                value = uiState.newProjectName,
-                onValueChange = {viewModel.updateProjectName(it)},
-                Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
-                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.project_name), color = MaterialTheme.colors.onSurface)})
+            WhiteRoundedTextField(uiState.newProjectName, { viewModel.updateProjectName(it)},
+                stringResource(R.string.project_name) )
 
-            OutlinedTextField(value = uiState.newProjectDescription,
-                onValueChange = {viewModel.updateProjectDescription(it)},
-                Modifier
-                    .fillMaxHeight(0.75f)
-                    .padding(start = 20.dp, top = 20.dp, bottom = 20.dp, end = 20.dp),
-                shape = RoundedCornerShape(30.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,
-                    focusedBorderColor = MaterialTheme.colors.background, unfocusedBorderColor = MaterialTheme.colors.background),
-                placeholder = {Text(text = stringResource(R.string.project_description), color = MaterialTheme.colors.onSurface)})
+            WhiteRoundedTextField(uiState.newProjectDescription, { viewModel.updateProjectDescription(it)},
+                stringResource(R.string.project_description), Modifier.fillMaxHeight(0.75f).padding(bottom = 20.dp))
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){
-                Button(onClick = { viewModel.addProject()},
-                    shape = RoundedCornerShape(30.dp),
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .border(3.dp, MaterialTheme.colors.background, RoundedCornerShape(30.dp)),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-                    Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
-                        fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                }
+                BlueRoundedButton({ viewModel.addProject() }, stringResource(R.string.project_add))
             }
         }
     }
