@@ -1,5 +1,7 @@
 package com.coolgirl.majko.data.remote.dto.ProjectData
 
+import com.google.gson.annotations.SerializedName
+
 data class JoinByInviteProjectData(
-    val invite:String
+    @SerializedName("invite") val invite:String
 )

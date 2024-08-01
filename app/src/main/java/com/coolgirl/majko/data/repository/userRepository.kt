@@ -3,6 +3,7 @@ package com.coolgirl.majko.data
 import com.coolgirl.majko.data.remote.ApiMajko
 import com.coolgirl.majko.data.remote.ApiResult
 import com.coolgirl.majko.data.remote.dto.*
+import com.coolgirl.majko.data.remote.dto.User.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
 import com.coolgirl.majko.data.remote.handler

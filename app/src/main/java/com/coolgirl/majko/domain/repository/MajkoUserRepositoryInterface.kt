@@ -2,9 +2,7 @@ package com.coolgirl.majko.domain.repository
 
 import com.coolgirl.majko.data.remote.ApiResult
 import com.coolgirl.majko.data.remote.dto.*
-import com.coolgirl.majko.data.remote.dto.GroupData.*
-import com.coolgirl.majko.data.remote.dto.ProjectData.*
-import com.coolgirl.majko.data.remote.dto.TaskData.*
+import com.coolgirl.majko.data.remote.dto.User.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
 import kotlinx.coroutines.flow.Flow

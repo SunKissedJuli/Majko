@@ -1,6 +1,8 @@
 package com.coolgirl.majko.data.remote.dto.NoteData
 
+import com.google.gson.annotations.SerializedName
+
 data class NoteData(
-    val taskId: String,
-    val text: String
+    @SerializedName("taskId") val taskId: String,
+    @SerializedName("text") val text: String
 )

@@ -1,5 +1,7 @@
 package com.coolgirl.majko.data.remote.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class MessageData(
-    val message : String?
+    @SerializedName("message") val message : String?
 )

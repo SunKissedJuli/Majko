@@ -1,6 +1,5 @@
 package com.coolgirl.majko.Screen.Archive
 
-import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 
 data class ArchiveUiState(

@@ -1,7 +1,9 @@
 package com.coolgirl.majko.data.remote.dto.UserSignUpData
 
+import com.google.gson.annotations.SerializedName
+
 data class UserSignUpData(
-    var email: String?,
-    var password: String?,
-    var name: String?
+    @SerializedName("email") var email: String?,
+    @SerializedName("password") var password: String?,
+    @SerializedName("name") var name: String?
 )

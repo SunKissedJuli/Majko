@@ -3,7 +3,7 @@ package com.coolgirl.majko.data.remote.dto.ProjectData
 import com.google.gson.annotations.SerializedName
 
 data class ProjectById(
-    val projectId : String,
+    @SerializedName("projectId") val projectId : String,
 )
 
 data class ProjectByIdUnderscore (

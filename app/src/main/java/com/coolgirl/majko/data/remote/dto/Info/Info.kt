@@ -1,10 +1,11 @@
 package com.coolgirl.majko.data.remote.dto.Info
 
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.SerialName
 
 data class Info(
-    val id: Int,
-    val name: String,
+    @SerializedName("id") val id: Int,
+    @SerializedName("name") val name: String,
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String,
 

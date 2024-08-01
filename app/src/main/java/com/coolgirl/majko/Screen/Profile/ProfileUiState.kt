@@ -1,6 +1,6 @@
 package com.coolgirl.majko.Screen.Profile
 
-import com.coolgirl.majko.data.remote.dto.CurrentUserDataResponse
+import com.coolgirl.majko.data.remote.dto.User.CurrentUserDataResponse
 
 data class ProfileUiState(
     val userName: String = "",

@@ -9,9 +9,9 @@ import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteUpdate
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.data.remote.dto.TaskData.*
+import com.coolgirl.majko.data.remote.dto.User.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
