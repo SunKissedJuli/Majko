@@ -4,15 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.ApiError
-import com.coolgirl.majko.commons.ApiExeption
-import com.coolgirl.majko.commons.ApiSuccess
-import com.coolgirl.majko.data.dataStore.UserDataStore
+import com.coolgirl.majko.data.remote.ApiError
+import com.coolgirl.majko.data.remote.ApiExeption
+import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupById
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupData
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.JoinByInviteProjectData
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskByIdUnderscore
 import com.coolgirl.majko.data.repository.MajkoGroupRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -87,7 +85,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         }
     }
 
-    fun updatePersonalGroup(newSearchString:String){
+    private fun updatePersonalGroup(newSearchString:String){
         _uiState.update { currentState ->
             val filteredPersonalGroup = currentState.personalGroup?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
@@ -102,7 +100,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         }
     }
 
-    fun updateGroupGroup(newSearchString:String){
+    private fun updateGroupGroup(newSearchString:String){
         _uiState.update { currentState ->
 
             val filteredGroupGroup = currentState.groupGroup?.filter { task ->
@@ -118,7 +116,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         }
     }
 
-    fun updateAllGroup(newSearchString:String){
+    private fun updateAllGroup(newSearchString:String){
         _uiState.update { currentState ->
             val filteredPersonalGroup = currentState.personalGroup?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
@@ -190,7 +188,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         loadGroupGroup()
     }
 
-    fun loadGroupGroup() {
+    private fun loadGroupGroup() {
         viewModelScope.launch {
             majkoRepository.getGroupGroup().collect() { response ->
                 when (response) {
@@ -215,7 +213,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         }
     }
 
-    fun loadPersonalGroup(){
+    private fun loadPersonalGroup(){
         viewModelScope.launch {
             majkoRepository.getPersonalGroup().collect() { response ->
                 when(response){

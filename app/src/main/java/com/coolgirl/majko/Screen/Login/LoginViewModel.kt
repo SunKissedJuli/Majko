@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.ApiError
-import com.coolgirl.majko.commons.ApiExeption
-import com.coolgirl.majko.commons.ApiSuccess
+import com.coolgirl.majko.data.remote.ApiError
+import com.coolgirl.majko.data.remote.ApiExeption
+import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.data.MajkoUserRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.UserSignInData
@@ -17,8 +17,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class LoginViewModel(private val dataStore : UserDataStore, private val majkoRepository: MajkoUserRepository) : ViewModel() {
+class LoginViewModel(private val majkoRepository: MajkoUserRepository) : ViewModel(), KoinComponent {
+
+    private val dataStore: UserDataStore by inject()
     private val _uiState =  MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 

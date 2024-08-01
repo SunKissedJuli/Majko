@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.ApiError
-import com.coolgirl.majko.commons.ApiExeption
-import com.coolgirl.majko.commons.ApiSuccess
 import com.coolgirl.majko.components.ProjectCardUiState
+import com.coolgirl.majko.data.remote.ApiError
+import com.coolgirl.majko.data.remote.ApiExeption
+import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
@@ -19,7 +19,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
     private val _uiState = MutableStateFlow(ArchiveUiState())
     val uiState: StateFlow<ArchiveUiState> = _uiState.asStateFlow()
 
-    val _uiStateCard = MutableStateFlow(ProjectCardUiState())
+    private val _uiStateCard = MutableStateFlow(ProjectCardUiState())
     val uiStateCard: StateFlow<ProjectCardUiState> = _uiStateCard.asStateFlow()
 
     fun openPanel(id: String) {
@@ -42,7 +42,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         }
     }
 
-    fun updatePersonalProject(newSearchString:String){
+    private fun updatePersonalProject(newSearchString:String){
         _uiState.update { currentState ->
             val filteredPersonalProject = currentState.personalProject?.filter { task ->
                 task.name?.contains(newSearchString, ignoreCase = true) == true ||
@@ -57,7 +57,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         }
     }
 
-    fun updateGroupProject(newSearchString:String){
+    private fun updateGroupProject(newSearchString:String){
         _uiState.update { currentState ->
             val filteredGroupProject = currentState.groupProject?.filter { task ->
                 task.name?.contains(newSearchString, ignoreCase = true) == true ||
@@ -72,7 +72,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         }
     }
 
-    fun updateAllProject(newSearchString:String){
+    private fun updateAllProject(newSearchString:String){
         _uiState.update { currentState ->
             val filteredPersonalProject = currentState.personalProject?.filter { task ->
                 task.name?.contains(newSearchString, ignoreCase = true) == true ||
@@ -176,7 +176,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         loadGroupProject()
     }
 
-    fun loadPersonalProject(){
+    private fun loadPersonalProject(){
         viewModelScope.launch {
             majkoRepository.getPersonalProject().collect() { response ->
                 when(response){
@@ -197,7 +197,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         }
     }
 
-    fun loadGroupProject() {
+    private fun loadGroupProject() {
         viewModelScope.launch {
             majkoRepository.getGroupProject().collect() { response ->
                 when (response) {

@@ -1,18 +1,16 @@
 package com.coolgirl.majko.Screen.TaskEditor
 
 import android.util.Log
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.components.SpinnerItems
-import com.coolgirl.majko.data.dataStore.UserDataStore
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.ApiError
-import com.coolgirl.majko.commons.ApiExeption
-import com.coolgirl.majko.commons.ApiSuccess
+import com.coolgirl.majko.data.remote.ApiError
+import com.coolgirl.majko.data.remote.ApiExeption
+import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteUpdate
@@ -307,7 +305,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     }
 
 
-    fun loadStatuses(){
+    private fun loadStatuses(){
         viewModelScope.launch {
             majkoInfoRepository.getStatuses().collect() { response ->
                 when(response){
@@ -321,7 +319,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun loadPriorities(){
+    private fun loadPriorities(){
         viewModelScope.launch {
             majkoInfoRepository.getPriorities().collect() { response ->
                 when(response){
@@ -350,7 +348,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun loadSubtaskData() {
+    private fun loadSubtaskData() {
         if(!uiState.value.taskId.equals("0")){
             viewModelScope.launch {
                 majkoRepository.getSubtask(TaskById(uiState.value.taskId)).collect() { response ->
@@ -364,7 +362,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun loadNotesData(){
+    private fun loadNotesData(){
         viewModelScope.launch {
             majkoRepository.getNotes(TaskById(uiState.value.taskId)).collect() { response ->
                 when(response){

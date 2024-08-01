@@ -19,6 +19,8 @@ sealed class Screen(val route: String) {
 
     object Archive : Screen("archive")
 
+    object Splash : Screen("splash")
+
     object ProjectEditor : Screen("projectEditor/{${NavArgs.PROJECT_ID}}")
     object GroupEditor : Screen("groupEditor/{${NavArgs.GROUP_ID}}")
     object TaskEditor : Screen("taskEditor/{${NavArgs.TASK_ID}}")

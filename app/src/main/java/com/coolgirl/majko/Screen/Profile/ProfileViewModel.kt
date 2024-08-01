@@ -13,9 +13,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.coolgirl.majko.commons.ApiError
-import com.coolgirl.majko.commons.ApiExeption
-import com.coolgirl.majko.commons.ApiSuccess
+import com.coolgirl.majko.data.remote.ApiError
+import com.coolgirl.majko.data.remote.ApiExeption
+import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.data.MajkoUserRepository
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.*
@@ -25,8 +25,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import com.coolgirl.majko.R
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRepository: MajkoUserRepository) : ViewModel() {
+class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewModel(), KoinComponent {
+    private val dataStore: UserDataStore by inject()
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
@@ -198,7 +201,7 @@ class ProfileViewModel(private val dataStore: UserDataStore, private val majkoRe
     }
 
 
-    fun copyStreamToFile(inputStream: InputStream, outputFile: File){
+    private fun copyStreamToFile(inputStream: InputStream, outputFile: File){
         inputStream.use { input ->
             val outputStream = FileOutputStream(outputFile)
             outputStream.use { output ->

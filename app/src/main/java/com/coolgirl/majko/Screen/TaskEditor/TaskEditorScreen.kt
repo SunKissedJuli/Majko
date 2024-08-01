@@ -34,6 +34,7 @@ import com.coolgirl.majko.components.TaskCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -41,7 +42,7 @@ import java.util.*
 
 @Composable
 fun TaskEditorScreen(navController: NavHostController, taskId : String){
-    val viewModel = getViewModel<TaskEditorViewModel>()
+    val viewModel: TaskEditorViewModel = koinViewModel()
 
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit){

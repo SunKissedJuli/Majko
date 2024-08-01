@@ -4,10 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.coolgirl.majko.commons.ApiError
-import com.coolgirl.majko.commons.ApiExeption
-import com.coolgirl.majko.commons.ApiSuccess
-import com.coolgirl.majko.data.dataStore.UserDataStore
+import com.coolgirl.majko.data.remote.ApiError
+import com.coolgirl.majko.data.remote.ApiExeption
+import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.data.remote.dto.GroupData.*
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.data.repository.MajkoGroupRepository
@@ -126,7 +125,7 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
         }
     }
 
-    fun getProjectData(){
+    private fun getProjectData(){
         viewModelScope.launch {
             majkoProjectRepository.getPersonalProject().collect() { response ->
                 when(response){

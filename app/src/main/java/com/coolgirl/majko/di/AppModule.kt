@@ -8,6 +8,7 @@ import com.coolgirl.majko.Screen.Profile.ProfileViewModel
 import com.coolgirl.majko.Screen.Project.ProjectViewModel
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditViewModel
 import com.coolgirl.majko.Screen.Register.RegisterViewModel
+import com.coolgirl.majko.Screen.Splash.SplashViewModel
 import com.coolgirl.majko.Screen.Task.TaskViewModel
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorViewModel
 import com.coolgirl.majko.data.MajkoUserRepository
@@ -34,11 +35,12 @@ val apiModule = module {
 }
 
 val appModule = module {
+    viewModel {SplashViewModel()}
     viewModel { ArchiveViewModel(get()) }
     viewModel { GroupViewModel(get()) }
-    viewModel { LoginViewModel(get(), get()) }
-    viewModel { RegisterViewModel(get(), get()) }
-    viewModel { ProfileViewModel(get(), get()) }
+    viewModel { LoginViewModel(get()) }
+    viewModel { RegisterViewModel(get()) }
+    viewModel { ProfileViewModel(get()) }
     viewModel { ProjectViewModel(get()) }
     viewModel { TaskViewModel(get(), get()) }
     viewModel { TaskEditorViewModel(get(), get())}

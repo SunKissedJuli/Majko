@@ -36,12 +36,13 @@ import com.coolgirl.majko.data.dataStore.UserDataStore
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getKoin
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.inject
 @Composable
 fun GroupEditorScreen(navController: NavHostController, groupId: String){
 
-    val viewModel = getViewModel<GroupEditorViewModel>()
+    val viewModel: GroupEditorViewModel = koinViewModel()
 
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit){

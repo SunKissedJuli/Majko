@@ -29,11 +29,12 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProjectScreen(navController: NavHostController){
 
-    val viewModel = getViewModel<ProjectViewModel>()
+    val viewModel:ProjectViewModel  = koinViewModel()
 
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit){
@@ -46,7 +47,6 @@ fun ProjectScreen(navController: NavHostController){
     val uiStateCard by viewModel.uiStateCard.collectAsState()
 
     var expanded by remember { mutableStateOf(false) }
-    var expandedLongPanel by remember { mutableStateOf(false) }
     var expandedFilter by remember { mutableStateOf(false) }
 
     //экран добавления проекта
@@ -75,49 +75,83 @@ fun ProjectScreen(navController: NavHostController){
 
     Scaffold(
         topBar = {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.1f)
-                    .padding(all = 10.dp)
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(color = MaterialTheme.colors.primary),
-                verticalAlignment = Alignment.CenterVertically) {
 
-                SearchBox(uiState.searchString, {viewModel.updateSearchString(it, 2)}, R.string.project_search )
-                Column {
-                    Row {
-                        Icon(painter = painterResource(R.drawable.icon_filter),
-                            modifier = Modifier.clickable {expandedFilter = !expandedFilter },
-                            contentDescription = "",
-                            tint = MaterialTheme.colors.surface)
+            //панель при длинном нажатии
+            if (uiState.isLongtap) {
+                LongTapPanel({viewModel.toArchive()}, {viewModel.removeProjects()})
+            } else {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.1f)
+                        .padding(all = 10.dp)
+                        .clip(RoundedCornerShape(30.dp))
+                        .background(color = MaterialTheme.colors.primary),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    SearchBox(
+                        uiState.searchString,
+                        { viewModel.updateSearchString(it, 2) },
+                        R.string.project_search
+                    )
+                    Column {
+                        Row {
+                            Icon(
+                                painter = painterResource(R.drawable.icon_filter),
+                                modifier = Modifier.clickable { expandedFilter = !expandedFilter },
+                                contentDescription = "",
+                                tint = MaterialTheme.colors.surface
+                            )
+                        }
+                        FilterDropdown(
+                            expanded = expandedFilter,
+                            onDismissRequest = { expandedFilter = it },
+                            R.string.filter_project_group,
+                            { viewModel.updateSearchString(uiState.searchString, it) },
+                            R.string.filter_group_personal,
+                            R.string.filter_all
+                        )
                     }
-                    FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
-                        R.string.filter_project_group, { viewModel.updateSearchString(uiState.searchString, it) },
-                        R.string.filter_group_personal, R.string.filter_all)
-                }
 
-                Spacer(modifier = Modifier.width(5.dp))
+                    Spacer(modifier = Modifier.width(5.dp))
 
-                Icon(painter = painterResource(R.drawable.icon_filter_off),
-                    modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
-                    contentDescription = "", tint = MaterialTheme.colors.surface)
+                    Icon(
+                        painter = painterResource(R.drawable.icon_filter_off),
+                        modifier = Modifier.clickable {
+                            viewModel.updateSearchString(
+                                uiState.searchString,
+                                2
+                            )
+                        },
+                        contentDescription = "", tint = MaterialTheme.colors.surface
+                    )
 
 
-                Box(Modifier.padding(end = 10.dp)) {
-                    IconButton(onClick = { expanded = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "", tint = colorResource(R.color.white))
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier.fillMaxWidth(0.5f)) {
+                    Box(Modifier.padding(end = 10.dp)) {
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(
+                                Icons.Default.MoreVert,
+                                contentDescription = "",
+                                tint = colorResource(R.color.white)
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier.fillMaxWidth(0.5f)
+                        ) {
 
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable { viewModel.openInviteWindow() }) {
-                            Text(stringResource(R.string.project_joininvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable { viewModel.openInviteWindow() }) {
+                                Text(
+                                    stringResource(R.string.project_joininvite),
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(all = 10.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -134,46 +168,6 @@ fun ProjectScreen(navController: NavHostController){
 
             Box(Modifier.align(Alignment.BottomEnd)){
                 AddButton(onClick = {viewModel.addingProject()}, id = "")
-            }
-
-            //панель при длинном нажатии
-            if(uiState.isLongtap){
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.1f)
-                        .background(color = MaterialTheme.colors.secondary),
-                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
-
-
-                    Box(Modifier.padding(all = 10.dp)) {
-                        IconButton(onClick = { expandedLongPanel = true }) {
-                            Image(painter = painterResource(R.drawable.icon_menu),
-                                contentDescription = "")
-                        }
-                        DropdownMenu(
-                            expanded = expandedLongPanel,
-                            onDismissRequest = { expandedLongPanel = false },
-                            modifier = Modifier.fillMaxWidth(0.5f)) {
-                            Row(Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        viewModel.toArchive()
-                                        expandedLongPanel = false
-                                    }) {
-                                Text(stringResource(R.string.project_to_archive), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
-                            }
-                            Row(Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        viewModel.removeProjects()
-                                        expandedLongPanel = false
-                                    }) {
-                                Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
-                            }
-                        }
-                    }
-                }
             }
         }
     }
@@ -337,6 +331,49 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRe
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
                     Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
                         fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LongTapPanel(onAddingToArchive: ()-> Unit, onRemoving: ()-> Unit){
+    var expandedLongPanel by remember { mutableStateOf(false) }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.1f)
+            .background(color = MaterialTheme.colors.secondary),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
+
+
+        Box(Modifier.padding(all = 10.dp)) {
+            IconButton(onClick = { expandedLongPanel = true }) {
+                Image(painter = painterResource(R.drawable.icon_menu),
+                    contentDescription = "")
+            }
+            DropdownMenu(
+                expanded = expandedLongPanel,
+                onDismissRequest = { expandedLongPanel = false },
+                modifier = Modifier.fillMaxWidth(0.5f)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onAddingToArchive
+                            expandedLongPanel = false
+                        }) {
+                    Text(stringResource(R.string.project_to_archive), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
+                }
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onRemoving
+                            expandedLongPanel = false
+                        }) {
+                    Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                 }
             }
         }

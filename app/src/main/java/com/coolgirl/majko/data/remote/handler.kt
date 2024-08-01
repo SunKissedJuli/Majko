@@ -1,9 +1,5 @@
 package com.coolgirl.majko.data.remote
 
-import com.coolgirl.majko.commons.ApiError
-import com.coolgirl.majko.commons.ApiExeption
-import com.coolgirl.majko.commons.ApiResult
-import com.coolgirl.majko.commons.ApiSuccess
 import retrofit2.HttpException
 import retrofit2.Response
 

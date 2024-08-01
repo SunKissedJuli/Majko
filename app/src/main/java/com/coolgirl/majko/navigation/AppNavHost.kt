@@ -16,6 +16,7 @@ import com.coolgirl.majko.Screen.Profile.ProfileScreen
 import com.coolgirl.majko.Screen.Project.ProjectScreen
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditScreen
 import com.coolgirl.majko.Screen.Register.RegisterScreen
+import com.coolgirl.majko.Screen.Splash.SplashScreen
 import com.coolgirl.majko.Screen.Task.TaskScreen
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorScreen
 import com.coolgirl.majko.navigation.Screen.Archive.createStringArgument
@@ -31,6 +32,9 @@ fun AppNavHost(
         navController = navController,
         startDestination = startDestination
     ) {
+        composable(Screen.Splash.route) {
+            SplashScreen(navController)
+        }
         composable(Screen.Login.route) {
             LoginScreen(navController)
         }

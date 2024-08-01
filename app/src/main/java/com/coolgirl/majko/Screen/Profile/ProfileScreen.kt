@@ -32,11 +32,12 @@ import com.coolgirl.majko.components.MessageSnackbar
 import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun ProfileScreen( navController: NavHostController) {
-    val viewModel = getViewModel<ProfileViewModel>()
+    val viewModel: ProfileViewModel = koinViewModel()
 
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit){

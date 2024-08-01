@@ -1,6 +1,6 @@
 package com.coolgirl.majko.domain.repository
 
-import com.coolgirl.majko.commons.ApiResult
+import com.coolgirl.majko.data.remote.ApiResult
 import com.coolgirl.majko.data.remote.dto.GroupData.*
 import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.ProjectData.JoinByInviteProjectData

@@ -31,14 +31,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             MajkoTheme {
 
-                val dataStore: UserDataStore by inject()
+              //  val dataStore: UserDataStore by inject()
                 val navController = rememberNavController()
-                val coroutineScope = rememberCoroutineScope()
-                var accessToken by remember { mutableStateOf<String?>(null) }
+             //   val coroutineScope = rememberCoroutineScope()
+              //  var accessToken by remember { mutableStateOf<String?>(null) }
                 val currentBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = currentBackStackEntry?.destination
 
-                LaunchedEffect(Unit) {
+         /*       LaunchedEffect(Unit) {
                     coroutineScope.launch {
                         accessToken = dataStore.getAccessToken().first()
                         Log.d("tag", "access = " + accessToken)
@@ -49,13 +49,14 @@ class MainActivity : ComponentActivity() {
                     Screen.Profile.route }
                 else {
                     Screen.Login.route
-                }
+                }*/
 
                 Scaffold(
                     bottomBar = {
                         if (currentDestination != null) {
                             if(currentDestination.route!=Screen.Login.route&&currentDestination.route!=Screen.Register.route
                                 &&currentDestination.route!=Screen.TaskEditor.createRoute()
+                                &&currentDestination.route!=Screen.Splash.createRoute()
                                 &&currentDestination.route!=Screen.GroupEditor.createRoute()
                                 &&currentDestination.route!=Screen.ProjectEditor.createRoute()){
 
@@ -69,7 +70,8 @@ class MainActivity : ComponentActivity() {
                         }
                     }) {
                     Box(Modifier.padding(it)){
-                        AppNavHost(navController, startDestination)
+                        AppNavHost(navController, Screen.Splash.route)
+                      //  AppNavHost(navController, startDestination)
                     }
                 }
             }

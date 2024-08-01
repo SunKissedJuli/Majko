@@ -21,10 +21,11 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.components.ErrorSnackbar
 import com.coolgirl.majko.navigation.Screen
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegisterScreen(navController: NavController){
-    val viewModel = getViewModel<RegisterViewModel>()
+    val viewModel: RegisterViewModel = koinViewModel()
 
     val uiState by viewModel.uiState.collectAsState()
 

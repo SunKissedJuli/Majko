@@ -25,23 +25,26 @@ fun BottomBar(navHostController: NavHostController, screensBottomBar: List<Botto
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(containerColor = colorResource(R.color.white)
-      //  , modifier = Modifier.fillMaxHeight(0.07f)
     ) {
         screens.forEachIndexed { index, bottomBarScreens ->
             if (currentDestination != null){
+                val isSelected = currentDestination.hierarchy.any {
+                    it.route == bottomBarScreens.route
+                }
                 NavigationBarItem(
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = colorResource(R.color.blue),
                         indicatorColor = colorResource(R.color.white),
                         selectedTextColor =  colorResource(R.color.blue),
                     ),
-                    icon = { Icon(painter = painterResource(id = bottomBarScreens.icon), contentDescription = null, modifier = Modifier.size(20.dp))},
+                    icon = { Icon(painter = painterResource(id = bottomBarScreens.icon),
+                        contentDescription = null, modifier = Modifier.size(20.dp))},
                     label = { Text(text = stringResource(bottomBarScreens.title))},
-                    selected = currentDestination!!.hierarchy.any{
-                        it.route == bottomBarScreens.route
-                    },
-                    onClick = { navHostController.navigate(bottomBarScreens.route) }
-                )
+                    selected = isSelected,
+                    onClick = {
+                        if(!isSelected){
+                        navHostController.navigate(bottomBarScreens.route)
+                    } })
             }
         }
     }

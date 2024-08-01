@@ -76,7 +76,7 @@ fun ProjectCard(
             )
             Spacer(Modifier.width(15.dp))
             Text(
-                text = projectData.name ?: stringResource(R.string.common_noname),
+                text = projectData.name,
                 modifier = Modifier.fillMaxWidth(0.7f),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
@@ -93,7 +93,7 @@ fun ProjectCard(
             verticalAlignment = Alignment.Top
         ) {
             Text(
-                text = projectData.description ?: stringResource(R.string.common_nodescription),
+                text = projectData.description,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Light,
                 softWrap = true,

@@ -4,11 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.ApiError
-import com.coolgirl.majko.commons.ApiExeption
-import com.coolgirl.majko.commons.ApiSuccess
-import com.coolgirl.majko.data.dataStore.UserDataStore
-import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
+import com.coolgirl.majko.data.remote.ApiError
+import com.coolgirl.majko.data.remote.ApiExeption
+import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskById
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskByIdUnderscore
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
@@ -24,26 +22,6 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
     private val _uiState = MutableStateFlow(TaskUiState())
     val uiState: StateFlow<TaskUiState> = _uiState.asStateFlow()
 
-    fun updateSearchString(newSearchString: String) {
-        _uiState.update { currentState ->
-            val filteredAllTasks = currentState.allTaskList?.filter { task ->
-                task.title?.contains(newSearchString, ignoreCase = true) == true ||
-                        task.text?.contains(newSearchString, ignoreCase = true) == true
-            }
-
-            val filteredFavoritesTasks = currentState.favoritesTaskList?.filter { task ->
-                task.title?.contains(newSearchString, ignoreCase = true) == true ||
-                        task.text?.contains(newSearchString, ignoreCase = true) == true
-            }
-
-            currentState.copy(
-                searchString = newSearchString,
-                searchAllTaskList = filteredAllTasks,
-                searchFavoritesTaskList = filteredFavoritesTasks
-            )
-        }
-    }
-
     fun updateSearchString(newSearchString: String, whatFilter: Int) {
         when (whatFilter) {
             0 -> { updateEachTask(newSearchString) }
@@ -52,7 +30,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun updateEachTask(newSearchString: String) {
+    private fun updateEachTask(newSearchString: String) {
         _uiState.update { currentState ->
             val filteredAllTasks = currentState.allTaskList?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
@@ -67,7 +45,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun updateFavTask(newSearchString: String) {
+    private fun updateFavTask(newSearchString: String) {
         _uiState.update { currentState ->
             val filteredFavoritesTasks = currentState.favoritesTaskList?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
@@ -82,7 +60,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun updateAllTask(newSearchString: String) {
+    private fun updateAllTask(newSearchString: String) {
         _uiState.update { currentState ->
             val filteredAllTasks = currentState.allTaskList?.filter { task ->
                 task.title?.contains(newSearchString, ignoreCase = true) == true ||
@@ -150,7 +128,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
                 }
             }
         }
-        return "Нет"
+        return R.string.common_no.toString()
     }
 
     fun loadData() {
@@ -159,7 +137,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         loadStatuses()
     }
 
-    fun loadFavTask() {
+    private fun loadFavTask() {
         viewModelScope.launch {
             majkoRepository.getAllFavorites().collect() { response ->
                 when (response) {
@@ -178,7 +156,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun loadEachTask() {
+    private fun loadEachTask() {
         viewModelScope.launch {
             majkoRepository.getAllUserTask().collect() { response ->
                 when (response) {
@@ -203,7 +181,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun loadStatuses() {
+    private fun loadStatuses() {
         viewModelScope.launch {
             majkoInfoRepository.getStatuses().collect() { response ->
                 when (response) {
@@ -261,6 +239,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         val projectIds = uiState.value.longtapTaskId.chunked(36)
         projectIds.mapNotNull { id ->
             val task = uiState.value.allTaskList?.find { it.id == id }
+                ?: uiState.value.favoritesTaskList?.find { it.id == id }
 
             task?.let {
                 val removeTask = TaskByIdUnderscore(it.id)
@@ -292,6 +271,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         val projectIds = uiState.value.longtapTaskId.chunked(36)
         projectIds.mapNotNull { id ->
             val task = uiState.value.allTaskList?.find { it.id == id }
+                ?: uiState.value.favoritesTaskList?.find { it.id == id }
 
             task?.let {
                 val updateTask = TaskUpdateData(

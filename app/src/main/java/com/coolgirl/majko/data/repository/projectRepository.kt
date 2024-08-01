@@ -1,7 +1,7 @@
 package com.coolgirl.majko.data.repository
 
-import com.coolgirl.majko.commons.ApiResult
 import com.coolgirl.majko.data.remote.ApiMajko
+import com.coolgirl.majko.data.remote.ApiResult
 import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.data.remote.handler

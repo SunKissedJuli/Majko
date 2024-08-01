@@ -35,6 +35,7 @@ import com.coolgirl.majko.components.SpinnerSample
 import com.coolgirl.majko.components.TaskCard
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -42,7 +43,7 @@ import java.util.*
 @Composable
 fun ProjectEditScreen(navController: NavHostController, projectId : String){
 
-    val viewModel = getViewModel<ProjectEditViewModel>()
+    val viewModel: ProjectEditViewModel = koinViewModel()
 
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit){
@@ -96,19 +97,22 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                        modifier = Modifier.fillMaxWidth(0.5f)
                    ) {
                        if(!uiState.members.isNullOrEmpty()){
-                           Row(Modifier
+                           Row(
+                               Modifier
                                    .fillMaxWidth()
                                    .clickable { viewModel.showMembers() }) {
                                Text(stringResource(R.string.projectedit_showmembers), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                            }
                        }
-                       Row(Modifier
+                       Row(
+                           Modifier
                                .fillMaxWidth()
                                .clickable { viewModel.removeProject(navController) }) {
                            Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                        }
-                       Row(Modifier
-                           .fillMaxWidth()
+                       Row(
+                           Modifier
+                               .fillMaxWidth()
                                .clickable { viewModel.createInvite() }) {
                            Text(stringResource(R.string.project_createinvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                        }

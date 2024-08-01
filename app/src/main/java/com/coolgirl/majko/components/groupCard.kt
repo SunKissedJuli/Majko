@@ -65,7 +65,7 @@ fun GroupCard(navHostController: NavHostController,
                 .aspectRatio(1f)
                 .background(MaterialTheme.colors.primary, shape = CircleShape))
             Spacer(Modifier.width(15.dp))
-            Text(text= groupData.title?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
+            Text(text= groupData.title, modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
 
         }
         Row(
@@ -75,7 +75,7 @@ fun GroupCard(navHostController: NavHostController,
                 .fillMaxHeight(0.7f),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top){
-            Text(text= groupData.description?: stringResource(R.string.common_nodescription), fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
+            Text(text= groupData.description, fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
         }
         Row(
             Modifier

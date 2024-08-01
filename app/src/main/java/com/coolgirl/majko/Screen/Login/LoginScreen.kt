@@ -21,13 +21,12 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.components.ErrorSnackbar
 import com.coolgirl.majko.navigation.Screen
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(navController: NavController){
-    val viewModel = getViewModel<LoginViewModel>()
-
+    val viewModel: LoginViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
-
     SetLoginScreen(navController, viewModel, uiState)
 
     Box(Modifier.fillMaxSize()) {

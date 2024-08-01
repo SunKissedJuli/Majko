@@ -5,11 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.commons.ApiError
-import com.coolgirl.majko.commons.ApiExeption
-import com.coolgirl.majko.commons.ApiSuccess
+import com.coolgirl.majko.data.remote.ApiError
+import com.coolgirl.majko.data.remote.ApiExeption
+import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.components.SpinnerItems
-import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
 import com.coolgirl.majko.data.repository.MajkoInfoRepository
@@ -148,7 +147,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
         loadStatuses()
     }
 
-    fun loadProject(){
+    private fun loadProject(){
         viewModelScope.launch {
             majkoRepository.getProjectById(ProjectById(uiState.value.projectId)
             ).collect() { response ->
@@ -170,7 +169,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
         }
     }
 
-    fun loadStatuses(){
+    private fun loadStatuses(){
         viewModelScope.launch {
             majkoInfoRepository.getStatuses().collect() { response ->
                 when(response){
@@ -184,7 +183,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
         }
     }
 
-    fun loadPriorities(){
+    private fun loadPriorities(){
         viewModelScope.launch {
             majkoInfoRepository.getPriorities().collect() { response ->
                 when(response){

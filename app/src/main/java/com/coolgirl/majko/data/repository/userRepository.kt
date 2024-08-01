@@ -1,16 +1,8 @@
 package com.coolgirl.majko.data
 
-import com.coolgirl.majko.commons.ApiResult
 import com.coolgirl.majko.data.remote.ApiMajko
+import com.coolgirl.majko.data.remote.ApiResult
 import com.coolgirl.majko.data.remote.dto.*
-import com.coolgirl.majko.data.remote.dto.GroupData.*
-import com.coolgirl.majko.data.remote.dto.Info.Info
-import com.coolgirl.majko.data.remote.dto.NoteData.NoteById
-import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
-import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
-import com.coolgirl.majko.data.remote.dto.NoteData.NoteUpdate
-import com.coolgirl.majko.data.remote.dto.ProjectData.*
-import com.coolgirl.majko.data.remote.dto.TaskData.*
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
 import com.coolgirl.majko.data.remote.handler
