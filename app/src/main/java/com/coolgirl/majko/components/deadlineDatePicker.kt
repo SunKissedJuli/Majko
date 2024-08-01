@@ -1,7 +1,6 @@
 package com.coolgirl.majko.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -17,7 +16,7 @@ import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeadlinePickerWithText(
+fun DeadlineDatePicker(
     currentDeadline: String,
     onUpdateDeadline: (String) -> Unit
 ) {

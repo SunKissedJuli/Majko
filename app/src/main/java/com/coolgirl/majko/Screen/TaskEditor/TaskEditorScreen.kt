@@ -231,7 +231,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
 
                 Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
 
-                    DeadlinePickerWithText(
+                    DeadlineDatePicker(
                         currentDeadline = uiState.taskDeadline,
                         onUpdateDeadline = { newDate ->
                             viewModel.updateTaskDeadlie(newDate)
@@ -342,7 +342,7 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
 
                     Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
 
-                        DeadlinePickerWithText(
+                        DeadlineDatePicker(
                             currentDeadline = uiState.subtaskDeadline,
                             onUpdateDeadline = { newDate ->
                                 viewModel.updateTaskDeadlie(newDate)

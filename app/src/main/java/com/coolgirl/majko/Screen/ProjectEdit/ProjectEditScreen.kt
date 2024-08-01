@@ -387,32 +387,25 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
 
                     Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
 
-                        DeadlinePickerWithText(
+                        DeadlineDatePicker(
                             currentDeadline = uiState.taskDeadline,
-                            onUpdateDeadline = { newDate ->
-                                viewModel.updateTaskDeadlie(newDate)
-                            }
-                        )
-
+                            onUpdateDeadline = { newDate -> viewModel.updateTaskDeadlie(newDate) })
                         HorizontalLine()
+
                         SpinnerSample(name = stringResource(R.string.taskeditor_priority),
                             items = viewModel.getPriority(),
                             selectedItem = viewModel.getPriorityName(uiState.taskPriority),
-                            { viewModel.updateTaskPriority(it) }
-                        )
+                            { viewModel.updateTaskPriority(it) })
                         HorizontalLine()
-                        Text(
-                            text = stringResource(R.string.taskeditor_project) + (" ") + (uiState.projectData?.name
-                                ?: stringResource(R.string.common_no)), fontSize = 18.sp
-                        )
+
+                        Text(text = stringResource(R.string.taskeditor_project) + (" ") + (uiState.projectData?.name
+                                ?: stringResource(R.string.common_no)), fontSize = 18.sp)
                         HorizontalLine()
-                        SpinnerSample(
-                            name = stringResource(R.string.taskeditor_status),
+
+                        SpinnerSample(name = stringResource(R.string.taskeditor_status),
                             items = viewModel.getStatus(),
                             selectedItem = viewModel.getStatusName(uiState.taskStatus),
-                            { viewModel.updateTaskStatus(it) }
-                        )
-
+                            { viewModel.updateTaskStatus(it) })
                         HorizontalLine()
                     }
                 }
