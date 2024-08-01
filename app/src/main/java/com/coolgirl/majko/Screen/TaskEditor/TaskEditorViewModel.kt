@@ -201,7 +201,8 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         if(!uiState.value.taskId.equals("0")){
            updateTask(navHostController)
         }else{
-            navHostController.navigate(Screen.Task.route)
+           // navHostController.navigate(Screen.Task.route)
+            navHostController.popBackStack()
             viewModelScope.launch {
                 val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
                     uiState.value.taskPriority,uiState.value.taskStatus,uiState.value.taskProject,"")
@@ -217,7 +218,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     }
 
     fun updateTask(navHostController: NavHostController){
-        navHostController.navigate(Screen.Task.route)
+        navHostController.popBackStack()
         viewModelScope.launch {
             val newTask = TaskUpdateData(uiState.value.taskId, uiState.value.taskName, uiState.value.taskText,
                 uiState.value.taskPriority,uiState.value.taskDeadline, uiState.value.taskStatus)
@@ -249,11 +250,12 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     }
 
     fun removeTask(navHostController: NavHostController){
+        navHostController.popBackStack()
        if(!uiState.value.taskId.equals("0")) {
            viewModelScope.launch {
                majkoRepository.removeTask(TaskByIdUnderscore(uiState.value.taskId)).collect() { response ->
                    when(response){
-                       is ApiSuccess ->{ navHostController.navigate(Screen.Task.route) }
+                       is ApiSuccess ->{}
                        is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                        is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                    }

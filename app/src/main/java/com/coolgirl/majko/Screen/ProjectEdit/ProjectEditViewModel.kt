@@ -198,7 +198,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
     }
 
     fun saveProject(navHostController: NavHostController){
-        navHostController.navigate(Screen.Project.route)
+        navHostController.popBackStack()
         viewModelScope.launch {
             val updateProject = ProjectUpdate(uiState.value.projectId, uiState.value.projectData!!.name,
                 uiState.value.projectData!!.description, uiState.value.projectData!!.isArchive)
@@ -215,7 +215,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
     }
 
     fun removeProject(navHostController: NavHostController){
-        navHostController.navigate(Screen.Project.route)
+        navHostController.popBackStack()
         viewModelScope.launch {
             majkoRepository.removeProject(ProjectById(uiState.value.projectId)).collect() { response ->
                 when(response){

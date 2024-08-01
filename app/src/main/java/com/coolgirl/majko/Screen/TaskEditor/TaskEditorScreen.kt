@@ -1,7 +1,7 @@
 package com.coolgirl.majko.Screen.TaskEditor
 
 import android.app.DatePickerDialog
-import android.widget.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -12,11 +12,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,15 +27,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditViewModel
-import com.coolgirl.majko.components.HorizontalLine
-import com.coolgirl.majko.components.SpinnerSample
-import com.coolgirl.majko.components.TaskCard
-import com.coolgirl.majko.data.dataStore.UserDataStore
+import com.coolgirl.majko.components.*
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -75,9 +69,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     .padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
-                IconButton(onClick = { viewModel.saveTask(navController) }) {
-                    Image(painter = painterResource(R.drawable.icon_back), contentDescription = "",)
-                }
+                ButtonBack({viewModel.saveTask(navController)})
 
                 Box {
                     IconButton(onClick = { expanded = true }) {
@@ -112,12 +104,9 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     .fillMaxHeight(0.4f)) {
                 BasicTextField(
                     value = uiState.taskName,
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp, vertical = 15.dp)
-                        .fillMaxHeight(0.09f),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
                     textStyle = TextStyle.Default.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                     onValueChange = onUpdateTaskName,
-                    maxLines = 2,
                     decorationBox = { innerTextField ->
                         Row(modifier = Modifier.fillMaxWidth()) {
                             if (uiState.taskName.isEmpty()) {
@@ -239,34 +228,15 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     .background(color = MaterialTheme.colors.background),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top) {
-                val mCalendar = Calendar.getInstance()
-                val mYear: Int = mCalendar.get(Calendar.YEAR)
-                val mMonth: Int = mCalendar.get(Calendar.MONTH)
-                val mDay: Int = mCalendar.get(Calendar.DAY_OF_MONTH)
-                val currentDate = Date()
-                val currentCalendar = Calendar.getInstance()
-                currentCalendar.time = currentDate
-
-                val mDatePickerDialog = DatePickerDialog(
-                    LocalContext.current,
-                    { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                        val formattedData = "${year}-${month+1}-$dayOfMonth ${String.format("%02d", mCalendar.get(
-                            Calendar.HOUR_OF_DAY))}:${String.format("%02d", mCalendar.get(Calendar.MINUTE))}:${String.format("%02d", mCalendar.get(
-                            Calendar.SECOND))}"
-                        viewModel.updateTaskDeadlie(formattedData)
-                    }, mYear, mMonth, mDay)
 
                 Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
 
-                    var formattedData : String = ""
-                    if(uiState.taskDeadline!="") {
-                        val dateTime = LocalDateTime.parse(uiState.taskDeadline, DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"))
-                        formattedData = dateTime.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, Locale("ru")) +
-                                ", " + dateTime.dayOfMonth + " "+ dateTime.month.getDisplayName(java.time.format.TextStyle.FULL, Locale("ru"))
-                    }
-                    Text(text = stringResource(R.string.taskeditor_deadline) + " " + formattedData,
-                        fontSize = 18.sp,
-                        modifier = Modifier.clickable { mDatePickerDialog.show() })
+                    DeadlinePickerWithText(
+                        currentDeadline = uiState.taskDeadline,
+                        onUpdateDeadline = { newDate ->
+                            viewModel.updateTaskDeadlie(newDate)
+                        }
+                    )
 
                     HorizontalLine()
                     if(uiState.taskPriorityName!=""||uiState.taskId=="0"){
@@ -367,44 +337,17 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         .background(color = MaterialTheme.colors.background),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top) {
-                    val mCalendar = Calendar.getInstance()
-                    val mYear: Int = mCalendar.get(Calendar.YEAR)
-                    val mMonth: Int = mCalendar.get(Calendar.MONTH)
-                    val mDay: Int = mCalendar.get(Calendar.DAY_OF_MONTH)
-                    val currentDate = Date()
-                    val currentCalendar = Calendar.getInstance()
-                    currentCalendar.time = currentDate
 
-                    val mDatePickerDialog = DatePickerDialog(
-                        LocalContext.current,
-                        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                            val formattedData = "${year}-${month + 1}-$dayOfMonth ${
-                                String.format("%02d", mCalendar.get(Calendar.HOUR_OF_DAY))
-                            }:${String.format("%02d", mCalendar.get(Calendar.MINUTE))}:${
-                                String.format("%02d", mCalendar.get(Calendar.SECOND))}"
-                            viewModel.updateSubtaskDeadlie(formattedData)
-                        }, mYear, mMonth, mDay
-                    )
+
 
                     Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
-                        var formattedData: String = ""
-                        if (uiState.subtaskDeadline != "") {
-                            val dateTime = LocalDateTime.parse(
-                                uiState.subtaskDeadline,
-                                DateTimeFormatter.ofPattern("yyyy-M-d H:m:s"))
-                            formattedData = dateTime.dayOfWeek.getDisplayName(
-                                java.time.format.TextStyle.SHORT,
-                                Locale("ru")) +
-                                    ", " + dateTime.dayOfMonth + " " +
-                                    dateTime.month.getDisplayName(
-                                        java.time.format.TextStyle.FULL,
-                                        Locale("ru"))
-                        }
-                        Text(
-                            text = stringResource(R.string.taskeditor_deadline) + " " + formattedData,
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colors.onSecondary,
-                            modifier = Modifier.clickable { mDatePickerDialog.show() })
+
+                        DeadlinePickerWithText(
+                            currentDeadline = uiState.subtaskDeadline,
+                            onUpdateDeadline = { newDate ->
+                                viewModel.updateTaskDeadlie(newDate)
+                            }
+                        )
 
                         HorizontalLine()
                             SpinnerSample(name = stringResource(R.string.taskeditor_priority),

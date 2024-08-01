@@ -85,7 +85,7 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
     }
 
     fun saveGroup(navHostController: NavHostController){
-        navHostController.navigate(Screen.Group.route)
+        navHostController.popBackStack()
         viewModelScope.launch {
             majkoRepository.updateGroup(GroupUpdate(uiState.value.groupId,
                 uiState.value.groupData!!.title, uiState.value.groupData!!.description)).collect() { response ->
@@ -99,7 +99,7 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
     }
 
     fun removeGroup(navHostController: NavHostController){
-        navHostController.navigate(Screen.Group.route)
+        navHostController.popBackStack()
         viewModelScope.launch {
             majkoRepository.removeGroup(GroupById(uiState.value.groupId)).collect() { response ->
                 when(response){

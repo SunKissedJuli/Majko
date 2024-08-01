@@ -31,6 +31,7 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditUiState
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditViewModel
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorViewModel
+import com.coolgirl.majko.components.ButtonBack
 import com.coolgirl.majko.components.ProjectCard
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import kotlinx.coroutines.launch
@@ -78,9 +79,8 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                IconButton(onClick = { viewModel.saveGroup(navController) }) {
-                    Image(painter = painterResource(R.drawable.icon_back), contentDescription = "",)
-                }
+
+                ButtonBack({viewModel.saveGroup(navController)})
 
                 Box() {
                     IconButton(onClick = { expanded = true }) {
@@ -146,11 +146,9 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 uiState.groupData?.let {
                     BasicTextField(
                         value = it.title,
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp, vertical = 15.dp),
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
                         textStyle = TextStyle.Default.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                         onValueChange = { viewModel.updateGroupName(it) },
-                        maxLines = 2,
                         decorationBox = { innerTextField ->
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.groupData!!.title.isEmpty()) {

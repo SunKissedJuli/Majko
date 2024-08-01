@@ -30,9 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
-import com.coolgirl.majko.components.HorizontalLine
-import com.coolgirl.majko.components.SpinnerSample
-import com.coolgirl.majko.components.TaskCard
+import com.coolgirl.majko.components.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -83,9 +81,8 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                    .padding(horizontal = 10.dp),
                verticalAlignment = Alignment.CenterVertically,
                horizontalArrangement = Arrangement.SpaceBetween) {
-               IconButton(onClick = { viewModel.saveProject(navController)}) {
-                   Image(painter = painterResource(R.drawable.icon_back), contentDescription = "",)
-               }
+
+               ButtonBack({viewModel.saveProject(navController)})
 
                Box {
                    IconButton(onClick = { expanded = true }) {
@@ -135,14 +132,12 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 uiState.projectData?.let {
                     BasicTextField(
                         value = it.name,
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp, vertical = 15.dp),
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
                         textStyle = TextStyle.Default.copy(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         ),
                         onValueChange = { viewModel.updateProjectName(it) },
-                        maxLines = 2,
                         decorationBox = { innerTextField ->
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.projectData!!.name.isEmpty()) {
@@ -183,21 +178,17 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
             }
 
             // отображение тасков, добавленных в проект
-            LazyRow(
-                Modifier
+            LazyRow(Modifier
                     .fillMaxWidth()
-                    .padding(all = 5.dp)
-            ) {
+                    .padding(all = 5.dp)) {
                 if (uiState.projectData != null) {
                     if (!uiState.projectData.tasks.isNullOrEmpty()) {
                         val projectData = uiState.projectData.tasks
                         val count = uiState.projectData.tasks.size
                         items(count) { rowIndex ->
                             Column(
-                                Modifier.width(200.dp)
-                            ) {
-                                TaskCard(
-                                    navController,
+                                Modifier.width(200.dp)) {
+                                TaskCard(navController,
                                     viewModel.getPriority(projectData[rowIndex].priority),
                                     viewModel.getStatusName(projectData[rowIndex].status),
                                     projectData[rowIndex], {}, {}, {}, {}, false)
@@ -207,20 +198,16 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                 }
             }
 
-            Row(
-                Modifier.fillMaxWidth(),
+            Row(Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(
-                    onClick = { viewModel.addingTask() },
+                Button(onClick = { viewModel.addingTask() },
                     shape = CircleShape,
                     modifier = Modifier
                         .fillMaxWidth(0.65f)
                         .padding(vertical = 10.dp),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)
-                ) {
-                    Text(
-                        text = stringResource(R.string.projectedit_addtask),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    Text(text = stringResource(R.string.projectedit_addtask),
                         color = MaterialTheme.colors.background,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium
@@ -245,30 +232,15 @@ private fun SetMembersWindow(uiState: ProjectEditUiState, onDismissRequest: () -
                 Column(Modifier.padding(start = 15.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    Text(
-                        text = stringResource(R.string.projectedit_members),
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 18.sp,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
+                    Text(text = stringResource(R.string.projectedit_members), fontWeight = FontWeight.Medium,
+                        fontSize = 18.sp, modifier = Modifier.align(Alignment.CenterHorizontally))
 
-                    Column(
-                        Modifier
-                            .padding(
-                                horizontal = 20.dp,
-                                vertical = 10.dp
-                            )
-                    ) {
+                    Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
                         uiState.members?.forEach { item ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(vertical = 5.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.icon_line),
-                                    contentDescription = "",
-                                    tint = MaterialTheme.colors.background
-                                )
+                            Row(verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(vertical = 5.dp)) {
+                                Icon(painter = painterResource(R.drawable.icon_line),
+                                    contentDescription = "", tint = MaterialTheme.colors.background)
                                 Spacer(modifier = Modifier.width(10.dp))
 
                                 Column {
@@ -412,56 +384,14 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top
                 ) {
-                    val mCalendar = Calendar.getInstance()
-                    val mYear: Int = mCalendar.get(Calendar.YEAR)
-                    val mMonth: Int = mCalendar.get(Calendar.MONTH)
-                    val mDay: Int = mCalendar.get(Calendar.DAY_OF_MONTH)
-                    val currentDate = Date()
-                    val currentCalendar = Calendar.getInstance()
-                    currentCalendar.time = currentDate
-
-                    val mDatePickerDialog = DatePickerDialog(
-                        LocalContext.current,
-                        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                            val formattedData = "${year}-${month + 1}-$dayOfMonth ${
-                                String.format(
-                                    "%02d", mCalendar.get(
-                                        Calendar.HOUR_OF_DAY
-                                    )
-                                )
-                            }:${String.format("%02d", mCalendar.get(Calendar.MINUTE))}:${
-                                String.format(
-                                    "%02d", mCalendar.get(
-                                        Calendar.SECOND
-                                    )
-                                )
-                            }"
-                            viewModel.updateTaskDeadlie(formattedData)
-                        }, mYear, mMonth, mDay
-                    )
 
                     Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
 
-                        var formattedData: String = ""
-                        if (uiState.taskDeadline != "") {
-                            val dateTime = LocalDateTime.parse(
-                                uiState.taskDeadline,
-                                DateTimeFormatter.ofPattern("yyyy-M-d H:m:s")
-                            )
-                            formattedData = dateTime.dayOfWeek.getDisplayName(
-                                java.time.format.TextStyle.SHORT,
-                                Locale("ru")
-                            ) +
-                                    ", " + dateTime.dayOfMonth + " " +
-                                    dateTime.month.getDisplayName(
-                                        java.time.format.TextStyle.FULL,
-                                        Locale("ru")
-                                    )
-                        }
-                        Text(
-                            text = stringResource(R.string.taskeditor_deadline) + " " + formattedData,
-                            fontSize = 18.sp,
-                            modifier = Modifier.clickable { mDatePickerDialog.show() }
+                        DeadlinePickerWithText(
+                            currentDeadline = uiState.taskDeadline,
+                            onUpdateDeadline = { newDate ->
+                                viewModel.updateTaskDeadlie(newDate)
+                            }
                         )
 
                         HorizontalLine()

@@ -24,6 +24,7 @@ fun SpinnerSample(
     var currentSelectedItem by remember { mutableStateOf(selectedItem) }
 
     Row(
+        Modifier.clickable { expanded = true },
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically) {
         Text(text = name + " " + currentSelectedItem, fontSize = 18.sp)
@@ -43,9 +44,8 @@ fun SpinnerSample(
         }
         Icon(imageVector = Icons.Filled.ArrowDropDown,
             contentDescription = "",
-            modifier = Modifier
-                .height(24.dp)
-                .clickable { expanded = true })
+            tint = MaterialTheme.colors.onSecondary,
+            modifier = Modifier.height(24.dp))
     }
 }
 

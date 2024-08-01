@@ -43,7 +43,12 @@ fun BottomBar(navHostController: NavHostController, screensBottomBar: List<Botto
                     selected = isSelected,
                     onClick = {
                         if(!isSelected){
-                        navHostController.navigate(bottomBarScreens.route)
+                            navHostController.navigate(bottomBarScreens.route){
+                                launchSingleTop = true
+                                popUpTo(navHostController.graph.id){
+                                    inclusive = true
+                                }
+                            }
                     } })
             }
         }

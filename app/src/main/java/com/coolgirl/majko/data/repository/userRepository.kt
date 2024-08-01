@@ -1,5 +1,6 @@
 package com.coolgirl.majko.data
 
+import com.coolgirl.majko.data.dataUi.User.CurrentUserDataResponseUi
 import com.coolgirl.majko.data.remote.ApiMajko
 import com.coolgirl.majko.data.remote.ApiResult
 import com.coolgirl.majko.data.remote.dto.*
@@ -21,7 +22,7 @@ class MajkoUserRepository @Inject constructor(
     }
 
     override fun currentUser(): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.currentUser() })
+        emit( handler { api.currentUser() })
     }
 
     override fun signUp(user: UserSignUpData?): Flow<ApiResult<UserSignUpDataResponse>> = flow {
