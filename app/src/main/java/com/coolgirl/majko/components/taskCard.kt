@@ -38,11 +38,11 @@ fun TaskCard(navHostController: NavHostController,
              priorityColor : Int,
              statusName : String,
              taskData: TaskDataResponse,
-             onBurnStarClick: (String) -> Unit,
-             onDeadStarClick: (String) -> Unit,
-             onLongTap: (String) -> Unit,
-             onLongTapRelease: (String) -> Unit,
-             isSelected: Boolean){
+             onBurnStarClick: (String) -> Unit = {},
+             onDeadStarClick: (String) -> Unit = {},
+             onLongTap: (String) -> Unit = {},
+             onLongTapRelease: (String) -> Unit = {},
+             isSelected: Boolean = false){
 
     val borderColor = if (isSelected) R.color.purple else R.color.white
 

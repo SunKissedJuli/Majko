@@ -1,11 +1,9 @@
 package com.coolgirl.majko.Screen.Profile
 
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -18,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,13 +24,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
-import com.coolgirl.majko.components.BlueRoundedButton
-import com.coolgirl.majko.components.ErrorSnackbar
-import com.coolgirl.majko.components.MessageSnackbar
-import com.coolgirl.majko.components.WhiteRoundedTextField
+import com.coolgirl.majko.components.*
 import com.coolgirl.majko.navigation.Screen
+import com.coolgirl.majko.ui.theme.MajkoTheme
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -101,42 +95,26 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = stringResource(R.string.profile_username), fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Spacer(modifier = Modifier.width(20.dp))
-            TextField(
-                value = uiState.userName,
-                modifier = Modifier
-                    .height(55.dp)
-                    .width(150.dp),
-                onValueChange = onUpdateUserName,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colors.background,
-                    unfocusedContainerColor = MaterialTheme.colors.background
-                )
-            )
-            IconButton(onClick = { viewModel.updateNameData()  }) {
-                Image(painter = painterResource(R.drawable.icon_check),
-                    contentDescription = "")
 
+            LineTextField(uiState.userName, {onUpdateUserName(it)},
+                placeholder = stringResource(R.string.login_username), modifier = Modifier.width(150.dp))
+
+            IconButton(onClick = { viewModel.updateNameData()  }) {
+                Icon(painter = painterResource(R.drawable.icon_check),
+                    contentDescription = "", tint = MaterialTheme.colors.primary)
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = stringResource(R.string.profile_login), fontWeight = FontWeight.Bold, fontSize = 20.sp)
             Spacer(modifier = Modifier.width(20.dp))
-            TextField(
-                value = uiState.userEmail,
-                modifier = Modifier
-                    .height(55.dp)
-                    .width(150.dp),
-                onValueChange = onUpdateUserEmail,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colors.background,
-                    unfocusedContainerColor = MaterialTheme.colors.background
-                )
-            )
 
-            IconButton(onClick = { viewModel.updateEmailData() }) {
-                Image(painter = painterResource(R.drawable.icon_check),
-                    contentDescription = "")
+            LineTextField(uiState.userEmail, {onUpdateUserEmail(it)},
+                placeholder = stringResource(R.string.login_login), modifier = Modifier.width(150.dp))
+
+            IconButton(onClick = { viewModel.updateEmailData()  }) {
+                Icon(painter = painterResource(R.drawable.icon_check),
+                    contentDescription = "", tint = MaterialTheme.colors.primary)
             }
         }
 

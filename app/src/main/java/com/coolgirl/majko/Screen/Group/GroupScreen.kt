@@ -88,9 +88,10 @@ fun GroupScreen(navController: NavHostController) {
 
                     Column {
                         Row {
-                            Icon(painter = painterResource(R.drawable.icon_filter),
-                                modifier = Modifier.clickable { expandedFilter = !expandedFilter },
-                                contentDescription = "", tint = MaterialTheme.colors.surface)
+                            IconButton(onClick = { expandedFilter = !expandedFilter }, Modifier.size(27.dp)) {
+                                Icon(painter = painterResource(R.drawable.icon_filter),
+                                    contentDescription = "", tint = MaterialTheme.colors.background)
+                            }
                         }
                         FilterDropdown(expanded = expandedFilter,
                             onDismissRequest = { expandedFilter = it }, R.string.filter_group_group,
@@ -98,13 +99,16 @@ fun GroupScreen(navController: NavHostController) {
                     }
 
                     Spacer(modifier = Modifier.width(5.dp))
-                    Icon(painter = painterResource(R.drawable.icon_filter_off),
-                        modifier = Modifier.clickable { viewModel.updateSearchString(uiState.searchString, 2) },
-                        contentDescription = "", tint = MaterialTheme.colors.surface)
+
+                    IconButton(onClick = { viewModel.updateSearchString(uiState.searchString, 2) }, Modifier.size(27.dp)) {
+                        Icon(painter = painterResource(R.drawable.icon_filter_off),
+                            contentDescription = "", tint = MaterialTheme.colors.background)
+                    }
 
                     Box(Modifier.padding(end = 10.dp)) {
-                        IconButton(onClick = { expanded = true }) {
-                            Image(painter = painterResource(R.drawable.icon_menu), contentDescription = "")
+                        IconButton(onClick = {expanded = true  }) {
+                            Icon(painter = painterResource(R.drawable.icon_menu),
+                                contentDescription = "", tint = MaterialTheme.colors.background)
                         }
                         DropdownMenu(expanded = expanded,
                             onDismissRequest = { expanded = false },
@@ -250,9 +254,9 @@ fun LongTapPanel(onRemoving: ()-> Unit){
 
 
         Box(Modifier.padding(all = 10.dp)) {
-            IconButton(onClick = { expandedLongPanel = true }) {
-                Image(painter = painterResource(R.drawable.icon_menu),
-                    contentDescription = "")
+            IconButton(onClick = {expandedLongPanel = true  }) {
+                Icon(painter = painterResource(R.drawable.icon_menu),
+                    contentDescription = "", tint = MaterialTheme.colors.background)
             }
             DropdownMenu(
                 expanded = expandedLongPanel,

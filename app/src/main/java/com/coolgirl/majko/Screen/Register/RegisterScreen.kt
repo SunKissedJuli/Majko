@@ -18,7 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.components.BlueRoundedButton
 import com.coolgirl.majko.components.ErrorSnackbar
+import com.coolgirl.majko.components.LineTextField
 import com.coolgirl.majko.navigation.Screen
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -94,40 +96,18 @@ fun SetRegisterScreen(navController: NavController, viewModel: RegisterViewModel
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceEvenly){
 
-                    TextField(
-                        value = uiState.userName,
-                        modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_username), color = MaterialTheme.colors.onSurface) },
-                        onValueChange = { viewModel.updateUserName(it) },
-                        colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
-                            unfocusedContainerColor = MaterialTheme.colors.background)
-                    )
+                    LineTextField(uiState.userName, {viewModel.updateUserName(it)},
+                        placeholder = stringResource(R.string.login_username))
 
-                    TextField(
-                        value = uiState.userLogin,
-                        modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_login), color = MaterialTheme.colors.onSurface) },
-                        onValueChange = { viewModel.updateUserLogin(it) },
-                        colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
-                            unfocusedContainerColor = MaterialTheme.colors.background)
-                    )
-                    TextField(
-                        value = uiState.userPassword,
-                        modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_password), color = MaterialTheme.colors.onSurface) },
-                        onValueChange = { viewModel.updateUserPassword(it) },
-                        colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
-                            unfocusedContainerColor = MaterialTheme.colors.background)
-                    )
+                    LineTextField(uiState.userLogin, {viewModel.updateUserLogin(it)},
+                        placeholder = stringResource(R.string.login_login))
 
-                    TextField(
-                        value = uiState.userPasswordRepeat,
-                        modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_passwordrepeat), color = MaterialTheme.colors.onSurface) },
-                        onValueChange = { viewModel.updateUserPasswordRepeat(it) },
-                        colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
-                            unfocusedContainerColor = MaterialTheme.colors.background)
-                    )
+                    LineTextField(uiState.userPassword, {viewModel.updateUserPassword(it)},
+                        placeholder = stringResource(R.string.login_password))
+
+                    LineTextField(uiState.userPasswordRepeat, {viewModel.updateUserPasswordRepeat(it)},
+                        placeholder = stringResource(R.string.login_passwordrepeat))
+
                 }
             }
         }
@@ -140,14 +120,9 @@ fun SetRegisterScreen(navController: NavController, viewModel: RegisterViewModel
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom) {
 
-        Button(onClick = { viewModel.signUp(navController) },
-            modifier = Modifier
-                .fillMaxWidth(0.73f),
-            shape = RoundedCornerShape(15.dp),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-            Text(text = stringResource(R.string.login_registration), color = MaterialTheme.colors.background,
-                fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        }
+        BlueRoundedButton({ viewModel.signUp(navController) }, stringResource(R.string.login_registration),
+            modifier = Modifier.fillMaxWidth(0.73f), rounded = 15)
+
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = stringResource(R.string.login_enteroffer),
             modifier = Modifier.clickable { navController.navigate(Screen.Login.route) })

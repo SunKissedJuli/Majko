@@ -86,48 +86,32 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 ButtonBack({viewModel.saveGroup(navController)})
 
                 Box() {
-                    IconButton(onClick = { expanded = true }) {
-                        Icon(
-                            Icons.Default.MoreVert,
-                            tint = MaterialTheme.colors.background,
-                            contentDescription = ""
-                        )
+                    IconButton(onClick = {expanded = true  }) {
+                        Icon(painter = painterResource(R.drawable.icon_menu),
+                            contentDescription = "", tint = MaterialTheme.colors.background)
                     }
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
-                        modifier = Modifier.fillMaxWidth(0.5f)
-                    ) {
+                        modifier = Modifier.fillMaxWidth(0.5f)) {
+
                         if (!uiState.members.isNullOrEmpty()) {
-                            Row(
-                                Modifier
+                            Row(Modifier
                                     .fillMaxWidth()
                                     .clickable { viewModel.showMembers() }) {
-                                Text(
-                                    stringResource(R.string.projectedit_showmembers),
-                                    fontSize = 18.sp,
-                                    modifier = Modifier.padding(all = 10.dp)
-                                )
+                                Text(stringResource(R.string.projectedit_showmembers), fontSize = 18.sp,
+                                    modifier = Modifier.padding(all = 10.dp))
                             }
                         }
-                        Row(
-                            Modifier
+                        Row(Modifier
                                 .fillMaxWidth()
                                 .clickable { viewModel.removeGroup(navController) }) {
-                            Text(
-                                stringResource(R.string.project_delite), fontSize = 18.sp,
-                                modifier = Modifier.padding(all = 10.dp)
-                            )
+                            Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                         }
-                        Row(
-                            Modifier
+                        Row(Modifier
                                 .fillMaxWidth()
                                 .clickable { viewModel.createInvite() }) {
-                            Text(
-                                stringResource(R.string.project_createinvite), fontSize = 18.sp,
-                                modifier = Modifier
-                                    .padding(all = 10.dp)
-                            )
+                            Text(stringResource(R.string.project_createinvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                         }
                     }
 
@@ -135,15 +119,13 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
             }
         }
     ) {
-        Column(
-            Modifier
+        Column(Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .background(MaterialTheme.colors.background)
                 .padding(it)) {
 
-            Column(
-                Modifier
+            Column(Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.25f)) {
                 uiState.groupData?.let {
@@ -208,16 +190,18 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
 
             //добавление проекта в группу
             if(uiState.isAdding){
-                LazyRow(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(all = 5.dp)) {
+
+                LazyRow(Modifier.fillMaxWidth().padding(all = 5.dp)) {
+
                     if(!uiState.projectData.isNullOrEmpty()){
+
                         val projectData = uiState.projectData
                         val count = uiState.projectData.size?:0
+
                         items(count) { rowIndex ->
                             Column(Modifier.width(200.dp)) {
-                                ProjectCard(navController, projectData = projectData[rowIndex], onLongTap = {}, onLongTapRelease =  {}, isSelected = false)
+
+                                ProjectCard(navController, projectData = projectData[rowIndex])
                                 Row(Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center){
                                     Button(onClick = { viewModel.saveProject(projectData[rowIndex].id) },
@@ -248,35 +232,22 @@ private fun SetMembersWindow(uiState: GroupEditorUiState, onDismissRequest: () -
                     .fillMaxWidth()
                     .padding(16.dp)
                     .clip(RoundedCornerShape(25.dp))
-                    .background(MaterialTheme.colors.secondary)
-            ) {
+                    .background(MaterialTheme.colors.secondary)) {
+
                 Column(Modifier.padding(start = 15.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    Text(
-                        text = stringResource(R.string.projectedit_members),
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 18.sp,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
+                    Text(text = stringResource(R.string.projectedit_members), fontWeight = FontWeight.Medium,
+                        fontSize = 18.sp, modifier = Modifier.align(Alignment.CenterHorizontally))
 
-                    Column(
-                        Modifier
-                            .padding(
-                                horizontal = 20.dp,
-                                vertical = 10.dp
-                            )
-                    ) {
+                    Column(Modifier
+                            .padding(horizontal = 20.dp, vertical = 10.dp)) {
                         uiState.members?.forEach { item ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(vertical = 5.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.icon_line),
-                                    contentDescription = "",
-                                    tint = MaterialTheme.colors.background
-                                )
+                                modifier = Modifier.padding(vertical = 5.dp)) {
+                                Icon(painter = painterResource(R.drawable.icon_line),
+                                    contentDescription = "", tint = MaterialTheme.colors.background)
                                 Spacer(modifier = Modifier.width(10.dp))
 
                                 Column {

@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun BlueRoundedButton(onClick: ()-> Unit, buttonText: String, modifier: Modifier = Modifier){
+fun BlueRoundedButton(onClick: ()-> Unit, buttonText: String, modifier: Modifier = Modifier, rounded: Int = 30){
     Button(onClick = onClick,
-        shape = RoundedCornerShape(30.dp),
+        shape = RoundedCornerShape(rounded.dp),
         modifier = modifier.fillMaxWidth(0.7f),
         colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
         Text(text = buttonText, color = MaterialTheme.colors.background,

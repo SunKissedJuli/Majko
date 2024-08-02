@@ -18,7 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.coolgirl.majko.R
+import com.coolgirl.majko.components.BlueRoundedButton
 import com.coolgirl.majko.components.ErrorSnackbar
+import com.coolgirl.majko.components.LineTextField
 import com.coolgirl.majko.navigation.Screen
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -91,22 +93,12 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly){
 
-                    TextField(
-                        value = uiState.userLogin,
-                        modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_login), color = MaterialTheme.colors.onSurface) },
-                        onValueChange = { viewModel.updateUserLogin(it) },
-                        colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colors.background,
-                            unfocusedContainerColor = MaterialTheme.colors.background)
-                    )
-                    TextField(
-                        value = uiState.userPassword,
-                        modifier = Modifier.height(55.dp),
-                        placeholder = { Text(text = stringResource(id = R.string.login_password), color = MaterialTheme.colors.onSurface) },
-                        onValueChange = { viewModel.updateUserPassword(it) },
-                        colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
-                            unfocusedContainerColor = MaterialTheme.colors.background)
-                    )
+                    LineTextField(uiState.userLogin, {viewModel.updateUserLogin(it)},
+                        placeholder = stringResource(R.string.login_login))
+
+                    LineTextField(uiState.userPassword, {viewModel.updateUserPassword(it)},
+                        placeholder = stringResource(R.string.login_password))
+
                 }
             }
         }
@@ -119,14 +111,9 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom) {
 
-        Button(onClick = { viewModel.signIn(navController) },
-            modifier = Modifier
-                .fillMaxWidth(0.73f),
-            shape = RoundedCornerShape(15.dp),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-            Text(text = stringResource(R.string.login_enter), color = MaterialTheme.colors.background,
-                fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        }
+        BlueRoundedButton({ viewModel.signIn(navController) }, stringResource(R.string.login_enter),
+            modifier = Modifier.fillMaxWidth(0.73f), rounded = 15)
+
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = stringResource(R.string.login_registrationoffer),
             modifier = Modifier.clickable { navController.navigate(Screen.Register.route) })

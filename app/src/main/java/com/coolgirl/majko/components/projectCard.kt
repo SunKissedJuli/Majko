@@ -28,9 +28,9 @@ fun ProjectCard(
     navHostController: NavHostController,
     priorityColor: Int = R.color.white,
     projectData: ProjectDataResponse,
-    onLongTap: (String) -> Unit,
-    onLongTapRelease: (String) -> Unit,
-    isSelected: Boolean
+    onLongTap: (String) -> Unit = {},
+    onLongTapRelease: (String) -> Unit = {},
+    isSelected: Boolean = false
 ) {
     val borderColor = if (isSelected) R.color.purple else R.color.gray
 

@@ -71,43 +71,28 @@ fun TaskScreen(navController: NavHostController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    SearchBox(
-                        uiState.searchString,
-                        { viewModel.updateSearchString(it, 2) },
-                        R.string.task_search
-                    )
+                    SearchBox(uiState.searchString, { viewModel.updateSearchString(it, 2) }, R.string.task_search)
 
                     Column {
                         Row {
-                            Icon(
-                                painter = painterResource(R.drawable.icon_filter),
-                                modifier = Modifier.clickable { expandedFilter = !expandedFilter },
-                                contentDescription = "",
-                                tint = MaterialTheme.colors.surface
-                            )
+                            IconButton(onClick = { expandedFilter = !expandedFilter  }, Modifier.size(27.dp)) {
+                                Icon(painter = painterResource(R.drawable.icon_filter),
+                                    contentDescription = "", tint = MaterialTheme.colors.background)
+                            }
+
                         }
-                        FilterDropdown(
-                            expanded = expandedFilter,
-                            onDismissRequest = { expandedFilter = it },
-                            R.string.filter_task_fav,
-                            { viewModel.updateSearchString(uiState.searchString, it) },
-                            R.string.filter_task_each,
-                            R.string.filter_all
-                        )
+                        FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
+                            R.string.filter_task_fav, { viewModel.updateSearchString(uiState.searchString, it) },
+                            R.string.filter_task_each, R.string.filter_all)
                     }
 
                     Spacer(modifier = Modifier.width(5.dp))
 
-                    Icon(
-                        painter = painterResource(R.drawable.icon_filter_off),
-                        modifier = Modifier.clickable {
-                            viewModel.updateSearchString(
-                                uiState.searchString,
-                                2
-                            )
-                        },
-                        contentDescription = "", tint = MaterialTheme.colors.surface
-                    )
+                    IconButton(onClick = { viewModel.updateSearchString(uiState.searchString, 2) }, Modifier.size(27.dp)) {
+                        Icon(painter = painterResource(R.drawable.icon_filter_off),
+                            contentDescription = "", tint = MaterialTheme.colors.background)
+                    }
+
 
                 }
             }
@@ -243,9 +228,9 @@ private fun LongTapPanel(onUpdateStatus: ()-> Unit, onRemoveTask: ()-> Unit){
 
 
         Box(Modifier.padding(all = 10.dp)) {
-            IconButton(onClick = { expanded = true }) {
-                Image(painter = painterResource(R.drawable.icon_menu),
-                    contentDescription = "")
+            IconButton(onClick = {expanded = true  }) {
+                Icon(painter = painterResource(R.drawable.icon_menu),
+                    contentDescription = "", tint = MaterialTheme.colors.background)
             }
             DropdownMenu(
                 expanded = expanded,

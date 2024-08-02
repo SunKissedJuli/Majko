@@ -27,9 +27,9 @@ import com.coolgirl.majko.navigation.Screen
 fun GroupCard(navHostController: NavHostController,
               priorityColor : Int = R.color.white,
               groupData: GroupResponse,
-              onLongTap: (String) -> Unit,
-              onLongTapRelease: (String) -> Unit,
-              isSelected: Boolean){
+              onLongTap: (String) -> Unit = {},
+              onLongTapRelease: (String) -> Unit = {},
+              isSelected: Boolean = false){
 
     val borderColor = if (isSelected) R.color.purple else R.color.gray
 

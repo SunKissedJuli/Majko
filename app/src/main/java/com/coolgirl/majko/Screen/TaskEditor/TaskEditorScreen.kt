@@ -1,7 +1,5 @@
 package com.coolgirl.majko.Screen.TaskEditor
 
-import android.app.DatePickerDialog
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -9,10 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,9 +25,6 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Composable
 fun TaskEditorScreen(navController: NavHostController, taskId : String){
@@ -73,7 +65,10 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
 
                 Box {
                     IconButton(onClick = { expanded = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "", tint = MaterialTheme.colors.background)
+                        Icon(
+                            painter = painterResource(R.drawable.icon_menu),
+                            contentDescription = "", tint = MaterialTheme.colors.background
+                        )
                     }
                     DropdownMenu(
                         expanded = expanded,
@@ -197,7 +192,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                             items(count) { rowIndex ->
                                 Column(Modifier.width(200.dp)) {
                                     TaskCard(navController, viewModel.getPriority(subtask[rowIndex].priority),
-                                        viewModel.getStatus(subtask[rowIndex].status), subtask[rowIndex], {}, {}, {}, {}, false)
+                                        viewModel.getStatus(subtask[rowIndex].status), subtask[rowIndex])
                                 }
                             }
                         }
@@ -231,20 +226,15 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
 
                 Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
 
-                    DeadlineDatePicker(
-                        currentDeadline = uiState.taskDeadline,
-                        onUpdateDeadline = { newDate ->
-                            viewModel.updateTaskDeadlie(newDate)
-                        }
-                    )
+                    DeadlineDatePicker(currentDeadline = uiState.taskDeadline,
+                        onUpdateDeadline = { newDate -> viewModel.updateTaskDeadlie(newDate) })
 
                     HorizontalLine()
                     if(uiState.taskPriorityName!=""||uiState.taskId=="0"){
                         SpinnerSample(name = stringResource(R.string.taskeditor_priority),
                             items = viewModel.getPriority(),
                             selectedItem = uiState.taskPriorityName,
-                            {viewModel.updateTaskPriority(it)}
-                        )
+                            {viewModel.updateTaskPriority(it)})
                     }
 
                     HorizontalLine()
@@ -277,8 +267,7 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
             Column {
-                Column(
-                    Modifier
+                Column(Modifier
                         .padding(all = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = MaterialTheme.colors.background),
@@ -299,11 +288,8 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         decorationBox = { innerTextField ->
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.subtaskName.isEmpty()) {
-                                    Text(
-                                        text = stringResource(R.string.taskeditor_name),
-                                        color = MaterialTheme.colors.onSurface, fontSize = 20.sp,
-                                        maxLines = 2
-                                    )
+                                    Text(text = stringResource(R.string.taskeditor_name), color = MaterialTheme.colors.onSurface,
+                                        fontSize = 20.sp, maxLines = 2)
                                 }
                                 innerTextField()
                             }
@@ -318,11 +304,8 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         decorationBox = { innerTextField ->
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.subtaskText.isEmpty()) {
-                                    Text(
-                                        text = stringResource(R.string.taskeditor_hint),
-                                        color = MaterialTheme.colors.onSurface, fontSize = 18.sp,
-                                        maxLines = 4
-                                    )
+                                    Text(text = stringResource(R.string.taskeditor_hint),
+                                        color = MaterialTheme.colors.onSurface, fontSize = 18.sp, maxLines = 4)
                                 }
                                 innerTextField()
                             }
@@ -338,28 +321,25 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top) {
 
-
-
                     Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
 
                         DeadlineDatePicker(
                             currentDeadline = uiState.subtaskDeadline,
-                            onUpdateDeadline = { newDate ->
-                                viewModel.updateTaskDeadlie(newDate)
-                            }
-                        )
-
+                            onUpdateDeadline = { newDate -> viewModel.updateTaskDeadlie(newDate) })
                         HorizontalLine()
+
                             SpinnerSample(name = stringResource(R.string.taskeditor_priority),
                                 items = viewModel.getPriority(),
                                 selectedItem = viewModel.getPriorityName(uiState.subtaskPriority),
                                 { viewModel.updateSubtaskPriority(it) })
                         HorizontalLine()
+
                         Text(
                             text = stringResource(R.string.taskeditor_project) + (" ") + (uiState.taskProjectObj?.name
                                 ?: stringResource(R.string.common_no)), fontSize = 18.sp,
                             color = MaterialTheme.colors.onSecondary,)
                         HorizontalLine()
+
                         SpinnerSample(
                             name = stringResource(R.string.taskeditor_status),
                             items = viewModel.getStatus(),
@@ -369,25 +349,19 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                     }
                 }
 
-                Row(
-                    Modifier
+                Row(Modifier
                         .fillMaxWidth()
                         .padding(bottom = 10.dp),
                     horizontalArrangement = Arrangement.Center) {
-                    Button(
-                        onClick = { viewModel.saveSubtask() },
+                    Button(onClick = { viewModel.saveSubtask() },
                         shape = CircleShape,
                         modifier = Modifier
                             .fillMaxWidth(0.65f)
                             .padding(vertical = 10.dp),
                         colors = ButtonDefaults.buttonColors(
                             MaterialTheme.colors.primary)) {
-                        Text(
-                            text = stringResource(R.string.project_add),
-                            color = MaterialTheme.colors.background,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium
-                        )
+                        Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
+                            fontSize = 18.sp, fontWeight = FontWeight.Medium)
                     }
                 }
             }
@@ -405,7 +379,6 @@ private fun SetNotes(uiState: TaskEditorUiState, viewModel: TaskEditorViewModel)
                 Icon(painter = painterResource(R.drawable.icon_line),
                     contentDescription = "",
                     tint = MaterialTheme.colors.background)
-
                 Spacer(modifier = Modifier.width(10.dp))
 
                 BasicTextField(
@@ -419,16 +392,16 @@ private fun SetNotes(uiState: TaskEditorUiState, viewModel: TaskEditorViewModel)
                                 Text(text = stringResource(R.string.taskeditor_hint),
                                     color = MaterialTheme.colors.surface,fontSize = 18.sp) }
                             innerTextField() } })
-
                 Spacer(modifier = Modifier.width(5.dp))
+
                 IconButton(onClick = { viewModel.saveUpdateNote(item.id, item.note) }) {
-                    Image(painter = painterResource(R.drawable.icon_check),
-                        contentDescription = "")
+                    Icon(painter = painterResource(R.drawable.icon_check),
+                        contentDescription = "", tint = MaterialTheme.colors.primary)
                 }
 
                 IconButton(onClick = {  viewModel.removeNote(item.id) }) {
-                    Image(painter = painterResource(R.drawable.icon_delete),
-                        contentDescription = "")
+                    Icon(painter = painterResource(R.drawable.icon_delete),
+                        contentDescription = "", tint = MaterialTheme.colors.onSecondary)
                 }
             }
         }

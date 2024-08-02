@@ -17,9 +17,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -90,51 +92,32 @@ fun ProjectScreen(navController: NavHostController){
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    SearchBox(
-                        uiState.searchString,
-                        { viewModel.updateSearchString(it, 2) },
-                        R.string.project_search
-                    )
+                    SearchBox(uiState.searchString, { viewModel.updateSearchString(it, 2) }, R.string.project_search)
+
                     Column {
                         Row {
-                            Icon(
-                                painter = painterResource(R.drawable.icon_filter),
-                                modifier = Modifier.clickable { expandedFilter = !expandedFilter },
-                                contentDescription = "",
-                                tint = MaterialTheme.colors.surface
-                            )
+                            IconButton(onClick = { expandedFilter = !expandedFilter }, Modifier.size(27.dp)) {
+                                Icon(painter = painterResource(R.drawable.icon_filter),
+                                    contentDescription = "", tint = MaterialTheme.colors.background)
+                            }
                         }
-                        FilterDropdown(
-                            expanded = expandedFilter,
-                            onDismissRequest = { expandedFilter = it },
-                            R.string.filter_project_group,
+                        FilterDropdown(expanded = expandedFilter,
+                            onDismissRequest = { expandedFilter = it }, R.string.filter_project_group,
                             { viewModel.updateSearchString(uiState.searchString, it) },
-                            R.string.filter_group_personal,
-                            R.string.filter_all
-                        )
+                            R.string.filter_group_personal, R.string.filter_all)
                     }
 
                     Spacer(modifier = Modifier.width(5.dp))
 
-                    Icon(
-                        painter = painterResource(R.drawable.icon_filter_off),
-                        modifier = Modifier.clickable {
-                            viewModel.updateSearchString(
-                                uiState.searchString,
-                                2
-                            )
-                        },
-                        contentDescription = "", tint = MaterialTheme.colors.surface
-                    )
-
+                    IconButton(onClick = { viewModel.updateSearchString(uiState.searchString, 2) }, Modifier.size(27.dp)) {
+                        Icon(painter = painterResource(R.drawable.icon_filter_off),
+                            contentDescription = "", tint = MaterialTheme.colors.background)
+                    }
 
                     Box(Modifier.padding(end = 10.dp)) {
                         IconButton(onClick = { expanded = true }) {
-                            Icon(
-                                Icons.Default.MoreVert,
-                                contentDescription = "",
-                                tint = colorResource(R.color.white)
-                            )
+                            Icon(painter = painterResource(R.drawable.icon_menu),
+                                contentDescription = "", tint = MaterialTheme.colors.background)
                         }
                         DropdownMenu(
                             expanded = expanded,
@@ -146,8 +129,7 @@ fun ProjectScreen(navController: NavHostController){
                                 Modifier
                                     .fillMaxWidth()
                                     .clickable { viewModel.openInviteWindow() }) {
-                                Text(
-                                    stringResource(R.string.project_joininvite),
+                                Text(stringResource(R.string.project_joininvite),
                                     fontSize = 18.sp,
                                     modifier = Modifier.padding(all = 10.dp)
                                 )
@@ -179,8 +161,7 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
     val personalProject = uiState.searchPersonalProject
     val groupProject = uiState.searchGroupProject
 
-    Column(
-        Modifier.fillMaxWidth(),
+    Column(Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
@@ -273,7 +254,10 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRe
                 stringResource(R.string.project_name) )
 
             WhiteRoundedTextField(uiState.newProjectDescription, { viewModel.updateProjectDescription(it)},
-                stringResource(R.string.project_description), Modifier.fillMaxHeight(0.75f).padding(bottom = 20.dp))
+                stringResource(R.string.project_description),
+                Modifier
+                    .fillMaxHeight(0.75f)
+                    .padding(bottom = 20.dp))
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){
@@ -295,10 +279,12 @@ fun LongTapPanel(onAddingToArchive: ()-> Unit, onRemoving: ()-> Unit){
 
 
         Box(Modifier.padding(all = 10.dp)) {
-            IconButton(onClick = { expandedLongPanel = true }) {
-                Image(painter = painterResource(R.drawable.icon_menu),
-                    contentDescription = "")
+
+            IconButton(onClick = {expandedLongPanel = true  }) {
+                Icon(painter = painterResource(R.drawable.icon_menu),
+                    contentDescription = "", tint = MaterialTheme.colors.background)
             }
+
             DropdownMenu(
                 expanded = expandedLongPanel,
                 onDismissRequest = { expandedLongPanel = false },

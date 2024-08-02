@@ -1,6 +1,5 @@
 package com.coolgirl.majko.navigation
 
-import androidx.compose.ui.res.stringResource
 import com.coolgirl.majko.R
 
 sealed class BottomBarScreens(
@@ -12,7 +11,7 @@ sealed class BottomBarScreens(
     object Project : BottomBarScreens(
         route = "project",
         title = R.string.bottomBar_project,
-        icon = R.drawable.icon_project
+        icon = R.drawable.icon_projects
     )
 
     object Task : BottomBarScreens(

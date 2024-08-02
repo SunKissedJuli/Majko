@@ -85,8 +85,9 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                ButtonBack({viewModel.saveProject(navController)})
 
                Box {
-                   IconButton(onClick = { expanded = true }) {
-                       Icon(Icons.Default.MoreVert,  contentDescription = "", tint = MaterialTheme.colors.background)
+                   IconButton(onClick = {expanded = true  }) {
+                       Icon(painter = painterResource(R.drawable.icon_menu),
+                           contentDescription = "", tint = MaterialTheme.colors.background)
                    }
                    DropdownMenu(
                        expanded = expanded,
@@ -191,7 +192,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                                 TaskCard(navController,
                                     viewModel.getPriority(projectData[rowIndex].priority),
                                     viewModel.getStatusName(projectData[rowIndex].status),
-                                    projectData[rowIndex], {}, {}, {}, {}, false)
+                                    projectData[rowIndex])
                             }
                         }
                     }
@@ -321,18 +322,14 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                             .fillMaxHeight(0.09f),
                         textStyle = TextStyle.Default.copy(
                             fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        ),
+                            fontWeight = FontWeight.Bold),
                         onValueChange = { viewModel.updateTaskName(it) },
                         maxLines = 2,
                         decorationBox = { innerTextField ->
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.taskName.isEmpty()) {
-                                    Text(
-                                        text = stringResource(R.string.taskeditor_name),
-                                        color = MaterialTheme.colors.onSurface, fontSize = 20.sp,
-                                        maxLines = 2
-                                    )
+                                    Text(text = stringResource(R.string.taskeditor_name),
+                                        color = MaterialTheme.colors.onSurface, fontSize = 20.sp, maxLines = 2)
                                 }
                                 innerTextField()
                             }
@@ -347,20 +344,15 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                         decorationBox = { innerTextField ->
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.taskText.isEmpty()) {
-                                    Text(
-                                        text = stringResource(R.string.taskeditor_hint),
-                                        color = MaterialTheme.colors.onSurface, fontSize = 18.sp,
-                                        maxLines = 4
-                                    )
+                                    Text(text = stringResource(R.string.taskeditor_hint),
+                                        color = MaterialTheme.colors.onSurface, fontSize = 18.sp, maxLines = 4)
                                 }
                                 innerTextField()
                             }
                         }
                     )
                 }
-                Column(
-                    Modifier
-                        .fillMaxWidth()
+                Column(Modifier.fillMaxWidth()
                         .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = colorResource(R.color.white)),
@@ -370,8 +362,7 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
 
                     Column(Modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
 
-                        DeadlineDatePicker(
-                            currentDeadline = uiState.taskDeadline,
+                        DeadlineDatePicker(currentDeadline = uiState.taskDeadline,
                             onUpdateDeadline = { newDate -> viewModel.updateTaskDeadlie(newDate) })
                         HorizontalLine()
 
@@ -393,26 +384,18 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                     }
                 }
 
-                Row(
-                    Modifier
+                Row(Modifier
                         .fillMaxWidth()
                         .padding(bottom = 5.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = { viewModel.saveTask() },
+                    horizontalArrangement = Arrangement.Center) {
+                    Button(onClick = { viewModel.saveTask() },
                         shape = CircleShape,
                         modifier = Modifier
                             .fillMaxWidth(0.65f)
                             .padding(vertical = 5.dp),
-                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.project_add),
-                            color = MaterialTheme.colors.background,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium
-                        )
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                        Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
+                            fontSize = 18.sp, fontWeight = FontWeight.Medium)
                     }
                 }
             }

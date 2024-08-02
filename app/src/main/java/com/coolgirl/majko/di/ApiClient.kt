@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 fun ApiClient(userDataStore: UserDataStore): ApiMajko {
 
     val token = runBlocking {
-        "Bearer " + (userDataStore.getAccessToken().first() ?: "")
+        "Bearer " + (userDataStore.getAccessToken().first()?: null)
     }
 
     val interceptor = Interceptor { chain ->
