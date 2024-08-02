@@ -12,12 +12,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun WhiteRoundedTextField(value: String, onValueChange: (String)-> Unit, plaseholder: String,
-                          modifier: Modifier = Modifier, enabled: Boolean = false){
+                          modifier: Modifier = Modifier){
     OutlinedTextField(
             value = value,
-    onValueChange = onValueChange,
+    onValueChange = {onValueChange(it)},
     modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp),
-        enabled = enabled,
     shape = RoundedCornerShape(30.dp),
     colors = OutlinedTextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colors.background, unfocusedContainerColor = MaterialTheme.colors.background,

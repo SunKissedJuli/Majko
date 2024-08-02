@@ -64,7 +64,7 @@ fun TaskScreen(navController: NavHostController) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.1f)
+                        .height(65.dp)
                         .padding(all = 10.dp)
                         .clip(RoundedCornerShape(30.dp))
                         .background(color = MaterialTheme.colors.primary),
@@ -92,8 +92,6 @@ fun TaskScreen(navController: NavHostController) {
                         Icon(painter = painterResource(R.drawable.icon_filter_off),
                             contentDescription = "", tint = MaterialTheme.colors.background)
                     }
-
-
                 }
             }
         }
@@ -222,7 +220,7 @@ private fun LongTapPanel(onUpdateStatus: ()-> Unit, onRemoveTask: ()-> Unit){
     Row(
         Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.1f)
+            .height(65.dp)
             .background(color = MaterialTheme.colors.secondary),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
 

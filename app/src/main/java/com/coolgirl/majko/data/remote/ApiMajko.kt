@@ -1,5 +1,6 @@
 package com.coolgirl.majko.data.remote
 
+import com.coolgirl.majko.data.dataUi.User.CurrentUserDataResponseUi
 import com.coolgirl.majko.data.remote.dto.*
 import com.coolgirl.majko.data.remote.dto.GroupData.*
 import com.coolgirl.majko.data.remote.dto.Info.Info

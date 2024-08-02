@@ -25,6 +25,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
+import com.coolgirl.majko.data.remote.dto.ProjectData.JoinByInviteProjectData
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -46,12 +47,13 @@ fun GroupScreen(navController: NavHostController) {
 
     //экран добавления группы
     if(uiState.isAdding){
-        AddGroup(uiState, viewModel, { viewModel.addingGroup()})
+        AddGroup(uiState, viewModel::updateGroupName, viewModel::updateGroupDescription,
+            viewModel::addGroup, viewModel::addingGroup)
     }
 
     //экран вступления по инвайту
     if(uiState.isInvite){
-        JoinByInviteWindow(uiState, viewModel, { viewModel.openInviteWindow()})
+        JoinByInviteWindow(uiState, viewModel::updateInvite, viewModel::joinByInvite, viewModel::openInviteWindow)
     }
 
     //снекбары
@@ -76,11 +78,11 @@ fun GroupScreen(navController: NavHostController) {
                 LongTapPanel({ viewModel.removeGroup() })
             } else {
                 Row(Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.1f)
-                        .padding(all = 10.dp)
-                        .clip(RoundedCornerShape(30.dp))
-                        .background(color = MaterialTheme.colors.primary),
+                    .fillMaxWidth()
+                    .height(65.dp)
+                    .padding(all = 10.dp)
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(color = MaterialTheme.colors.primary),
                     verticalAlignment = Alignment.CenterVertically) {
 
                     SearchBox(value = uiState.searchString, onValueChange = { viewModel.updateSearchString(it, 2) },
@@ -115,7 +117,8 @@ fun GroupScreen(navController: NavHostController) {
                             modifier = Modifier.fillMaxWidth(0.5f)) {
                             Row(Modifier
                                     .fillMaxWidth()
-                                    .clickable { viewModel.openInviteWindow() }) {
+                                    .clickable { viewModel.openInviteWindow()
+                                    expanded = false}) {
                                 Text(stringResource(R.string.project_joininvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                             }
                         }
@@ -187,7 +190,8 @@ fun SetGroupScreen(uiState: GroupUiState, navController: NavHostController, view
 }
 
 @Composable
-private fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel, onDismissRequest: () -> Unit){
+private fun AddGroup(uiState: GroupUiState,  onUpdateName: (String) -> Unit,
+                     onUpdateText: (String) -> Unit, onSave: () -> Unit, onDismissRequest: () -> Unit){
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -197,22 +201,23 @@ private fun AddGroup(uiState: GroupUiState, viewModel: GroupViewModel, onDismiss
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
 
-            WhiteRoundedTextField(uiState.newGroupName, { viewModel.updateGroupName(it)},
+            WhiteRoundedTextField(uiState.newGroupName, onUpdateName,
                 stringResource(R.string.group_name) )
 
-            WhiteRoundedTextField(uiState.newGroupDescription, { viewModel.updateGroupDescription(it)},
+            WhiteRoundedTextField(uiState.newGroupDescription, onUpdateText,
                 stringResource(R.string.group_description), Modifier.fillMaxHeight(0.75f).padding(bottom = 20.dp))
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){
-                BlueRoundedButton({ viewModel.addGroup() }, stringResource(R.string.project_add))
+                BlueRoundedButton( onSave, stringResource(R.string.project_add))
             }
         }
     }
 }
 
 @Composable
-private fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel, onDismissRequest: () -> Unit){
+private fun JoinByInviteWindow(uiState: GroupUiState, onUpdateInvite: (String)->Unit, onJoinByInvite: ()-> Unit,
+                              onDismissRequest: () -> Unit){
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -222,7 +227,7 @@ private fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel,
                 .background(MaterialTheme.colors.secondary)
         ) {
 
-            WhiteRoundedTextField(uiState.invite, { viewModel.updateInvite(it)},
+            WhiteRoundedTextField(uiState.invite, onUpdateInvite,
                 stringResource(R.string.invite), Modifier.padding(bottom = 20.dp))
 
             Row(Modifier
@@ -231,11 +236,11 @@ private fun JoinByInviteWindow(uiState: GroupUiState, viewModel: GroupViewModel,
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically){
                 if(uiState.inviteMessage.equals("")){
-                    BlueRoundedButton({ viewModel.joinByInvite() }, stringResource(R.string.project_joininvite))
+                    BlueRoundedButton(onJoinByInvite, stringResource(R.string.project_joininvite))
 
                 }else {
                     Text(text = uiState.inviteMessage, color = MaterialTheme.colors.background)
-                    BlueRoundedButton({ viewModel.openInviteWindow() }, stringResource(R.string.projectedit_close))
+                    BlueRoundedButton(onDismissRequest, stringResource(R.string.projectedit_close))
                 }
             }
         }
@@ -248,7 +253,7 @@ fun LongTapPanel(onRemoving: ()-> Unit){
     Row(
         Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.1f)
+            .height(65.dp)
             .background(color = MaterialTheme.colors.secondary),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
 

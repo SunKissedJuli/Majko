@@ -1,5 +1,6 @@
 package com.coolgirl.majko.Screen.Profile
 
+import com.coolgirl.majko.data.dataUi.User.CurrentUserDataResponseUi
 import com.coolgirl.majko.data.remote.dto.User.CurrentUserDataResponse
 
 data class ProfileUiState(
@@ -11,7 +12,7 @@ data class ProfileUiState(
     val confirmPassword: String = "",
     val isError: Boolean = false,
     val errorMessage: Int? = null,
-    val currentUser: CurrentUserDataResponse? = null,
+    val currentUser: CurrentUserDataResponseUi? = null,
     val isMessage: Boolean = false,
     val message: Int? = null
 )

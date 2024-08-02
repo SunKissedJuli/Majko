@@ -60,15 +60,15 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
 
 
     if(uiState.isMembers){
-        SetMembersWindow(uiState, { viewModel.showMembers() })
+        SetMembersWindow(uiState, viewModel::showMembers)
     }
 
     if (uiState.isInvite) {
-        SetInviteWindow(uiState, viewModel, { viewModel.newInvite() })
+        SetInviteWindow(uiState, viewModel::newInvite)
     }
 
     if (uiState.isAdding) {
-        addTask(uiState, viewModel, { viewModel.addingTask() })
+        addTask(uiState, viewModel, viewModel::addingTask)
     }
 
     Scaffold(
@@ -76,7 +76,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
            Row(
                Modifier
                    .fillMaxWidth()
-                   .fillMaxHeight(0.08f)
+                   .height(60.dp)
                    .background(MaterialTheme.colors.primary)
                    .padding(horizontal = 10.dp),
                verticalAlignment = Alignment.CenterVertically,
@@ -98,20 +98,23 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                            Row(
                                Modifier
                                    .fillMaxWidth()
-                                   .clickable { viewModel.showMembers() }) {
+                                   .clickable { viewModel.showMembers()
+                                       expanded = false}) {
                                Text(stringResource(R.string.projectedit_showmembers), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                            }
                        }
                        Row(
                            Modifier
                                .fillMaxWidth()
-                               .clickable { viewModel.removeProject(navController) }) {
+                               .clickable { viewModel.removeProject(navController)
+                                   expanded = false}) {
                            Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                        }
                        Row(
                            Modifier
                                .fillMaxWidth()
-                               .clickable { viewModel.createInvite() }) {
+                               .clickable { viewModel.createInvite()
+                                   expanded = false}) {
                            Text(stringResource(R.string.project_createinvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                        }
                    }
@@ -128,8 +131,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
         ) {
             Column(
                 Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.25f)) {
+                    .fillMaxWidth()) {
                 uiState.projectData?.let {
                     BasicTextField(
                         value = it.name,
@@ -273,7 +275,7 @@ private fun SetMembersWindow(uiState: ProjectEditUiState, onDismissRequest: () -
 }
 
 @Composable
-private fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEditViewModel, onDismissRequest: () -> Unit){
+private fun SetInviteWindow(uiState: ProjectEditUiState, onDismissRequest: () -> Unit){
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -283,12 +285,12 @@ private fun SetInviteWindow(uiState: ProjectEditUiState, viewModel : ProjectEdit
                 .background(MaterialTheme.colors.secondary)) {
 
             WhiteRoundedTextField(uiState.invite, { },
-                stringResource(R.string.invite), Modifier.padding(bottom = 20.dp), enabled = true)
+                stringResource(R.string.invite), Modifier.padding(bottom = 20.dp))
 
             Row(Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically){
-                BlueRoundedButton({ viewModel.newInvite() }, stringResource(R.string.projectedit_close),
+                BlueRoundedButton(onDismissRequest, stringResource(R.string.projectedit_close),
                     modifier = Modifier.padding(bottom = 15.dp))
             }
         }

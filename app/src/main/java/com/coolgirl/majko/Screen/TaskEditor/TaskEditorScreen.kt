@@ -56,7 +56,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.08f)
+                    .height(60.dp)
                     .background(MaterialTheme.colors.primary)
                     .padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -77,7 +77,8 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .clickable { viewModel.removeTask(navController) }){
+                                .clickable { viewModel.removeTask(navController)
+                                    expanded = false}){
                             Text(stringResource(R.string.project_delite), fontSize=18.sp, color = MaterialTheme.colors.onSecondary,
                                 modifier = Modifier.padding(all = 10.dp))
                         }
@@ -95,8 +96,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
 
             Column(
                 Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.4f)) {
+                    .fillMaxWidth()) {
                 BasicTextField(
                     value = uiState.taskName,
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
@@ -125,8 +125,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
             if(!uiState.taskId.equals("0")){
                 Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start) {
                     Column(Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp)) {
-                        Row(
-                            Modifier
+                        Row(Modifier
                                 .fillMaxHeight()
                                 .clickable { viewModel.addNewNote() },
                             verticalAlignment = Alignment.CenterVertically) {
@@ -135,10 +134,8 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                 contentDescription = "", tint = MaterialTheme.colors.background)
 
                             Spacer(modifier = Modifier.width(10.dp))
-                            Text(
-                                text = stringResource(R.string.taskeditor_add),
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Medium,)
+                            Text(text = stringResource(R.string.taskeditor_add),
+                                fontSize = 18.sp, fontWeight = FontWeight.Medium,)
                         }
                         HorizontalLine()
                     }
@@ -149,11 +146,9 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                             BasicTextField(
                                 value = uiState.noteText,
                                 modifier = Modifier
-                                    .padding(horizontal = 20.dp, vertical = 15.dp)
-                                    .fillMaxHeight(0.09f),
+                                    .padding(horizontal = 20.dp, vertical = 15.dp),
                                 textStyle = TextStyle.Default.copy(fontSize = 18.sp),
                                 onValueChange = {viewModel.updateNoteText(it)},
-                                maxLines = 2,
                                 decorationBox = { innerTextField ->
                                     Row(modifier = Modifier.fillMaxWidth()) {
                                         if (uiState.noteText.isEmpty()) {
@@ -181,7 +176,9 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
 
                     //отображение notes
                     if(!uiState.notes.isNullOrEmpty()){
-                        SetNotes(uiState, viewModel)
+                        SetNotes(uiState,  onUpdateNoteText = viewModel::updateOldNoteText,
+                            onSaveNote = viewModel::saveUpdateNote,
+                            onRemoveNote = viewModel::removeNote)
                     }
 
                     //отображение субтасков
@@ -267,7 +264,8 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
             Column {
-                Column(Modifier
+                Column(
+                    Modifier
                         .padding(all = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = MaterialTheme.colors.background),
@@ -349,7 +347,8 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                     }
                 }
 
-                Row(Modifier
+                Row(
+                    Modifier
                         .fillMaxWidth()
                         .padding(bottom = 10.dp),
                     horizontalArrangement = Arrangement.Center) {
@@ -370,7 +369,8 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
 }
 
 @Composable
-private fun SetNotes(uiState: TaskEditorUiState, viewModel: TaskEditorViewModel){
+private fun SetNotes(uiState: TaskEditorUiState, onUpdateNoteText: (String, String) -> Unit,
+                     onSaveNote: (String, String) -> Unit, onRemoveNote: (String) -> Unit){
     Column(Modifier.padding(start = 20.dp, top = 10.dp, end = 10.dp, bottom = 10.dp)){
         for(item in uiState.notes!!){
             Row(Modifier.fillMaxWidth(),
@@ -384,7 +384,7 @@ private fun SetNotes(uiState: TaskEditorUiState, viewModel: TaskEditorViewModel)
                 BasicTextField(
                     value = item.note,
                     textStyle = TextStyle.Default.copy(fontSize = 18.sp),
-                    onValueChange = {viewModel.updateOldNoteText(it, item.id)},
+                    onValueChange = {onUpdateNoteText(it, item.id)},
                     modifier = Modifier.fillMaxWidth(0.7f),
                     decorationBox = { innerTextField ->
                         Row(modifier = Modifier.fillMaxWidth()) {
@@ -394,12 +394,12 @@ private fun SetNotes(uiState: TaskEditorUiState, viewModel: TaskEditorViewModel)
                             innerTextField() } })
                 Spacer(modifier = Modifier.width(5.dp))
 
-                IconButton(onClick = { viewModel.saveUpdateNote(item.id, item.note) }) {
+                IconButton(onClick = { onSaveNote(item.id, item.note) }) {
                     Icon(painter = painterResource(R.drawable.icon_check),
                         contentDescription = "", tint = MaterialTheme.colors.primary)
                 }
 
-                IconButton(onClick = {  viewModel.removeNote(item.id) }) {
+                IconButton(onClick = { onRemoveNote(item.id) }) {
                     Icon(painter = painterResource(R.drawable.icon_delete),
                         contentDescription = "", tint = MaterialTheme.colors.onSecondary)
                 }

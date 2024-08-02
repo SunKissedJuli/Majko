@@ -11,8 +11,8 @@ data class CurrentUserDataResponseUi(
     var email : String,
 )
 
-fun CurrentUserDataResponse.toUi(){
-   CurrentUserDataResponseUi(
+fun CurrentUserDataResponse.toUi() : CurrentUserDataResponseUi{
+   return CurrentUserDataResponseUi(
         id = this.id.orEmpty(),
         createdAt = this.createdAt.orEmpty(),
         updatedAt = this.updatedAt.orEmpty(),

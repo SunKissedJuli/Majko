@@ -53,12 +53,14 @@ fun ProjectScreen(navController: NavHostController){
 
     //экран добавления проекта
     if(uiState.isAdding){
-        AddProject(uiState, viewModel, { viewModel.notAddingProjectYet()})
+        AddProject(uiState, viewModel::updateProjectName, viewModel::updateProjectDescription,
+            viewModel::addProject, viewModel::notAddingProjectYet)
     }
 
     //экран для ввода инвайта
     if(uiState.isInvite){
-        JoinByInviteWindow(uiState, viewModel, { viewModel.openInviteWindow()})
+        JoinByInviteWindow(uiState, viewModel::updateInvite,
+            viewModel::joinByInvite, viewModel::openInviteWindow)
     }
 
     //снекбары
@@ -85,7 +87,7 @@ fun ProjectScreen(navController: NavHostController){
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.1f)
+                        .height(65.dp)
                         .padding(all = 10.dp)
                         .clip(RoundedCornerShape(30.dp))
                         .background(color = MaterialTheme.colors.primary),
@@ -128,7 +130,8 @@ fun ProjectScreen(navController: NavHostController){
                             Row(
                                 Modifier
                                     .fillMaxWidth()
-                                    .clickable { viewModel.openInviteWindow() }) {
+                                    .clickable { viewModel.openInviteWindow()
+                                        expanded = false}) {
                                 Text(stringResource(R.string.project_joininvite),
                                     fontSize = 18.sp,
                                     modifier = Modifier.padding(all = 10.dp)
@@ -210,7 +213,8 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
 }
 
 @Composable
-fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRequest: () -> Unit){
+fun JoinByInviteWindow(uiState: ProjectUiState, onUpdate: (String) -> Unit,
+                       onJoin: () -> Unit, onDismissRequest: () -> Unit){
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -219,7 +223,7 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel, onD
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
 
-            WhiteRoundedTextField(uiState.invite, { viewModel.updateInvite(it)},
+            WhiteRoundedTextField(uiState.invite, onUpdate,
                 stringResource(R.string.invite), Modifier.padding(bottom = 20.dp))
 
             Row(
@@ -229,10 +233,10 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel, onD
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically){
                 if(uiState.invite_message.equals("")){
-                    BlueRoundedButton({ viewModel.joinByInvite() }, stringResource(R.string.project_joininvite))
+                    BlueRoundedButton(onJoin, stringResource(R.string.project_joininvite))
                 }else {
                     Text(text = uiState.invite_message, color = MaterialTheme.colors.background)
-                    BlueRoundedButton({ viewModel.openInviteWindow() }, stringResource(R.string.projectedit_close))
+                    BlueRoundedButton(onDismissRequest, stringResource(R.string.projectedit_close))
                 }
             }
         }
@@ -240,7 +244,8 @@ fun JoinByInviteWindow(uiState: ProjectUiState, viewModel: ProjectViewModel, onD
 }
 
 @Composable
-fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRequest: () -> Unit){
+fun AddProject(uiState: ProjectUiState,  onUpdateName: (String) -> Unit,
+               onUpdateText: (String) -> Unit, onAdding:()->Unit, onDismissRequest: () -> Unit){
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -250,10 +255,10 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRe
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
 
-            WhiteRoundedTextField(uiState.newProjectName, { viewModel.updateProjectName(it)},
+            WhiteRoundedTextField(uiState.newProjectName, onUpdateName,
                 stringResource(R.string.project_name) )
 
-            WhiteRoundedTextField(uiState.newProjectDescription, { viewModel.updateProjectDescription(it)},
+            WhiteRoundedTextField(uiState.newProjectDescription, onUpdateText,
                 stringResource(R.string.project_description),
                 Modifier
                     .fillMaxHeight(0.75f)
@@ -261,7 +266,7 @@ fun AddProject(uiState: ProjectUiState, viewModel: ProjectViewModel, onDismissRe
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){
-                BlueRoundedButton({ viewModel.addProject() }, stringResource(R.string.project_add))
+                BlueRoundedButton(onAdding, stringResource(R.string.project_add))
             }
         }
     }
@@ -273,7 +278,7 @@ fun LongTapPanel(onAddingToArchive: ()-> Unit, onRemoving: ()-> Unit){
     Row(
         Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.1f)
+            .height(65.dp)
             .background(color = MaterialTheme.colors.secondary),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
 

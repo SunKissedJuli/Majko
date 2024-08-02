@@ -2,9 +2,7 @@ package com.coolgirl.majko.Screen.Profile
 
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,20 +42,21 @@ fun ProfileScreen( navController: NavHostController) {
 
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(
-        Modifier
+    Column(Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.93f)) {
-            SetProfileScreen(uiState, {viewModel.updateUserName(it)}, {viewModel.updateUserEmail(it)}, viewModel, navController)
-        }
+            .background(MaterialTheme.colors.background)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center) {
+        SetProfileScreen(uiState, {viewModel.updateUserName(it)}, {viewModel.updateUserEmail(it)}, viewModel, navController)
     }
 
     if (uiState.isChangePassword){
-        ChangePassword(uiState, viewModel, {viewModel.changePasswordScreen()})
+        ChangePassword(uiState,  onUpdateOldPassword = viewModel::updateOldPassword,
+            onUpdateNewPassword = viewModel::updateNewPassword,
+            onUpdateConfirmPassword = viewModel::updateConfirmPassword,
+            onSave = viewModel::changePassword,
+            onDismissRequest = viewModel::changePasswordScreen)
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -118,19 +117,15 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
             }
         }
 
-        Row(
-            Modifier
-                .fillMaxHeight(0.3f)
+        Row(Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom){
             BlueRoundedButton({ viewModel.changePasswordScreen() }, stringResource(R.string.profile_forget),
-                modifier = Modifier.padding(bottom = 10.dp))
+                modifier = Modifier.padding(bottom = 10.dp, top = 20.dp))
         }
 
-        Row(
-            Modifier
-                .fillMaxHeight(0.1f)
+        Row(Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom) {
@@ -152,7 +147,12 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
 
 
 @Composable
-private fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel, onDismissRequest: () -> Unit){
+private fun ChangePassword(uiState: ProfileUiState,onUpdateOldPassword: (String) -> Unit,
+                           onUpdateNewPassword: (String) -> Unit,
+                           onUpdateConfirmPassword: (String) -> Unit,
+                           onSave: () -> Unit,
+                           onDismissRequest: () -> Unit
+) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -162,18 +162,18 @@ private fun ChangePassword(uiState: ProfileUiState, viewModel: ProfileViewModel,
                 .clip(RoundedCornerShape(25.dp))
                 .background(MaterialTheme.colors.secondary)) {
 
-            WhiteRoundedTextField(uiState.oldPassword, { viewModel.updateOldPassword(it)},
+            WhiteRoundedTextField(uiState.oldPassword, onUpdateOldPassword,
                 stringResource(R.string.profile_oldpassword) )
-            WhiteRoundedTextField(uiState.newPassword, { viewModel.updateNewPassword(it)},
+            WhiteRoundedTextField(uiState.newPassword, onUpdateNewPassword,
                 stringResource(R.string.profile_newpassword) )
-            WhiteRoundedTextField(uiState.confirmPassword, { viewModel.updateConfirmPassword(it)},
+            WhiteRoundedTextField(uiState.confirmPassword, onUpdateConfirmPassword,
                 stringResource(R.string.profile_confirmpassword) )
 
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically){
-                BlueRoundedButton({ viewModel.changePassword() }, stringResource(R.string.profile_save))
+                BlueRoundedButton(onSave, stringResource(R.string.profile_save))
             }
         }
     }

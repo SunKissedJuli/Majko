@@ -64,7 +64,7 @@ fun ArchiveScreen(navController: NavHostController){
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.1f)
+                        .height(65.dp)
                         .padding(all = 10.dp)
                         .clip(RoundedCornerShape(30.dp))
                         .background(color = MaterialTheme.colors.primary),
@@ -159,7 +159,7 @@ private fun LongTapPanel(onRemovingFromArchive: ()-> Unit, onRemoving: ()-> Unit
     Row(
         Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.1f)
+            .height(65.dp)
             .background(color = MaterialTheme.colors.primaryVariant),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
 

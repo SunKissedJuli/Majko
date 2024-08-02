@@ -25,6 +25,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import com.coolgirl.majko.R
+import com.coolgirl.majko.data.dataUi.User.toUi
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -60,7 +61,7 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
                     .collect() { response ->
                         when (response) {
                             is ApiSuccess -> {
-                                _uiState.update { it.copy(currentUser = response.data) }
+                                _uiState.update { it.copy(currentUser = response.data.toUi()) }
                                 isMessage(R.string.message_success)
                             }
                             is ApiError -> {
@@ -98,7 +99,7 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
             majkoRepository.updateUserEmail(UserUpdateEmail(uiState.value.userName, uiState.value.userEmail)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        _uiState.update { it.copy(currentUser = response.data) }
+                        _uiState.update { it.copy(currentUser = response.data.toUi()) }
                         isMessage(R.string.message_success)
                     }
                     is ApiError -> {
@@ -139,7 +140,7 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
                     is ApiSuccess ->{
                         updateUserEmail(response.data?.email.toString())
                         updateUserName(response.data?.name.toString())
-                        _uiState.update { it.copy(currentUser = response.data) }
+                        _uiState.update { it.copy(currentUser = response.data.toUi()) }
                 }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

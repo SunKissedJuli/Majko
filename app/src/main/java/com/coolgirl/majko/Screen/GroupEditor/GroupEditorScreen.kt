@@ -64,11 +64,11 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
     var expanded by remember { mutableStateOf(false) }
 
     if(uiState.isInvite){
-        SetInviteWindow(uiState, viewModel, { viewModel.newInvite()})
+        SetInviteWindow(uiState, viewModel::newInvite)
     }
 
     if(uiState.isMembers){
-        SetMembersWindow(uiState, { viewModel.showMembers()})
+        SetMembersWindow(uiState, viewModel::showMembers)
     }
 
     Scaffold(
@@ -76,12 +76,11 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.08f)
+                    .height(60.dp)
                     .background(MaterialTheme.colors.primary)
                     .padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+                horizontalArrangement = Arrangement.SpaceBetween) {
 
                 ButtonBack({viewModel.saveGroup(navController)})
 
@@ -98,19 +97,22 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                         if (!uiState.members.isNullOrEmpty()) {
                             Row(Modifier
                                     .fillMaxWidth()
-                                    .clickable { viewModel.showMembers() }) {
+                                    .clickable { viewModel.showMembers()
+                                        expanded = false}) {
                                 Text(stringResource(R.string.projectedit_showmembers), fontSize = 18.sp,
                                     modifier = Modifier.padding(all = 10.dp))
                             }
                         }
                         Row(Modifier
                                 .fillMaxWidth()
-                                .clickable { viewModel.removeGroup(navController) }) {
+                                .clickable { viewModel.removeGroup(navController)
+                                    expanded = false}) {
                             Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                         }
                         Row(Modifier
                                 .fillMaxWidth()
-                                .clickable { viewModel.createInvite() }) {
+                                .clickable { viewModel.createInvite()
+                                    expanded = false}) {
                             Text(stringResource(R.string.project_createinvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                         }
                     }
@@ -126,8 +128,7 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 .padding(it)) {
 
             Column(Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.25f)) {
+                    .fillMaxWidth()) {
                 uiState.groupData?.let {
                     BasicTextField(
                         value = it.title,
@@ -279,7 +280,7 @@ private fun SetMembersWindow(uiState: GroupEditorUiState, onDismissRequest: () -
 }
 
 @Composable
-private fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditorViewModel, onDismissRequest: () -> Unit){
+private fun SetInviteWindow(uiState: GroupEditorUiState, onDismissRequest: () -> Unit){
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -289,12 +290,12 @@ private fun SetInviteWindow(uiState: GroupEditorUiState, viewModel : GroupEditor
                 .background(MaterialTheme.colors.secondary)) {
 
             WhiteRoundedTextField(uiState.invite, { },
-                stringResource(R.string.invite), Modifier.padding(bottom = 20.dp), enabled = true)
+                stringResource(R.string.invite), Modifier.padding(bottom = 20.dp))
 
             Row(Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically){
-                BlueRoundedButton({ viewModel.newInvite() }, stringResource(R.string.projectedit_close),
+                BlueRoundedButton(onDismissRequest, stringResource(R.string.projectedit_close),
                     modifier = Modifier.padding(bottom = 15.dp))
             }
 
