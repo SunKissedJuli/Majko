@@ -7,5 +7,7 @@ data class MessageDataUi(
 )
 
 fun MessageData.toUi() : MessageDataUi{
-    return MessageDataUi(message = message.orEmpty())
+    return MessageDataUi(
+        message = this.message.orEmpty()
+    )
 }

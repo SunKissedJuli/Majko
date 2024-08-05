@@ -38,8 +38,6 @@ fun ArchiveScreen(navController: NavHostController){
     val uiState by viewModel.uiState.collectAsState()
     val uiStateCard by viewModel.uiStateCard.collectAsState()
 
-    var expandedFilter by remember { mutableStateOf(false) }
-
     //снекбары
     Box(Modifier.fillMaxSize()) {
         if(uiState.isError){
@@ -73,13 +71,13 @@ fun ArchiveScreen(navController: NavHostController){
                     SearchBox(uiState.searchString, { viewModel.updateSearchString(it, 2) }, R.string.project_search)
                     Column {
                         Row {
-                            IconButton(onClick = { expandedFilter = !expandedFilter }, Modifier.size(27.dp)) {
+                            IconButton(onClick = { viewModel.updateExpandedFilter() }, Modifier.size(27.dp)) {
                                 Icon(painter = painterResource(R.drawable.icon_filter),
                                     contentDescription = "", tint = MaterialTheme.colors.background)
                             }
 
                         }
-                        FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
+                        FilterDropdown(expanded = uiState.expandedFilter, onDismissRequest = { viewModel.updateExpandedFilter() },
                             R.string.filter_project_group, { viewModel.updateSearchString(uiState.searchString, it) },
                             R.string.filter_group_personal, R.string.filter_all,)
                     }

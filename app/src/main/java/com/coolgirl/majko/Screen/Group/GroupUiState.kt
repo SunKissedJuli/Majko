@@ -21,4 +21,7 @@ data class GroupUiState(
     val message: Int? = null,
     val isLongtap: Boolean = false,
     val longtapGroupId: String = "",
+    val expandedFilter: Boolean = false,
+    val expanded: Boolean = false,
+    val expandedLongTap: Boolean = false,
 )

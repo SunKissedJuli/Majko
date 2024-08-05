@@ -1,6 +1,7 @@
 package com.coolgirl.majko.Screen.TaskEditor
 
 import android.util.Log
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.components.SpinnerItems
@@ -49,6 +50,24 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
 
     fun updateNoteText(note:String){
         _uiState.update { it.copy(noteText = note) }
+    }
+
+    fun updateExpanded(){
+        if(uiState.value.expanded){
+            _uiState.update { it.copy(expanded = false)}
+        }else{
+            _uiState.update { it.copy(expanded = true)}
+        }
+    }
+
+    fun updateExitDialog(){
+        if(uiState.value.exitDialog){
+            _uiState.update { it.copy(exitDialog = false) }
+        }
+        else{
+            _uiState.update { it.copy(exitDialog = true) }
+        }
+
     }
 
     fun updateSubtaskText(text: String) {
@@ -100,8 +119,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         if(!uiState.value.newNote){
             _uiState.update { it.copy(newNote = true) }
         }else{
-            _uiState.update { it.copy(newNote = false) }
-            _uiState.update { it.copy(noteText = "") }
+            _uiState.update { it.copy(newNote = false, noteText = "") }
         }
 
     }
@@ -129,16 +147,12 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         }
         return list
     }
-
-    fun getStatusName(statusId: Int) : String{
-        if(!uiState.value.statuses.isNullOrEmpty()){
-            for(item in uiState.value.statuses!!){
-                if(item.id==statusId){
-                    return item.name
-                }
-            }
+    fun getStatusName(statusId: Int): String {
+        return if (!uiState.value.statuses.isNullOrEmpty()) {
+            uiState.value.statuses.find { it.id == statusId }?.name ?:  R.string.common_no.toString()
+        } else {
+            R.string.common_no.toString()
         }
-        return R.string.common_no.toString()
     }
 
     fun getPriority(priorityId: Int): Int {
@@ -149,17 +163,6 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
             4 -> R.color.red
             else -> R.color.white
         }
-    }
-
-    fun getStatus(statusId: Int): String{
-        if(!uiState.value.statuses.isNullOrEmpty()){
-            for(item in uiState.value.statuses!!){
-                if(item.id==statusId){
-                    return item.name
-                }
-            }
-        }
-        return R.string.common_no.toString()
     }
 
     fun getPriorityName(priorityId: Int) : String{
@@ -265,8 +268,6 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     }
 
     fun loadData(taskId: String) {
-        loadStatuses()
-        loadPriorities()
 
         _uiState.update { it.copy(taskId = taskId) }
 
@@ -275,28 +276,24 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
                 majkoRepository.getTaskById(TaskById(uiState.value.taskId)).collect() { response ->
                     when(response){
                         is ApiSuccess ->{
-                            _uiState.update { it.copy(taskId = taskId) }
-                            _uiState.update { it.copy(taskDeadline = response.data!!.deadline) }
-                            if(response.data?.project !=null){
-                                _uiState.update { it.copy(taskProject = response.data!!.project!!.id) }
-                            }
-                            updateTaskPriority(response.data!!.priority!!.toString())
-                            _uiState.update { it.copy(taskName = response.data!!.title!!) }
-                            _uiState.update { it.copy(taskText = response.data!!.text!!) }
-                            _uiState.update { it.copy(taskStatus = response.data!!.status!!) }
-                            _uiState.update { it.copy(taskPriority = response.data!!.priority!!) }
-                            _uiState.update { it.copy(taskPriorityName = getPriorityName(response.data!!.priority!!)) }
-                            _uiState.update { it.copy(taskStatusName = getStatusName(response.data!!.status!!)) }
-                            if(response.data!!.project!=null){
-                                _uiState.update { it.copy(taskProjectObj = response.data!!.project!!) }
-                            }
 
-                            if(response.data!!.countNotes!=0){
-                                loadNotesData()
-                            }
-                            if(response.data!!.countSubtasks!=0){
-                                loadSubtaskData()
-                            }
+                            updateTaskPriority(response.data!!.priority.toString())
+                            if(response.data!!.countNotes!=0){ loadNotesData() }
+                            if(response.data!!.countSubtasks!=0){ loadSubtaskData() }
+
+                            _uiState.update { it.copy(
+                                taskId = taskId,
+                                taskDeadline = response.data!!.deadline,
+                                taskName = response.data!!.title!!,
+                                taskText = response.data!!.text!!,
+                                taskStatus = response.data!!.status,
+                                taskPriority = response.data!!.priority,
+                                taskProjectObj = response.data!!.project,
+                                taskProject = response.data!!.project?.id
+                                ) }
+
+                            loadStatuses()
+                            loadPriorities()
                         }
                         is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                         is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
@@ -312,7 +309,8 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoInfoRepository.getStatuses().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        _uiState.update { it.copy(statuses = response.data!!) }
+                        _uiState.update { it.copy(statuses = response.data!!)}
+                        _uiState.update { it.copy(taskStatusName = getStatusName(uiState.value.taskStatus)) }
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
@@ -326,7 +324,8 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoInfoRepository.getPriorities().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        _uiState.update { it.copy(proprieties = response.data!!) }
+                        _uiState.update { it.copy(proprieties = response.data!!)}
+                        _uiState.update {it.copy(taskPriorityName = getPriorityName(uiState.value.taskPriority)) }
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

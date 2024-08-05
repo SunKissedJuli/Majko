@@ -64,12 +64,8 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
                                 _uiState.update { it.copy(currentUser = response.data.toUi()) }
                                 isMessage(R.string.message_success)
                             }
-                            is ApiError -> {
-                                Log.d("TAG", "error message = " + response.message)
-                            }
-                            is ApiExeption -> {
-                                Log.d("TAG", "exeption e = " + response.e)
-                            }
+                            is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                            is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                         }
                     }
             }
@@ -80,8 +76,7 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
         if(uiState.value.isError){
             _uiState.update { it.copy(isError = false)}
         }else{
-            _uiState.update { it.copy(errorMessage = message)}
-            _uiState.update { it.copy(isError = true)}
+            _uiState.update { it.copy(errorMessage = message, isError = true)}
         }
     }
 
@@ -89,8 +84,7 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
         if(uiState.value.isMessage){
             _uiState.update { it.copy(isMessage = false)}
         }else{
-            _uiState.update { it.copy(message = message)}
-            _uiState.update { it.copy(isMessage = true)}
+            _uiState.update { it.copy(message = message, isMessage = true )}
         }
     }
 
@@ -140,7 +134,7 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
                     is ApiSuccess ->{
                         updateUserEmail(response.data?.email.toString())
                         updateUserName(response.data?.name.toString())
-                        _uiState.update { it.copy(currentUser = response.data.toUi()) }
+                        _uiState.update { it.copy(currentUser = response.data) }
                 }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

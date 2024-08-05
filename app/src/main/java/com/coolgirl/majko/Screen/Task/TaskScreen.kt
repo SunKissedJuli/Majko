@@ -37,7 +37,6 @@ fun TaskScreen(navController: NavHostController) {
         }
     }
     val uiState by viewModel.uiState.collectAsState()
-    var expandedFilter by remember { mutableStateOf(false) }
 
     //снекбары
     Box(Modifier.fillMaxSize()) {
@@ -58,7 +57,7 @@ fun TaskScreen(navController: NavHostController) {
 
             //панель при длинном нажатии
             if (uiState.isLongtap) {
-                LongTapPanel({ viewModel.updateStatus() }, { viewModel.removeTask() })
+                LongTapPanel(viewModel::updateStatus, viewModel::removeTask, uiState, viewModel::updateExpandedLongTap )
             } else {
 
                 Row(
@@ -75,13 +74,13 @@ fun TaskScreen(navController: NavHostController) {
 
                     Column {
                         Row {
-                            IconButton(onClick = { expandedFilter = !expandedFilter  }, Modifier.size(27.dp)) {
+                            IconButton(onClick = { viewModel.updateExpandedFilter() }, Modifier.size(27.dp)) {
                                 Icon(painter = painterResource(R.drawable.icon_filter),
                                     contentDescription = "", tint = MaterialTheme.colors.background)
                             }
 
                         }
-                        FilterDropdown(expanded = expandedFilter, onDismissRequest = { expandedFilter = it },
+                        FilterDropdown(expanded = uiState.expandedFilter, onDismissRequest = {  viewModel.updateExpandedFilter() },
                             R.string.filter_task_fav, { viewModel.updateSearchString(uiState.searchString, it) },
                             R.string.filter_task_each, R.string.filter_all)
                     }
@@ -215,8 +214,8 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
 }
 
 @Composable
-private fun LongTapPanel(onUpdateStatus: ()-> Unit, onRemoveTask: ()-> Unit){
-    var expanded by remember { mutableStateOf(false) }
+private fun LongTapPanel(onUpdateStatus: ()-> Unit, onRemoveTask: ()-> Unit,
+                         uiState: TaskUiState, onExpandedLongTap: ()->Unit){
     Row(
         Modifier
             .fillMaxWidth()
@@ -226,20 +225,20 @@ private fun LongTapPanel(onUpdateStatus: ()-> Unit, onRemoveTask: ()-> Unit){
 
 
         Box(Modifier.padding(all = 10.dp)) {
-            IconButton(onClick = {expanded = true  }) {
+            IconButton(onClick = {onExpandedLongTap() }) {
                 Icon(painter = painterResource(R.drawable.icon_menu),
                     contentDescription = "", tint = MaterialTheme.colors.background)
             }
             DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
+                expanded = uiState.expandedLongTap,
+                onDismissRequest = { onExpandedLongTap() },
                 modifier = Modifier.fillMaxWidth(0.5f)) {
                 Row(
                     Modifier
                         .fillMaxWidth()
                         .clickable {
-                            onUpdateStatus
-                            expanded = false
+                            onUpdateStatus()
+                            onExpandedLongTap()
                         }) {
                     androidx.compose.material3.Text(
                         stringResource(R.string.task_updatestatus),
@@ -251,8 +250,8 @@ private fun LongTapPanel(onUpdateStatus: ()-> Unit, onRemoveTask: ()-> Unit){
                     Modifier
                         .fillMaxWidth()
                         .clickable {
-                            onRemoveTask
-                            expanded = false
+                            onRemoveTask()
+                            onExpandedLongTap()
                         }) {
                     androidx.compose.material3.Text(
                         stringResource(R.string.project_delite),

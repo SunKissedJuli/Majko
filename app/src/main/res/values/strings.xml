@@ -59,7 +59,7 @@
     <string name="common_noname">Без названия</string>
     <string name="common_nonote">Без записей</string>
     <string name="common_nodescription">Без описания</string>
-    <string name="common_no">нет</string>
+    <string name="common_no">Нет</string>
     <string name="bottomBar_project">Проекты</string>
     <string name="bottomBar_group">Группы</string>
     <string name="bottomBar_archive">Готовое</string>
@@ -88,5 +88,8 @@
     <string name="message_remove_group">Группы успешно удалены</string>
     <string name="message_ok">ОК</string>
     <string name="common_cansel">Отмена</string>
+    <string name="common_yes">Да</string>
     <string name="invite">Введите инвайт</string>
+    <string name="common_exit_text">Вы хотите сохранить изменения?</string>
+    <string name="common_exit_title">Подтверждение выхода</string>
 </resources>

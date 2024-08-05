@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
@@ -42,8 +43,6 @@ fun GroupScreen(navController: NavHostController) {
     }
 
     val uiState by viewModel.uiState.collectAsState()
-    var expanded by remember { mutableStateOf(false) }
-    var expandedFilter by remember { mutableStateOf(false) }
 
     //экран добавления группы
     if(uiState.isAdding){
@@ -75,14 +74,15 @@ fun GroupScreen(navController: NavHostController) {
 
             //панель при длинном нажатии
             if (uiState.isLongtap) {
-                LongTapPanel({ viewModel.removeGroup() })
+                LongTapPanel( viewModel::removeGroup, uiState, viewModel::updateExpandedLongTap)
             } else {
-                Row(Modifier
-                    .fillMaxWidth()
-                    .height(65.dp)
-                    .padding(all = 10.dp)
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(color = MaterialTheme.colors.primary),
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(65.dp)
+                        .padding(all = 10.dp)
+                        .clip(RoundedCornerShape(30.dp))
+                        .background(color = MaterialTheme.colors.primary),
                     verticalAlignment = Alignment.CenterVertically) {
 
                     SearchBox(value = uiState.searchString, onValueChange = { viewModel.updateSearchString(it, 2) },
@@ -90,13 +90,13 @@ fun GroupScreen(navController: NavHostController) {
 
                     Column {
                         Row {
-                            IconButton(onClick = { expandedFilter = !expandedFilter }, Modifier.size(27.dp)) {
+                            IconButton(onClick = { viewModel.updateExpandedFilter() }, Modifier.size(27.dp)) {
                                 Icon(painter = painterResource(R.drawable.icon_filter),
                                     contentDescription = "", tint = MaterialTheme.colors.background)
                             }
                         }
-                        FilterDropdown(expanded = expandedFilter,
-                            onDismissRequest = { expandedFilter = it }, R.string.filter_group_group,
+                        FilterDropdown(expanded = uiState.expandedFilter,
+                            onDismissRequest = { viewModel.updateExpandedFilter() }, R.string.filter_group_group,
                             { viewModel.updateSearchString(uiState.searchString, it) }, R.string.filter_group_personal, R.string.filter_all)
                     }
 
@@ -108,17 +108,20 @@ fun GroupScreen(navController: NavHostController) {
                     }
 
                     Box(Modifier.padding(end = 10.dp)) {
-                        IconButton(onClick = {expanded = true  }) {
+                        IconButton(onClick = { viewModel.updateExpanded()} ) {
                             Icon(painter = painterResource(R.drawable.icon_menu),
                                 contentDescription = "", tint = MaterialTheme.colors.background)
                         }
-                        DropdownMenu(expanded = expanded,
-                            onDismissRequest = { expanded = false },
+                        DropdownMenu(expanded = uiState.expanded,
+                            onDismissRequest = { viewModel.updateExpanded() },
                             modifier = Modifier.fillMaxWidth(0.5f)) {
-                            Row(Modifier
+                            Row(
+                                Modifier
                                     .fillMaxWidth()
-                                    .clickable { viewModel.openInviteWindow()
-                                    expanded = false}) {
+                                    .clickable {
+                                        viewModel.updateExpanded()
+                                        viewModel.openInviteWindow()
+                                    }) {
                                 Text(stringResource(R.string.project_joininvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                             }
                         }
@@ -205,7 +208,10 @@ private fun AddGroup(uiState: GroupUiState,  onUpdateName: (String) -> Unit,
                 stringResource(R.string.group_name) )
 
             WhiteRoundedTextField(uiState.newGroupDescription, onUpdateText,
-                stringResource(R.string.group_description), Modifier.fillMaxHeight(0.75f).padding(bottom = 20.dp))
+                stringResource(R.string.group_description),
+                Modifier
+                    .fillMaxHeight(0.75f)
+                    .padding(bottom = 20.dp))
 
             Row(Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center){
@@ -230,7 +236,8 @@ private fun JoinByInviteWindow(uiState: GroupUiState, onUpdateInvite: (String)->
             WhiteRoundedTextField(uiState.invite, onUpdateInvite,
                 stringResource(R.string.invite), Modifier.padding(bottom = 20.dp))
 
-            Row(Modifier
+            Row(
+                Modifier
                     .fillMaxWidth()
                     .padding(all = 10.dp),
                 horizontalArrangement = Arrangement.Center,
@@ -248,8 +255,7 @@ private fun JoinByInviteWindow(uiState: GroupUiState, onUpdateInvite: (String)->
 }
 
 @Composable
-fun LongTapPanel(onRemoving: ()-> Unit){
-    var expandedLongPanel by remember { mutableStateOf(false) }
+fun LongTapPanel(onRemoving: ()-> Unit, uiState: GroupUiState, onUpdateExpandedLongTap:()->Unit){
     Row(
         Modifier
             .fillMaxWidth()
@@ -259,20 +265,19 @@ fun LongTapPanel(onRemoving: ()-> Unit){
 
 
         Box(Modifier.padding(all = 10.dp)) {
-            IconButton(onClick = {expandedLongPanel = true  }) {
+            IconButton(onClick = onUpdateExpandedLongTap ) {
                 Icon(painter = painterResource(R.drawable.icon_menu),
                     contentDescription = "", tint = MaterialTheme.colors.background)
             }
             DropdownMenu(
-                expanded = expandedLongPanel,
-                onDismissRequest = { expandedLongPanel = false },
+                expanded = uiState.expandedLongTap,
+                onDismissRequest = onUpdateExpandedLongTap,
                 modifier = Modifier.fillMaxWidth(0.5f)) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            onRemoving
-                            expandedLongPanel = false
+                        .clickable { onRemoving()
+                            onUpdateExpandedLongTap()
                         }) {
                     Text(
                         stringResource(R.string.project_delite),

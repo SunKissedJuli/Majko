@@ -13,5 +13,6 @@ data class ArchiveUiState(
     val isError: Boolean = false,
     val errorMessage: Int? = null,
     val isMessage: Boolean = false,
-    val message: Int? = null
+    val message: Int? = null,
+    val expandedFilter: Boolean = false
 )

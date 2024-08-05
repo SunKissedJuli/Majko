@@ -1,5 +1,7 @@
 package com.coolgirl.majko.Screen.TaskEditor
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -12,6 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -20,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
@@ -38,14 +44,23 @@ fun TaskEditorScreen(navController: NavHostController, taskId : String){
     }
 
     val uiState by viewModel.uiState.collectAsState()
+
+    BackHandler { viewModel.updateExitDialog() }
+
+    if (uiState.exitDialog) {
+        ExitAlertDialog(
+            onConfirm = { viewModel.updateExitDialog()
+                viewModel.saveTask(navController) },
+            onDismiss = { viewModel.updateExitDialog()
+                navController.popBackStack()})
+    }
+
     SetTaskEditorScreen(uiState, {viewModel.updateTaskText(it)},
         { viewModel.updateTaskName(it) }, viewModel, navController)
 }
 
 @Composable
 fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -> Unit, onUpdateTaskName:(String) -> Unit, viewModel: TaskEditorViewModel, navController: NavHostController) {
-    var expanded by remember { mutableStateOf(false) }
-
     //добавление субтаска
     if(uiState.isAdding){
         AddNewTask(uiState, viewModel, {viewModel.addingTask()})
@@ -64,21 +79,23 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 ButtonBack({viewModel.saveTask(navController)})
 
                 Box {
-                    IconButton(onClick = { expanded = true }) {
+                    IconButton(onClick = { viewModel.updateExpanded() }) {
                         Icon(
                             painter = painterResource(R.drawable.icon_menu),
                             contentDescription = "", tint = MaterialTheme.colors.background
                         )
                     }
                     DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
+                        expanded = uiState.expanded,
+                        onDismissRequest = { viewModel.updateExpanded() },
                         modifier = Modifier.fillMaxWidth(0.5f)) {
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .clickable { viewModel.removeTask(navController)
-                                    expanded = false}){
+                                .clickable {
+                                    viewModel.removeTask(navController)
+                                    viewModel.updateExpanded()
+                                }){
                             Text(stringResource(R.string.project_delite), fontSize=18.sp, color = MaterialTheme.colors.onSecondary,
                                 modifier = Modifier.padding(all = 10.dp))
                         }
@@ -125,7 +142,8 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
             if(!uiState.taskId.equals("0")){
                 Column(verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start) {
                     Column(Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp)) {
-                        Row(Modifier
+                        Row(
+                            Modifier
                                 .fillMaxHeight()
                                 .clickable { viewModel.addNewNote() },
                             verticalAlignment = Alignment.CenterVertically) {
@@ -189,7 +207,8 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                             items(count) { rowIndex ->
                                 Column(Modifier.width(200.dp)) {
                                     TaskCard(navController, viewModel.getPriority(subtask[rowIndex].priority),
-                                        viewModel.getStatus(subtask[rowIndex].status), subtask[rowIndex])
+                                        viewModel.getStatusName(subtask[rowIndex].status)?: stringResource(R.string.common_no),
+                                        subtask[rowIndex])
                                 }
                             }
                         }
@@ -227,7 +246,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                         onUpdateDeadline = { newDate -> viewModel.updateTaskDeadlie(newDate) })
 
                     HorizontalLine()
-                    if(uiState.taskPriorityName!=""||uiState.taskId=="0"){
+                    if(uiState.taskPriorityName.isNotEmpty()||uiState.taskId=="0"){
                         SpinnerSample(name = stringResource(R.string.taskeditor_priority),
                             items = viewModel.getPriority(),
                             selectedItem = uiState.taskPriorityName,
@@ -237,7 +256,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     HorizontalLine()
                     Text(text= stringResource(R.string.taskeditor_project) + (" ") + (uiState.taskProjectObj?.name ?: stringResource(R.string.common_no)), fontSize = 18.sp)
                     HorizontalLine()
-                    if(uiState.taskStatusName!=""||uiState.taskId=="0"){
+                    if(uiState.taskStatusName.isNotEmpty()||uiState.taskId=="0"){
                         SpinnerSample(
                             name = stringResource(R.string.taskeditor_status),
                             items = viewModel.getStatus(),
@@ -323,12 +342,12 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
 
                         DeadlineDatePicker(
                             currentDeadline = uiState.subtaskDeadline,
-                            onUpdateDeadline = { newDate -> viewModel.updateTaskDeadlie(newDate) })
+                            onUpdateDeadline = { newDate -> viewModel.updateSubtaskDeadlie(newDate) })
                         HorizontalLine()
 
                             SpinnerSample(name = stringResource(R.string.taskeditor_priority),
                                 items = viewModel.getPriority(),
-                                selectedItem = viewModel.getPriorityName(uiState.subtaskPriority),
+                                selectedItem = viewModel.getPriorityName(uiState.subtaskPriority)?: stringResource(R.string.common_no),
                                 { viewModel.updateSubtaskPriority(it) })
                         HorizontalLine()
 
@@ -341,7 +360,7 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         SpinnerSample(
                             name = stringResource(R.string.taskeditor_status),
                             items = viewModel.getStatus(),
-                            selectedItem = viewModel.getStatusName(uiState.subtaskStatus),
+                            selectedItem = viewModel.getStatusName(uiState.subtaskStatus)?: stringResource(R.string.common_no),
                             { viewModel.updateSubtaskStatus(it) })
                         HorizontalLine()
                     }

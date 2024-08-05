@@ -11,11 +11,11 @@ data class InfoUi(
     val updatedAt: String,
 )
 
-/*fun Info.toUi() : InfoUi{
+fun Info.toUi() : InfoUi{
     return InfoUi(
-        id = this.id.,
+        id = this.id?: 0,
         name = this.name.orEmpty(),
         createdAt = this.createdAt.orEmpty(),
         updatedAt = this.updatedAt.orEmpty()
     )
-}*/
+}

@@ -1,5 +1,6 @@
 package com.coolgirl.majko.Sc
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import com.coolgirl.majko.Screen.GroupEditor.GroupEditorUiState
 import com.coolgirl.majko.Screen.GroupEditor.GroupEditorViewModel
@@ -32,10 +33,7 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditUiState
 import com.coolgirl.majko.Screen.ProjectEdit.ProjectEditViewModel
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorViewModel
-import com.coolgirl.majko.components.BlueRoundedButton
-import com.coolgirl.majko.components.ButtonBack
-import com.coolgirl.majko.components.ProjectCard
-import com.coolgirl.majko.components.WhiteRoundedTextField
+import com.coolgirl.majko.components.*
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getKoin
@@ -56,13 +54,22 @@ fun GroupEditorScreen(navController: NavHostController, groupId: String){
     }
 
     val uiState by viewModel.uiState.collectAsState()
+
+    BackHandler { viewModel.updateExitDialog() }
+
+    if (uiState.exitDialog) {
+        ExitAlertDialog(
+            onConfirm = { viewModel.updateExitDialog()
+                viewModel.saveGroup(navController) },
+            onDismiss = { viewModel.updateExitDialog()
+                navController.popBackStack()})
+    }
+
     SetGroupEditorScreen(uiState, viewModel, navController)
 }
 
 @Composable
 fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorViewModel, navController: NavHostController){
-    var expanded by remember { mutableStateOf(false) }
-
     if(uiState.isInvite){
         SetInviteWindow(uiState, viewModel::newInvite)
     }
@@ -85,20 +92,20 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 ButtonBack({viewModel.saveGroup(navController)})
 
                 Box() {
-                    IconButton(onClick = {expanded = true  }) {
+                    IconButton(onClick = {viewModel.updateExpanded() }) {
                         Icon(painter = painterResource(R.drawable.icon_menu),
                             contentDescription = "", tint = MaterialTheme.colors.background)
                     }
                     DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
+                        expanded = uiState.expanded,
+                        onDismissRequest = { viewModel.updateExpanded() },
                         modifier = Modifier.fillMaxWidth(0.5f)) {
 
                         if (!uiState.members.isNullOrEmpty()) {
                             Row(Modifier
                                     .fillMaxWidth()
                                     .clickable { viewModel.showMembers()
-                                        expanded = false}) {
+                                        viewModel.updateExpanded()}) {
                                 Text(stringResource(R.string.projectedit_showmembers), fontSize = 18.sp,
                                     modifier = Modifier.padding(all = 10.dp))
                             }
@@ -106,13 +113,13 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                         Row(Modifier
                                 .fillMaxWidth()
                                 .clickable { viewModel.removeGroup(navController)
-                                    expanded = false}) {
+                                    viewModel.updateExpanded()}) {
                             Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                         }
                         Row(Modifier
                                 .fillMaxWidth()
                                 .clickable { viewModel.createInvite()
-                                    expanded = false}) {
+                                    viewModel.updateExpanded()}) {
                             Text(stringResource(R.string.project_createinvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                         }
                     }

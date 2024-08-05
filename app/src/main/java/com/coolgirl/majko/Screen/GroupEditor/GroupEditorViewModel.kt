@@ -30,6 +30,16 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
         }
     }
 
+    fun updateExitDialog(){
+        if(uiState.value.exitDialog){
+            _uiState.update { it.copy(exitDialog = false) }
+        }
+        else{
+            _uiState.update { it.copy(exitDialog = true) }
+        }
+
+    }
+
     fun addingProject(){
         if(uiState.value.isAdding){
             _uiState.update { it.copy(isAdding = false) }
@@ -52,6 +62,15 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
             _uiState.update { it.copy(isMembers = false) }
         }else{
             _uiState.update { it.copy(isMembers = true) }
+        }
+    }
+
+
+    fun updateExpanded(){
+        if(uiState.value.expanded){
+            _uiState.update { it.copy(expanded = false)}
+        }else{
+            _uiState.update { it.copy(expanded = true)}
         }
     }
 

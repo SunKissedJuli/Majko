@@ -3,6 +3,7 @@ package com.coolgirl.majko.Screen.ProjectEdit
 import android.app.DatePickerDialog
 import com.coolgirl.majko.R
 import android.widget.DatePicker
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -51,14 +52,22 @@ fun ProjectEditScreen(navController: NavHostController, projectId : String){
     }
 
     val uiState by viewModel.uiState.collectAsState()
+
+    BackHandler { viewModel.updateExitDialog() }
+
+    if (uiState.exitDialog) {
+        ExitAlertDialog(
+            onConfirm = { viewModel.updateExitDialog()
+                viewModel.saveProject(navController) },
+            onDismiss = { viewModel.updateExitDialog()
+                navController.popBackStack()})
+    }
+
     SetProjectEditScreen(uiState, viewModel, navController)
 }
 
 @Composable
 fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel, navController: NavHostController) {
-    var expanded by remember { mutableStateOf(false) }
-
-
     if(uiState.isMembers){
         SetMembersWindow(uiState, viewModel::showMembers)
     }
@@ -85,13 +94,13 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                ButtonBack({viewModel.saveProject(navController)})
 
                Box {
-                   IconButton(onClick = {expanded = true  }) {
+                   IconButton(onClick = {viewModel.updateExpanded() }) {
                        Icon(painter = painterResource(R.drawable.icon_menu),
                            contentDescription = "", tint = MaterialTheme.colors.background)
                    }
                    DropdownMenu(
-                       expanded = expanded,
-                       onDismissRequest = { expanded = false },
+                       expanded = uiState.expanded,
+                       onDismissRequest = { viewModel.updateExpanded() },
                        modifier = Modifier.fillMaxWidth(0.5f)
                    ) {
                        if(!uiState.members.isNullOrEmpty()){
@@ -99,7 +108,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                                Modifier
                                    .fillMaxWidth()
                                    .clickable { viewModel.showMembers()
-                                       expanded = false}) {
+                                       viewModel.updateExpanded()}) {
                                Text(stringResource(R.string.projectedit_showmembers), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                            }
                        }
@@ -107,14 +116,14 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                            Modifier
                                .fillMaxWidth()
                                .clickable { viewModel.removeProject(navController)
-                                   expanded = false}) {
+                                   viewModel.updateExpanded()}) {
                            Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                        }
                        Row(
                            Modifier
                                .fillMaxWidth()
                                .clickable { viewModel.createInvite()
-                                   expanded = false}) {
+                                   viewModel.updateExpanded()}) {
                            Text(stringResource(R.string.project_createinvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                        }
                    }

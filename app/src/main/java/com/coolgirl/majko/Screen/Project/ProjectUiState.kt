@@ -19,5 +19,8 @@ data class ProjectUiState(
     val isError: Boolean = false,
     val errorMessage: Int? = null,
     val isMessage: Boolean = false,
-    val message: Int? = null
+    val message: Int? = null,
+    val expandedFilter: Boolean = false,
+    val expanded: Boolean = false,
+    val expandedLongTap: Boolean = false
 )

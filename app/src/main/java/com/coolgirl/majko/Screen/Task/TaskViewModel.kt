@@ -96,8 +96,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         if (uiState.value.isError) {
             _uiState.update { it.copy(isError = false) }
         } else {
-            _uiState.update { it.copy(errorMessage = message) }
-            _uiState.update { it.copy(isError = true) }
+            _uiState.update { it.copy(errorMessage = message, isError = true ) }
         }
     }
 
@@ -105,8 +104,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         if (uiState.value.isMessage) {
             _uiState.update { it.copy(isMessage = false) }
         } else {
-            _uiState.update { it.copy(message = message) }
-            _uiState.update { it.copy(isMessage = true) }
+            _uiState.update { it.copy(message = message, isMessage = true) }
         }
     }
 
@@ -131,6 +129,22 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
         return R.string.common_no.toString()
     }
 
+    fun updateExpandedFilter(){
+        if(uiState.value.expandedFilter){
+            _uiState.update { it.copy(expandedFilter = false)}
+        }else{
+            _uiState.update { it.copy(expandedFilter = true)}
+        }
+    }
+
+    fun updateExpandedLongTap(){
+        if(uiState.value.expandedLongTap){
+            _uiState.update { it.copy(expandedLongTap = false)}
+        }else{
+            _uiState.update { it.copy(expandedLongTap = true)}
+        }
+    }
+
     fun loadData() {
         loadFavTask()
         loadEachTask()
@@ -142,8 +156,9 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoRepository.getAllFavorites().collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
-                        _uiState.update { it.copy(favoritesTaskList = response.data.sortedBy { it.status }) }
-                        _uiState.update { it.copy(searchFavoritesTaskList = response.data.sortedBy { it.status }) }
+                        _uiState.update { it.copy(
+                            favoritesTaskList = response.data.sortedBy { it.status },
+                            searchFavoritesTaskList = response.data.sortedBy { it.status }) }
                     }
                     is ApiError -> {
                         Log.d("TAG", "error message = " + response.message)
@@ -167,8 +182,9 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
                                 notFavorite.add(item)
                             }
                         }
-                        _uiState.update { it.copy(allTaskList = notFavorite.sortedBy { it.status }) }
-                        _uiState.update { it.copy(searchAllTaskList = notFavorite.sortedBy { it.status }) }
+                        _uiState.update { it.copy(
+                            allTaskList = notFavorite.sortedBy { it.status },
+                            searchAllTaskList = notFavorite.sortedBy { it.status }) }
                     }
                     is ApiError -> {
                         Log.d("TAG", "error message = " + response.message)

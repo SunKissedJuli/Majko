@@ -27,9 +27,7 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
     fun updateProjectName(name: String){
         _uiState.update { currentState ->
             currentState.projectData?.let { currentProjectData ->
-                currentState.copy(
-                    projectData = currentProjectData.copy(name = name)
-                )
+                currentState.copy(projectData = currentProjectData.copy(name = name))
             } ?: currentState
         }
     }
@@ -58,6 +56,16 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
                 )
             } ?: currentState
         }
+    }
+
+    fun updateExitDialog(){
+        if(uiState.value.exitDialog){
+            _uiState.update { it.copy(exitDialog = false) }
+        }
+        else{
+            _uiState.update { it.copy(exitDialog = true) }
+        }
+
     }
 
     fun updateTaskText(text: String) {
@@ -138,6 +146,14 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
             }
         }
         return R.string.common_no.toString()
+    }
+
+    fun updateExpanded(){
+        if(uiState.value.expanded){
+            _uiState.update { it.copy(expanded = false)}
+        }else{
+            _uiState.update { it.copy(expanded = true)}
+        }
     }
 
     fun loadData(projectId: String){
@@ -236,11 +252,12 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
                     is ApiSuccess ->{
                         addingTask()
                         loadData(uiState.value.projectId)
-                        _uiState.update { it.copy(taskDeadline = "") }
-                        _uiState.update { it.copy(taskName = "") }
-                        _uiState.update { it.copy(taskText = "") }
-                        _uiState.update { it.copy(taskPriority = 1) }
-                        _uiState.update { it.copy(taskStatus = 1) }
+                        _uiState.update { it.copy(
+                            taskDeadline = "",
+                            taskName = "",
+                            taskText = "",
+                            taskPriority = 1,
+                            taskStatus = 1) }
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

@@ -124,8 +124,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         if(uiState.value.isError){
             _uiState.update { it.copy(isError = false)}
         }else{
-            _uiState.update { it.copy(errorMessage = message)}
-            _uiState.update { it.copy(isError = true)}
+            _uiState.update { it.copy(errorMessage = message, isError = true)}
         }
     }
 
@@ -133,8 +132,31 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         if(uiState.value.isMessage){
             _uiState.update { it.copy(isMessage = false)}
         }else{
-            _uiState.update { it.copy(message = message)}
-            _uiState.update { it.copy(isMessage = true)}
+            _uiState.update { it.copy(message = message, isMessage = true)}
+        }
+    }
+
+    fun updateExpandedFilter(){
+        if(uiState.value.expandedFilter){
+            _uiState.update { it.copy(expandedFilter = false)}
+        }else{
+            _uiState.update { it.copy(expandedFilter = true)}
+        }
+    }
+
+    fun updateExpanded(){
+        if(uiState.value.expanded){
+            _uiState.update { it.copy(expanded = false)}
+        }else{
+            _uiState.update { it.copy(expanded = true)}
+        }
+    }
+
+    fun updateExpandedLongTap(){
+        if(uiState.value.expandedLongTap){
+            _uiState.update { it.copy(expandedLongTap = false)}
+        }else{
+            _uiState.update { it.copy(expandedLongTap = true)}
         }
     }
 
@@ -248,8 +270,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                                 validData.add(item)
                             }
                         }
-                        _uiState.update { it.copy(personalProject = validData)}
-                        _uiState.update { it.copy(searchPersonalProject = validData)}
+                        _uiState.update { it.copy(personalProject = validData, searchPersonalProject = validData)}
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
@@ -270,8 +291,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                                 validData.add(item)
                             }
                         }
-                        _uiState.update { it.copy(groupProject = validData) }
-                        _uiState.update { it.copy(searchGroupProject = validData) }
+                        _uiState.update { it.copy(groupProject = validData, searchGroupProject = validData) }
                     }
                     is ApiError -> {
                         Log.d("TAG", "error message = " + response.message)

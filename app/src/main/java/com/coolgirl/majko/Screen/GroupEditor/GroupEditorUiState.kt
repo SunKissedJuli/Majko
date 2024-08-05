@@ -14,4 +14,6 @@ data class GroupEditorUiState(
     val invite: String = "",
     val isMembers: Boolean = false,
     val members: List<GroupMember>? = listOf(),
+    val exitDialog: Boolean = false,
+    val expanded: Boolean = false,
 )

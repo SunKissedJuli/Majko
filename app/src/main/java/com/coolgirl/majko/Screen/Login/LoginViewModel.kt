@@ -44,8 +44,7 @@ class LoginViewModel(private val majkoRepository: MajkoUserRepository) : ViewMod
         if(uiState.value.isError){
             _uiState.update { it.copy(isError = false)}
         }else{
-            _uiState.update { it.copy(errorMessage = message)}
-            _uiState.update { it.copy(isError = true)}
+            _uiState.update { it.copy(errorMessage = message, isError = true)}
         }
     }
 

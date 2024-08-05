@@ -63,8 +63,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         if (uiState.value.isError) {
             _uiState.update { it.copy(isError = false) }
         } else {
-            _uiState.update { it.copy(errorMessage = message) }
-            _uiState.update { it.copy(isError = true) }
+            _uiState.update { it.copy(errorMessage = message, isError = true) }
         }
     }
 
@@ -72,8 +71,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         if (uiState.value.isMessage) {
             _uiState.update { it.copy(isMessage = false) }
         } else {
-            _uiState.update { it.copy(message = message) }
-            _uiState.update { it.copy(isMessage = true) }
+            _uiState.update { it.copy(message = message, isMessage = true ) }
         }
     }
 
@@ -116,6 +114,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         }
     }
 
+
     private fun updateAllGroup(newSearchString:String){
         _uiState.update { currentState ->
             val filteredPersonalGroup = currentState.personalGroup?.filter { task ->
@@ -136,6 +135,30 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
         }
     }
 
+    fun updateExpandedFilter(){
+        if(uiState.value.expandedFilter){
+            _uiState.update { it.copy(expandedFilter = false)}
+        }else{
+            _uiState.update { it.copy(expandedFilter = true)}
+        }
+    }
+
+    fun updateExpanded(){
+        if(uiState.value.expanded){
+            _uiState.update { it.copy(expanded = false)}
+        }else{
+            _uiState.update { it.copy(expanded = true)}
+        }
+    }
+
+    fun updateExpandedLongTap(){
+        if(uiState.value.expandedLongTap){
+            _uiState.update { it.copy(expandedLongTap = false)}
+        }else{
+            _uiState.update { it.copy(expandedLongTap = true)}
+        }
+    }
+
     fun removeGroup() {
        val groupIds = uiState.value.longtapGroupId.chunked(36)
         groupIds.mapNotNull { id ->
@@ -152,12 +175,8 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
                                 isMessage(R.string.message_remove_group)
                                 loadData()
                             }
-                            is ApiError -> {
-                                Log.d("TAG", "error message = " + response.message)
-                            }
-                            is ApiExeption -> {
-                                Log.d("TAG", "exeption e = " + response.e)
-                            }
+                            is ApiError -> { Log.d("TAG", "error message = " + response.message) }
+                            is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                         }
                     }
                 }
@@ -199,8 +218,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
                                 validData.add(item)
                             }
                         }
-                        _uiState.update { it.copy(groupGroup = validData) }
-                        _uiState.update { it.copy(searchGroupGroup = validData) }
+                        _uiState.update { it.copy(groupGroup = validData, searchGroupGroup = validData) }
                     }
                     is ApiError -> {
                         Log.d("TAG", "error message = " + response.message)
@@ -224,8 +242,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
                                 validData.add(item)
                             }
                         }
-                        _uiState.update { it.copy(personalGroup = validData)}
-                        _uiState.update { it.copy(searchPersonalGroup = validData)}
+                        _uiState.update { it.copy(personalGroup = validData, searchPersonalGroup = validData)}
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
