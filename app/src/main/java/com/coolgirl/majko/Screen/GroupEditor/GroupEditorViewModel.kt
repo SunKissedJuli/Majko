@@ -9,6 +9,7 @@ import com.coolgirl.majko.data.remote.ApiExeption
 import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.data.remote.dto.GroupData.*
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
+import com.coolgirl.majko.data.remote.dto.TaskData.SearchTask
 import com.coolgirl.majko.data.repository.MajkoGroupRepository
 import com.coolgirl.majko.data.repository.MajkoProjectRepository
 import com.coolgirl.majko.navigation.Screen
@@ -146,7 +147,7 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
 
     private fun getProjectData(){
         viewModelScope.launch {
-            majkoProjectRepository.getPersonalProject().collect() { response ->
+            majkoProjectRepository.getPersonalProject(SearchTask()).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()

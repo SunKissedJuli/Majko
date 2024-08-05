@@ -11,6 +11,7 @@ import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectById
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
+import com.coolgirl.majko.data.remote.dto.TaskData.SearchTask
 import com.coolgirl.majko.data.repository.MajkoProjectRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -36,59 +37,13 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
 
     fun updateSearchString(newSearchString:String, whatFilter: Int){
         when (whatFilter) {
-            0 -> { updatePersonalProject(newSearchString) }
-            1 -> { updateGroupProject(newSearchString) }
-            else -> { updateAllProject(newSearchString) }
-        }
-    }
-
-    private fun updatePersonalProject(newSearchString:String){
-        _uiState.update { currentState ->
-            val filteredPersonalProject = currentState.personalProject?.filter { task ->
-                task.name?.contains(newSearchString, ignoreCase = true) == true ||
-                        task.description?.contains(newSearchString, ignoreCase = true) == true
-            }
-
-            currentState.copy(
-                searchString = newSearchString,
-                searchPersonalProject = filteredPersonalProject,
-                searchGroupProject = null
-            )
-        }
-    }
-
-    private fun updateGroupProject(newSearchString:String){
-        _uiState.update { currentState ->
-            val filteredGroupProject = currentState.groupProject?.filter { task ->
-                task.name?.contains(newSearchString, ignoreCase = true) == true ||
-                        task.description?.contains(newSearchString, ignoreCase = true) == true
-            }
-
-            currentState.copy(
-                searchString = newSearchString,
-                searchPersonalProject = null,
-                searchGroupProject = filteredGroupProject
-            )
-        }
-    }
-
-    private fun updateAllProject(newSearchString:String){
-        _uiState.update { currentState ->
-            val filteredPersonalProject = currentState.personalProject?.filter { task ->
-                task.name?.contains(newSearchString, ignoreCase = true) == true ||
-                        task.description?.contains(newSearchString, ignoreCase = true) == true
-            }
-
-            val filteredGroupProject = currentState.groupProject?.filter { task ->
-                task.name?.contains(newSearchString, ignoreCase = true) == true ||
-                        task.description?.contains(newSearchString, ignoreCase = true) == true
-            }
-
-            currentState.copy(
-                searchString = newSearchString,
-                searchPersonalProject = filteredPersonalProject,
-                searchGroupProject = filteredGroupProject
-            )
+            0 -> {
+                loadPersonalProject(newSearchString)
+                _uiState.update { it.copy(searchString = newSearchString, searchGroupProject = listOf()) } }
+            1 -> {   loadGroupProject(newSearchString)
+                _uiState.update { it.copy(searchString = newSearchString, searchPersonalProject = listOf()) } }
+            else -> { loadData(newSearchString)
+                _uiState.update { it.copy(searchString = newSearchString)  }}
         }
     }
 
@@ -177,14 +132,14 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
     }
 
 
-    fun loadData(){
-        loadPersonalProject()
-        loadGroupProject()
+    fun loadData(search: String = ""){
+        loadPersonalProject(search)
+        loadGroupProject(search)
     }
 
-    private fun loadPersonalProject(){
+    private fun loadPersonalProject(search: String){
         viewModelScope.launch {
-            majkoRepository.getPersonalProject().collect() { response ->
+            majkoRepository.getPersonalProject(SearchTask(search)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()
@@ -202,9 +157,9 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
         }
     }
 
-    private fun loadGroupProject() {
+    private fun loadGroupProject(search: String) {
         viewModelScope.launch {
-            majkoRepository.getGroupProject().collect() { response ->
+            majkoRepository.getGroupProject(SearchTask(search)).collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
                         val validData: MutableList<ProjectDataResponse> = mutableListOf()

@@ -16,7 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.coolgirl.majko.R
+import com.coolgirl.majko.commons.Constantas
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.navigation.Screen
 
@@ -65,13 +67,20 @@ fun ProjectCard(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                Modifier
-                    .fillMaxHeight(0.8f)
-                    .size(25.dp)
-                    .aspectRatio(1f)
-                    .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
-            )
+            if(!projectData.author.image.isNullOrEmpty()){
+                Image(painter = rememberImagePainter(Constantas.BASE_URI + projectData.author.image),
+                    contentDescription = "",
+                    Modifier
+                        .size(25.dp)
+                        .clip(CircleShape))
+            }else{
+                Box(
+                    Modifier
+                        .fillMaxHeight(0.8f)
+                        .size(25.dp)
+                        .aspectRatio(1f)
+                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape))
+            }
             Spacer(Modifier.width(15.dp))
             Text(
                 text = projectData.name,

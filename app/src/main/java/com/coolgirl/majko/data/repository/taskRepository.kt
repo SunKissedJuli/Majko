@@ -19,8 +19,8 @@ class MajkoTaskRepository @Inject constructor(
 ): MajkoTaskRepositoryInterface {
 
     //таски
-    override fun getAllUserTask(): Flow<ApiResult<List<TaskDataResponse>>> = flow {
-        emit(handler { api.getAllUserTask() })
+    override fun getAllUserTask(search: SearchTask): Flow<ApiResult<List<TaskDataResponse>>> = flow {
+        emit(handler { api.getAllUserTask(search) })
     }
 
     override fun postNewTask(task: TaskData): Flow<ApiResult<TaskDataResponse>> = flow {

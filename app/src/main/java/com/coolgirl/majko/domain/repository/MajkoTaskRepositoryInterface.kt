@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MajkoTaskRepositoryInterface {
 
-    fun getAllUserTask(): Flow<ApiResult<List<TaskDataResponse>>>
+    fun getAllUserTask(search: SearchTask): Flow<ApiResult<List<TaskDataResponse>>>
 
     fun postNewTask(task: TaskData): Flow<ApiResult<TaskDataResponse>>
 

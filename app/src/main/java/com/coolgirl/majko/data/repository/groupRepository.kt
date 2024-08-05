@@ -6,6 +6,7 @@ import com.coolgirl.majko.data.remote.dto.GroupData.*
 import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.ProjectData.JoinByInviteProjectData
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
+import com.coolgirl.majko.data.remote.dto.TaskData.SearchTask
 import com.coolgirl.majko.data.remote.handler
 import com.coolgirl.majko.domain.repository.MajkoGroupRepositoryInterface
 import kotlinx.coroutines.flow.Flow
@@ -20,12 +21,12 @@ class MajkoGroupRepository @Inject constructor(
         emit(handler { api.addGroup(group)})
     }
 
-    override fun getPersonalGroup(): Flow<ApiResult<List<GroupResponse>>> = flow {
-        emit(handler { api.getPersonalGroup()})
+    override fun getPersonalGroup(search: SearchTask): Flow<ApiResult<List<GroupResponse>>> = flow {
+        emit(handler { api.getPersonalGroup(search)})
     }
 
-    override fun getGroupGroup(): Flow<ApiResult<List<GroupResponse>>> = flow {
-        emit(handler { api.getGroupGroup()})
+    override fun getGroupGroup(search: SearchTask): Flow<ApiResult<List<GroupResponse>>> = flow {
+        emit(handler { api.getGroupGroup(search)})
     }
 
     override fun getGroupById(groupId: GroupById): Flow<ApiResult<GroupResponse>> = flow {

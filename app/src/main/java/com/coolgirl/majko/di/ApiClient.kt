@@ -1,21 +1,12 @@
 package com.coolgirl.majko.di
-import android.content.Context
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import com.coolgirl.majko.commons.Constantas
 import com.coolgirl.majko.data.dataStore.UserDataStore
 import com.coolgirl.majko.data.remote.ApiMajko
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

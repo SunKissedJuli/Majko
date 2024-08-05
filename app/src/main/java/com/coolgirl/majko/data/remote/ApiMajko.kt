@@ -42,7 +42,7 @@ interface ApiMajko{
 
     //таски
     @POST("api/task/allUserTasks")
-    suspend fun getAllUserTask(): Response<List<TaskDataResponse>>
+    suspend fun getAllUserTask(@Body search: SearchTask): Response<List<TaskDataResponse>>
 
     @POST("api/task/create")
     suspend fun postNewTask(@Body task:TaskData): Response<TaskDataResponse>
@@ -73,10 +73,10 @@ interface ApiMajko{
 
     //проекты
     @POST("api/project/getPersonal")
-    suspend fun getPersonalProject(): Response<List<ProjectDataResponse>>
+    suspend fun getPersonalProject(@Body search: SearchTask): Response<List<ProjectDataResponse>>
 
     @POST("api/project/getPrivate")
-    suspend fun getGroupProject(): Response<List<ProjectDataResponse>>
+    suspend fun getGroupProject(@Body search: SearchTask): Response<List<ProjectDataResponse>>
 
     @POST("api/project/create")
     suspend fun postNewProject(@Body project:ProjectData): Response<ProjectDataResponse>
@@ -116,10 +116,10 @@ interface ApiMajko{
     suspend fun addGroup(@Body group: GroupData) : Response<GroupResponse>
 
     @POST("api/group/getPersonal")
-    suspend fun getPersonalGroup(): Response<List<GroupResponse>>
+    suspend fun getPersonalGroup(@Body search: SearchTask): Response<List<GroupResponse>>
 
     @POST("api/group/getPrivate")
-    suspend fun getGroupGroup(): Response<List<GroupResponse>>
+    suspend fun getGroupGroup(@Body search: SearchTask): Response<List<GroupResponse>>
 
     @POST("api/group/getById")
     suspend fun getGroupById(@Body groupId: GroupById): Response<GroupResponse>

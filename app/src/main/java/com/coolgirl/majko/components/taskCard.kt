@@ -23,7 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.coolgirl.majko.R
+import com.coolgirl.majko.commons.Constantas
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 import com.coolgirl.majko.navigation.Screen
 import java.time.LocalDateTime
@@ -72,12 +74,20 @@ fun TaskCard(navHostController: NavHostController,
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ){
-            Box(
-                Modifier
-                    .fillMaxHeight(0.8f)
-                    .size(27.dp)
-                    .aspectRatio(1f)
-                    .background(MaterialTheme.colorScheme.primary, shape = CircleShape))
+            if(!taskData.creator.get(0).image.isNullOrEmpty()){
+                Image(painter = rememberImagePainter(Constantas.BASE_URI + taskData.creator.get(0).image),
+                    contentDescription = "",
+                    Modifier
+                        .size(27.dp)
+                        .clip(CircleShape))
+            }else{
+                Box(
+                    Modifier
+                        .fillMaxHeight(0.8f)
+                        .size(27.dp)
+                        .aspectRatio(1f)
+                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape))
+            }
 
             Spacer(Modifier.width(7.dp))
             Text(text= taskData.title?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)

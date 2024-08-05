@@ -4,6 +4,7 @@ import com.coolgirl.majko.data.remote.ApiMajko
 import com.coolgirl.majko.data.remote.ApiResult
 import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
+import com.coolgirl.majko.data.remote.dto.TaskData.SearchTask
 import com.coolgirl.majko.data.remote.handler
 import com.coolgirl.majko.domain.repository.MajkoProjectRepositoryInterface
 import kotlinx.coroutines.flow.Flow
@@ -13,12 +14,12 @@ import javax.inject.Inject
 class MajkoProjectRepository @Inject constructor(
     private val api: ApiMajko
 ):MajkoProjectRepositoryInterface{
-    override fun getPersonalProject(): Flow<ApiResult<List<ProjectDataResponse>>> = flow {
-        emit(handler { api.getPersonalProject()})
+    override fun getPersonalProject(search: SearchTask): Flow<ApiResult<List<ProjectDataResponse>>> = flow {
+        emit(handler { api.getPersonalProject(search)})
     }
 
-    override fun getGroupProject(): Flow<ApiResult<List<ProjectDataResponse>>> = flow {
-        emit(handler { api.getGroupProject()})
+    override fun getGroupProject(search: SearchTask): Flow<ApiResult<List<ProjectDataResponse>>> = flow {
+        emit(handler { api.getGroupProject(search)})
     }
 
     override fun postNewProject(project: ProjectData): Flow<ApiResult<ProjectDataResponse>> = flow {

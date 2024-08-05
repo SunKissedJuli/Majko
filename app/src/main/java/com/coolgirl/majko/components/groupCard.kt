@@ -16,7 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.coolgirl.majko.R
+import com.coolgirl.majko.commons.Constantas
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.navigation.Screen
 
@@ -37,7 +39,7 @@ fun GroupCard(navHostController: NavHostController,
         .padding(start = 10.dp, top = 10.dp, end = 10.dp)
         .clip(RoundedCornerShape(20.dp))
         .background(color = priorityColor)
-        .border(3.dp, color =borderColor, shape = RoundedCornerShape(20.dp))
+        .border(3.dp, color = borderColor, shape = RoundedCornerShape(20.dp))
         .combinedClickable(
             onClick = { navHostController.navigate(Screen.GroupEditor.createRoute(groupData.id)) },
             onLongClick = {
@@ -57,11 +59,21 @@ fun GroupCard(navHostController: NavHostController,
                 .fillMaxHeight(0.27f),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically){
-            Box(Modifier.
-            fillMaxHeight(0.8f)
-                .size(25.dp)
-                .aspectRatio(1f)
-                .background(MaterialTheme.colorScheme.primary, shape = CircleShape))
+            if(!groupData.author.image.isNullOrEmpty()){
+                Image(painter = rememberImagePainter(Constantas.BASE_URI + groupData.author.image),
+                    contentDescription = "",
+                    Modifier
+                        .size(25.dp)
+                        .clip(CircleShape))
+            }else{
+                Box(
+                    Modifier
+                        .fillMaxHeight(0.8f)
+                        .size(25.dp)
+                        .aspectRatio(1f)
+                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape))
+            }
+
             Spacer(Modifier.width(15.dp))
             Text(text= groupData.title, modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
 

@@ -5,15 +5,16 @@ import com.coolgirl.majko.data.remote.dto.GroupData.*
 import com.coolgirl.majko.data.remote.dto.MessageData
 import com.coolgirl.majko.data.remote.dto.ProjectData.JoinByInviteProjectData
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
+import com.coolgirl.majko.data.remote.dto.TaskData.SearchTask
 import kotlinx.coroutines.flow.Flow
 
 interface MajkoGroupRepositoryInterface {
 
     fun addGroup(group: GroupData) : Flow<ApiResult<GroupResponse>>
 
-    fun getPersonalGroup() : Flow<ApiResult<List<GroupResponse>>>
+    fun getPersonalGroup(search: SearchTask) : Flow<ApiResult<List<GroupResponse>>>
 
-    fun getGroupGroup() : Flow<ApiResult<List<GroupResponse>>>
+    fun getGroupGroup(search: SearchTask) : Flow<ApiResult<List<GroupResponse>>>
 
     fun getGroupById(groupId: GroupById) : Flow<ApiResult<GroupResponse>>
 

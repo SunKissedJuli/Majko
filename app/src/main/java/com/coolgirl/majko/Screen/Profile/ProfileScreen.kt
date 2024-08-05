@@ -19,7 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.coolgirl.majko.R
+import com.coolgirl.majko.commons.Constantas
 import com.coolgirl.majko.components.*
 import com.coolgirl.majko.navigation.Screen
 import kotlinx.coroutines.launch
@@ -39,7 +41,8 @@ fun ProfileScreen( navController: NavHostController) {
 
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(Modifier
+    Column(
+        Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState()),
@@ -78,15 +81,23 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Image(
-            painter = painterResource(R.drawable.icon_plug),
-            contentDescription = "image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .clickable { launcher.launch("image/*") }
-                .size(200.dp)
-                .clip(CircleShape)
-        )
+        if(uiState.avatar.isNotEmpty()){
+            Image(
+                painter = rememberImagePainter(uiState.avatar),
+                contentDescription = "image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .clickable { launcher.launch("image/*") }
+                    .size(200.dp)
+                    .clip(CircleShape)
+            )
+        }else{
+            Box(modifier = Modifier
+                    .clickable { launcher.launch("image/*") }
+                    .size(200.dp)
+                    .clip(CircleShape))
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = stringResource(R.string.profile_username), fontWeight = FontWeight.Bold, fontSize = 20.sp)

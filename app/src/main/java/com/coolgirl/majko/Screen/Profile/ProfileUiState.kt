@@ -11,6 +11,7 @@ data class ProfileUiState(
     val isChangePassword: Boolean = DEFAULT_BOOLEAN,
     val oldPassword: String = DEFAULT_STRING,
     val newPassword: String = DEFAULT_STRING,
+    val avatar: String = DEFAULT_STRING,
     val confirmPassword: String = DEFAULT_STRING,
     val isError: Boolean = DEFAULT_BOOLEAN,
     val errorMessage: Int? = null,
