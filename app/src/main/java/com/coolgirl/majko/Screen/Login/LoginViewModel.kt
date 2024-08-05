@@ -23,7 +23,7 @@ import org.koin.core.component.inject
 class LoginViewModel(private val majkoRepository: MajkoUserRepository) : ViewModel(), KoinComponent {
 
     private val dataStore: UserDataStore by inject()
-    private val _uiState =  MutableStateFlow(LoginUiState())
+    private val _uiState =  MutableStateFlow(LoginUiState.default())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     fun updateUserPassword(password: String) {

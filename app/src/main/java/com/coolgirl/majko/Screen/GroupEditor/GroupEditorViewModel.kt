@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
                            private val majkoProjectRepository: MajkoProjectRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(GroupEditorUiState())
+    private val _uiState = MutableStateFlow(GroupEditorUiState.default())
     val uiState: StateFlow<GroupEditorUiState> = _uiState.asStateFlow()
 
     fun updateGroupName(name: String){

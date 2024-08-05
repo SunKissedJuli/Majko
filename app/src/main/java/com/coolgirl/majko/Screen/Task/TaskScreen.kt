@@ -1,19 +1,17 @@
 package com.coolgirl.majko.Screen.Task
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,7 +21,6 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
 import com.coolgirl.majko.navigation.*
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -66,7 +63,7 @@ fun TaskScreen(navController: NavHostController) {
                         .height(65.dp)
                         .padding(all = 10.dp)
                         .clip(RoundedCornerShape(30.dp))
-                        .background(color = MaterialTheme.colors.primary),
+                        .background(color = MaterialTheme.colorScheme.primary),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
@@ -76,7 +73,7 @@ fun TaskScreen(navController: NavHostController) {
                         Row {
                             IconButton(onClick = { viewModel.updateExpandedFilter() }, Modifier.size(27.dp)) {
                                 Icon(painter = painterResource(R.drawable.icon_filter),
-                                    contentDescription = "", tint = MaterialTheme.colors.background)
+                                    contentDescription = "", tint = MaterialTheme.colorScheme.background)
                             }
 
                         }
@@ -89,7 +86,7 @@ fun TaskScreen(navController: NavHostController) {
 
                     IconButton(onClick = { viewModel.updateSearchString(uiState.searchString, 2) }, Modifier.size(27.dp)) {
                         Icon(painter = painterResource(R.drawable.icon_filter_off),
-                            contentDescription = "", tint = MaterialTheme.colors.background)
+                            contentDescription = "", tint = MaterialTheme.colorScheme.background)
                     }
                 }
             }
@@ -98,7 +95,8 @@ fun TaskScreen(navController: NavHostController) {
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(it)) {
+                .padding(it)
+                .background(MaterialTheme.colorScheme.background)) {
             Column(Modifier.fillMaxSize()) {
                 SetTaskScreen(navController, viewModel, uiState)
             }
@@ -132,7 +130,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                 item {
                     Text(
                         text = stringResource(R.string.task_favorites),
-                        color = MaterialTheme.colors.onSurface,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp)
                     )
                 }
@@ -141,7 +139,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                         val firstIndex = rowIndex * 2
                         if (firstIndex < favoritesTaskList.size) {
                             Column(Modifier.fillMaxWidth(0.5f)) {
-                                TaskCard(navController, viewModel.getPriority(favoritesTaskList[firstIndex].priority),
+                                TaskCard(navController,  colorResource(viewModel.getPriority(favoritesTaskList[firstIndex].priority)),
                                     viewModel.getStatus(favoritesTaskList[firstIndex].status), taskData = favoritesTaskList[firstIndex],
                                     { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) },
                                     onLongTap = { viewModel.openPanel(it) },
@@ -155,7 +153,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                         val secondIndex = firstIndex + 1
                         if (secondIndex < favoritesTaskList.size) {
                             Column(Modifier.fillMaxWidth()) {
-                                TaskCard(navController, viewModel.getPriority(favoritesTaskList[secondIndex].priority),
+                                TaskCard(navController,  colorResource(viewModel.getPriority(favoritesTaskList[secondIndex].priority)),
                                     viewModel.getStatus(favoritesTaskList[secondIndex].status), taskData = favoritesTaskList[secondIndex],
                                     { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) },
                                     onLongTap = { viewModel.openPanel(it) },
@@ -173,7 +171,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                 item {
                     Text(
                         text = stringResource(R.string.task_each),
-                        color = MaterialTheme.colors.onSurface,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp)
                     )
                 }
@@ -182,7 +180,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                         val firstIndex = rowIndex * 2
                         if (firstIndex < allTaskList.size) {
                             Column(Modifier.fillMaxWidth(0.5f)) {
-                                TaskCard(navController, viewModel.getPriority(allTaskList[firstIndex].priority),
+                                TaskCard(navController,  colorResource(viewModel.getPriority(allTaskList[firstIndex].priority)),
                                     viewModel.getStatus(allTaskList[firstIndex].status), taskData = allTaskList[firstIndex],
                                     { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) },
                                 onLongTap = { viewModel.openPanel(it) },
@@ -196,7 +194,7 @@ fun SetTaskScreen(navController: NavHostController, viewModel: TaskViewModel, ui
                         val secondIndex = firstIndex + 1
                         if (secondIndex < allTaskList.size) {
                             Column(Modifier.fillMaxWidth()) {
-                                TaskCard(navController, viewModel.getPriority(allTaskList[secondIndex].priority),
+                                TaskCard(navController,  colorResource(viewModel.getPriority(allTaskList[secondIndex].priority)),
                                     viewModel.getStatus(allTaskList[secondIndex].status), taskData = allTaskList[secondIndex],
                                     { viewModel.removeFavotite(it) }, { viewModel.addFavotite(it) },
                                     onLongTap = { viewModel.openPanel(it) },
@@ -220,14 +218,14 @@ private fun LongTapPanel(onUpdateStatus: ()-> Unit, onRemoveTask: ()-> Unit,
         Modifier
             .fillMaxWidth()
             .height(65.dp)
-            .background(color = MaterialTheme.colors.secondary),
+            .background(color = MaterialTheme.colorScheme.secondary),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
 
 
         Box(Modifier.padding(all = 10.dp)) {
             IconButton(onClick = {onExpandedLongTap() }) {
                 Icon(painter = painterResource(R.drawable.icon_menu),
-                    contentDescription = "", tint = MaterialTheme.colors.background)
+                    contentDescription = "", tint = MaterialTheme.colorScheme.background)
             }
             DropdownMenu(
                 expanded = uiState.expandedLongTap,

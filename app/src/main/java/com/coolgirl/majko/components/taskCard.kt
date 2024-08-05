@@ -4,19 +4,18 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,7 +34,7 @@ import java.util.*
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TaskCard(navHostController: NavHostController,
-             priorityColor : Int,
+             priorityColor : Color,
              statusName : String,
              taskData: TaskDataResponse,
              onBurnStarClick: (String) -> Unit = {},
@@ -44,19 +43,15 @@ fun TaskCard(navHostController: NavHostController,
              onLongTapRelease: (String) -> Unit = {},
              isSelected: Boolean = false){
 
-    val borderColor = if (isSelected) R.color.purple else R.color.white
+    val borderColor = if (isSelected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.background
 
     Column(modifier = Modifier
         .height(280.dp)
         .fillMaxWidth()
         .padding(5.dp)
         .clip(RoundedCornerShape(20.dp))
-        .background(color = colorResource(priorityColor))
-        .border(
-        3.dp,
-        color = colorResource(borderColor),
-        shape = RoundedCornerShape(20.dp)
-    )
+        .background(color = priorityColor)
+        .border(3.dp, color = borderColor, shape = RoundedCornerShape(20.dp))
         .combinedClickable(
             onClick = { navHostController.navigate(Screen.TaskEditor.createRoute(taskData.id)) },
             onLongClick = {
@@ -77,11 +72,12 @@ fun TaskCard(navHostController: NavHostController,
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ){
-            Box(Modifier.
-            fillMaxHeight(0.8f)
-                .size(27.dp)
-                .aspectRatio(1f)
-                .background(MaterialTheme.colors.primary, shape = CircleShape))
+            Box(
+                Modifier
+                    .fillMaxHeight(0.8f)
+                    .size(27.dp)
+                    .aspectRatio(1f)
+                    .background(MaterialTheme.colorScheme.primary, shape = CircleShape))
 
             Spacer(Modifier.width(7.dp))
             Text(text= taskData.title?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)

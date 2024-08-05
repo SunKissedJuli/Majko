@@ -6,8 +6,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,7 +22,6 @@ import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
 import com.coolgirl.majko.navigation.Screen
-import com.coolgirl.majko.ui.theme.MajkoTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -44,7 +41,7 @@ fun ProfileScreen( navController: NavHostController) {
 
     Column(Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
@@ -100,7 +97,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
 
             IconButton(onClick = { viewModel.updateNameData()  }) {
                 Icon(painter = painterResource(R.drawable.icon_check),
-                    contentDescription = "", tint = MaterialTheme.colors.primary)
+                    contentDescription = "", tint = MaterialTheme.colorScheme.primary)
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -113,7 +110,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
 
             IconButton(onClick = { viewModel.updateEmailData()  }) {
                 Icon(painter = painterResource(R.drawable.icon_check),
-                    contentDescription = "", tint = MaterialTheme.colors.primary)
+                    contentDescription = "", tint = MaterialTheme.colorScheme.primary)
             }
         }
 
@@ -131,7 +128,7 @@ fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit
             verticalAlignment = Alignment.Bottom) {
 
             Text(text = stringResource(R.string.profile_logout),
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable {
                     viewModel.forgetAccount()
                     navController.navigate(Screen.Login.route){
@@ -160,7 +157,7 @@ private fun ChangePassword(uiState: ProfileUiState,onUpdateOldPassword: (String)
                 .height(380.dp)
                 .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colors.secondary)) {
+                .background(MaterialTheme.colorScheme.secondary)) {
 
             WhiteRoundedTextField(uiState.oldPassword, onUpdateOldPassword,
                 stringResource(R.string.profile_oldpassword) )

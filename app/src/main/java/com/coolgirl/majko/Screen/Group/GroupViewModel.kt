@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(GroupUiState())
+    private val _uiState = MutableStateFlow(GroupUiState.default())
     val uiState: StateFlow<GroupUiState> = _uiState.asStateFlow()
 
     fun updateGroupName(name: String){

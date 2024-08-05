@@ -4,16 +4,14 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,13 +24,13 @@ import com.coolgirl.majko.navigation.Screen
 @Composable
 fun ProjectCard(
     navHostController: NavHostController,
-    priorityColor: Int = R.color.white,
+    priorityColor: Color = MaterialTheme.colorScheme.background,
     projectData: ProjectDataResponse,
     onLongTap: (String) -> Unit = {},
     onLongTapRelease: (String) -> Unit = {},
     isSelected: Boolean = false
 ) {
-    val borderColor = if (isSelected) R.color.purple else R.color.gray
+    val borderColor = if (isSelected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface
 
     Column(
         modifier = Modifier
@@ -42,10 +40,10 @@ fun ProjectCard(
             .clip(RoundedCornerShape(20.dp))
             .border(
                 3.dp,
-                color = colorResource(borderColor),
+                color = borderColor,
                 shape = RoundedCornerShape(20.dp)
             )
-            .background(color = colorResource(priorityColor))
+            .background(color = priorityColor)
             .combinedClickable(
                 onClick = { navHostController.navigate(Screen.ProjectEditor.createRoute(projectData.id)) },
                 onLongClick = {
@@ -72,7 +70,7 @@ fun ProjectCard(
                     .fillMaxHeight(0.8f)
                     .size(25.dp)
                     .aspectRatio(1f)
-                    .background(MaterialTheme.colors.primary, shape = CircleShape)
+                    .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
             )
             Spacer(Modifier.width(15.dp))
             Text(

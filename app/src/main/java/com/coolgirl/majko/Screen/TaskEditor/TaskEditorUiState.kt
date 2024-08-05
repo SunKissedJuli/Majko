@@ -8,30 +8,40 @@ import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 
 data class TaskEditorUiState(
-    val taskText: String = "",
-    val taskName: String = "",
-    val taskDeadline: String = "",
-    val taskPriority: Int = 1,
-    val taskStatus: Int = 1,
-    val taskPriorityName: String = "",
+    val taskText: String = DEFAULT_STRING,
+    val taskName: String = DEFAULT_STRING,
+    val taskDeadline: String = DEFAULT_STRING,
+    val taskPriority: Int = DEFAULT_INT,
+    val taskStatus: Int = DEFAULT_INT,
+    val taskPriorityName: String = DEFAULT_STRING,
     val taskStatusName: String = "",
-    val taskProject: String? = "",
+    val taskProject: String? = null,
     val taskProjectObj: ProjectDataResponse? = null,
-    val taskId: String = "0",
-    val backgroundColor: Int = R.color.white,
-    val noteText: String = "",
-    val newNote:Boolean = false,
+    val taskId: String = DEFAULT_TASK_ID,
+    val backgroundColor: Int = DEFAULT_BACKGROUND_COLOR,
+    val noteText: String = DEFAULT_STRING,
+    val newNote: Boolean = DEFAULT_BOOLEAN,
     val notes: List<NoteDataResponse>? = listOf(),
     val subtask: List<TaskDataResponse>? = listOf(),
-    val isAdding: Boolean = false,
-    val subtaskText: String = "",
-    val subtaskName: String = "",
-    val subtaskDeadline: String = "",
-    val subtaskPriority: Int = 1,
-    val subtaskStatus: Int = 1,
-    val subtaskProject: String = "",
+    val isAdding: Boolean = DEFAULT_BOOLEAN,
+    val subtaskText: String = DEFAULT_STRING,
+    val subtaskName: String = DEFAULT_STRING,
+    val subtaskDeadline: String = DEFAULT_STRING,
+    val subtaskPriority: Int = DEFAULT_INT,
+    val subtaskStatus: Int = DEFAULT_INT,
+    val subtaskProject: String = DEFAULT_STRING,
     val statuses: List<InfoUi> = listOf(),
     val proprieties: List<InfoUi> = listOf(),
-    val exitDialog: Boolean = false,
-    val expanded: Boolean = false,
-)
+    val exitDialog: Boolean = DEFAULT_BOOLEAN,
+    val expanded: Boolean = DEFAULT_BOOLEAN
+) {
+    companion object {
+        const val DEFAULT_STRING = ""
+        const val DEFAULT_INT = 1
+        const val DEFAULT_TASK_ID = "0"
+        const val DEFAULT_BACKGROUND_COLOR = R.color.white
+        const val DEFAULT_BOOLEAN = false
+
+        fun default() = TaskEditorUiState()
+    }
+}

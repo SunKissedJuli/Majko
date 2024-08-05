@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
                            private val majkoInfoRepository: MajkoInfoRepository,
                            private val majkoTaskRepository: MajkoTaskRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(ProjectEditUiState())
+    private val _uiState = MutableStateFlow(ProjectEditUiState.default())
     val uiState: StateFlow<ProjectEditUiState> = _uiState.asStateFlow()
 
     fun updateProjectName(name: String){

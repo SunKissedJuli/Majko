@@ -7,12 +7,19 @@ data class ArchiveUiState(
     val groupProject : List<ProjectDataResponse>? = listOf(),
     val searchPersonalProject : List<ProjectDataResponse>? = listOf(),
     val searchGroupProject : List<ProjectDataResponse>? = listOf(),
-    val searchString: String = "",
-    val isLongtap: Boolean = false,
-    val longtapProjectId: String = "",
-    val isError: Boolean = false,
+    val searchString: String = DEFAULT_STRING,
+    val isLongtap: Boolean = DEFAULT_BOOLEAN,
+    val longtapProjectId: String = DEFAULT_STRING,
+    val isError: Boolean = DEFAULT_BOOLEAN,
     val errorMessage: Int? = null,
-    val isMessage: Boolean = false,
+    val isMessage: Boolean = DEFAULT_BOOLEAN,
     val message: Int? = null,
-    val expandedFilter: Boolean = false
-)
+    val expandedFilter: Boolean = DEFAULT_BOOLEAN
+) {
+    companion object {
+        const val DEFAULT_STRING = ""
+        const val DEFAULT_BOOLEAN = false
+
+        fun default() = ArchiveUiState()
+    }
+}

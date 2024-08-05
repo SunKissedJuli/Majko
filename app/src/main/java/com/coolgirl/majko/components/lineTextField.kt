@@ -1,7 +1,7 @@
 package com.coolgirl.majko.components
 
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -16,9 +16,9 @@ fun LineTextField(value: String, onValueChange: (String)-> Unit, placeholder: St
     TextField(
         value = value,
         modifier = modifier.height(55.dp),
-        placeholder = { Text(text = placeholder, color = MaterialTheme.colors.onSurface) },
+        placeholder = { Text(text = placeholder, color = MaterialTheme.colorScheme.onSurface) },
         onValueChange = { onValueChange(it) },
         colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.white),
-            unfocusedContainerColor = MaterialTheme.colors.background)
+            unfocusedContainerColor = MaterialTheme.colorScheme.background)
     )
 }

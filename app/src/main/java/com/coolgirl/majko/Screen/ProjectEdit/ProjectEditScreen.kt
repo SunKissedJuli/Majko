@@ -1,8 +1,6 @@
 package com.coolgirl.majko.Screen.ProjectEdit
 
-import android.app.DatePickerDialog
 import com.coolgirl.majko.R
-import android.widget.DatePicker
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -10,18 +8,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,11 +24,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.components.*
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Composable
 fun ProjectEditScreen(navController: NavHostController, projectId : String){
@@ -86,7 +73,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                Modifier
                    .fillMaxWidth()
                    .height(60.dp)
-                   .background(MaterialTheme.colors.primary)
+                   .background(MaterialTheme.colorScheme.primary)
                    .padding(horizontal = 10.dp),
                verticalAlignment = Alignment.CenterVertically,
                horizontalArrangement = Arrangement.SpaceBetween) {
@@ -96,7 +83,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                Box {
                    IconButton(onClick = {viewModel.updateExpanded() }) {
                        Icon(painter = painterResource(R.drawable.icon_menu),
-                           contentDescription = "", tint = MaterialTheme.colors.background)
+                           contentDescription = "", tint = MaterialTheme.colorScheme.background)
                    }
                    DropdownMenu(
                        expanded = uiState.expanded,
@@ -107,23 +94,29 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                            Row(
                                Modifier
                                    .fillMaxWidth()
-                                   .clickable { viewModel.showMembers()
-                                       viewModel.updateExpanded()}) {
+                                   .clickable {
+                                       viewModel.showMembers()
+                                       viewModel.updateExpanded()
+                                   }) {
                                Text(stringResource(R.string.projectedit_showmembers), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                            }
                        }
                        Row(
                            Modifier
                                .fillMaxWidth()
-                               .clickable { viewModel.removeProject(navController)
-                                   viewModel.updateExpanded()}) {
+                               .clickable {
+                                   viewModel.removeProject(navController)
+                                   viewModel.updateExpanded()
+                               }) {
                            Text(stringResource(R.string.project_delite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                        }
                        Row(
                            Modifier
                                .fillMaxWidth()
-                               .clickable { viewModel.createInvite()
-                                   viewModel.updateExpanded()}) {
+                               .clickable {
+                                   viewModel.createInvite()
+                                   viewModel.updateExpanded()
+                               }) {
                            Text(stringResource(R.string.project_createinvite), fontSize = 18.sp, modifier = Modifier.padding(all = 10.dp))
                        }
                    }
@@ -135,7 +128,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .background(MaterialTheme.colors.background)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(it)
         ) {
             Column(
@@ -155,7 +148,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                                 if (uiState.projectData!!.name.isEmpty()) {
                                     Text(
                                         text = stringResource(R.string.project_name),
-                                        color = MaterialTheme.colors.surface,
+                                        color = MaterialTheme.colorScheme.surface,
                                         fontSize = 20.sp
                                     )
                                 }
@@ -178,7 +171,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                                 if (uiState.projectData!!.description.isEmpty()) {
                                     Text(
                                         text = stringResource(R.string.project_description),
-                                        color = MaterialTheme.colors.surface,
+                                        color = MaterialTheme.colorScheme.surface,
                                         fontSize = 18.sp
                                     )
                                 }
@@ -190,7 +183,8 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
             }
 
             // отображение тасков, добавленных в проект
-            LazyRow(Modifier
+            LazyRow(
+                Modifier
                     .fillMaxWidth()
                     .padding(all = 5.dp)) {
                 if (uiState.projectData != null) {
@@ -201,7 +195,7 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             Column(
                                 Modifier.width(200.dp)) {
                                 TaskCard(navController,
-                                    viewModel.getPriority(projectData[rowIndex].priority),
+                                    colorResource(viewModel.getPriority(projectData[rowIndex].priority)),
                                     viewModel.getStatusName(projectData[rowIndex].status),
                                     projectData[rowIndex])
                             }
@@ -218,9 +212,9 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                     modifier = Modifier
                         .fillMaxWidth(0.65f)
                         .padding(vertical = 10.dp),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)) {
                     Text(text = stringResource(R.string.projectedit_addtask),
-                        color = MaterialTheme.colors.background,
+                        color = MaterialTheme.colorScheme.background,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -239,7 +233,7 @@ private fun SetMembersWindow(uiState: ProjectEditUiState, onDismissRequest: () -
                     .fillMaxWidth()
                     .padding(16.dp)
                     .clip(RoundedCornerShape(25.dp))
-                    .background(MaterialTheme.colors.secondary)
+                    .background(MaterialTheme.colorScheme.secondary)
             ) {
                 Column(Modifier.padding(start = 15.dp)) {
                     Spacer(modifier = Modifier.height(20.dp))
@@ -252,7 +246,7 @@ private fun SetMembersWindow(uiState: ProjectEditUiState, onDismissRequest: () -
                             Row(verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(vertical = 5.dp)) {
                                 Icon(painter = painterResource(R.drawable.icon_line),
-                                    contentDescription = "", tint = MaterialTheme.colors.background)
+                                    contentDescription = "", tint = MaterialTheme.colorScheme.background)
                                 Spacer(modifier = Modifier.width(10.dp))
 
                                 Column {
@@ -273,9 +267,9 @@ private fun SetMembersWindow(uiState: ProjectEditUiState, onDismissRequest: () -
                     .fillMaxWidth()
                     .padding(16.dp)
                     .clip(RoundedCornerShape(25.dp))
-                    .background(MaterialTheme.colors.secondary)
+                    .background(MaterialTheme.colorScheme.secondary)
             ) {
-                Text(text = stringResource(R.string.projectedit_membersempty), color = MaterialTheme.colors.background,
+                Text(text = stringResource(R.string.projectedit_membersempty), color = MaterialTheme.colorScheme.background,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     fontSize = 18.sp, fontWeight = FontWeight.Medium)
             }
@@ -291,7 +285,7 @@ private fun SetInviteWindow(uiState: ProjectEditUiState, onDismissRequest: () ->
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colors.secondary)) {
+                .background(MaterialTheme.colorScheme.secondary)) {
 
             WhiteRoundedTextField(uiState.invite, { },
                 stringResource(R.string.invite), Modifier.padding(bottom = 20.dp))
@@ -314,7 +308,7 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colors.secondary)
+                .background(MaterialTheme.colorScheme.secondary)
         ) {
             Column() {
                 Column(
@@ -340,7 +334,7 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.taskName.isEmpty()) {
                                     Text(text = stringResource(R.string.taskeditor_name),
-                                        color = MaterialTheme.colors.onSurface, fontSize = 20.sp, maxLines = 2)
+                                        color = MaterialTheme.colorScheme.onSurface, fontSize = 20.sp, maxLines = 2)
                                 }
                                 innerTextField()
                             }
@@ -356,14 +350,16 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.taskText.isEmpty()) {
                                     Text(text = stringResource(R.string.taskeditor_hint),
-                                        color = MaterialTheme.colors.onSurface, fontSize = 18.sp, maxLines = 4)
+                                        color = MaterialTheme.colorScheme.onSurface, fontSize = 18.sp, maxLines = 4)
                                 }
                                 innerTextField()
                             }
                         }
                     )
                 }
-                Column(Modifier.fillMaxWidth()
+                Column(
+                    Modifier
+                        .fillMaxWidth()
                         .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
                         .background(color = colorResource(R.color.white)),
@@ -395,7 +391,8 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                     }
                 }
 
-                Row(Modifier
+                Row(
+                    Modifier
                         .fillMaxWidth()
                         .padding(bottom = 5.dp),
                     horizontalArrangement = Arrangement.Center) {
@@ -404,8 +401,8 @@ private fun addTask(uiState: ProjectEditUiState, viewModel: ProjectEditViewModel
                         modifier = Modifier
                             .fillMaxWidth(0.65f)
                             .padding(vertical = 5.dp),
-                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-                        Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)) {
+                        Text(text = stringResource(R.string.project_add), color = MaterialTheme.colorScheme.background,
                             fontSize = 18.sp, fontWeight = FontWeight.Medium)
                     }
                 }

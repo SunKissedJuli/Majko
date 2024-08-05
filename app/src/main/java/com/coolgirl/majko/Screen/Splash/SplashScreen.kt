@@ -4,18 +4,16 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
 import com.coolgirl.majko.R
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -38,7 +36,7 @@ fun SplashScreen(navController: NavController){
     Column(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background),
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -50,7 +48,7 @@ fun SplashScreen(navController: NavController){
 
 @Composable
 private fun LoadingAnimation() {
-    val color = MaterialTheme.colors.primary
+    val color = MaterialTheme.colorScheme.primary
     val infiniteTransition = rememberInfiniteTransition()
     val angle by infiniteTransition.animateFloat(
         initialValue = 0f,

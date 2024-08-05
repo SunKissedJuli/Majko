@@ -3,17 +3,13 @@ package com.coolgirl.majko.Screen.Login
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,7 +20,6 @@ import com.coolgirl.majko.components.BlueRoundedButton
 import com.coolgirl.majko.components.ErrorSnackbar
 import com.coolgirl.majko.components.LineTextField
 import com.coolgirl.majko.navigation.Screen
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -48,7 +43,7 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
     Column(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background),
+            .background(MaterialTheme.colorScheme.background),
     horizontalAlignment = Alignment.Start,
     verticalArrangement = Arrangement.Top){
         Column(
@@ -72,7 +67,7 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
             Modifier
                 .fillMaxSize()
                 .background(
-                    color = MaterialTheme.colors.secondary,
+                    color = MaterialTheme.colorScheme.secondary,
                     shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp)
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,7 +79,7 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
                     .fillMaxWidth(0.8f)
                     .padding(bottom = 60.dp)
                     .background(
-                        color = MaterialTheme.colors.background,
+                        color = MaterialTheme.colorScheme.background,
                         shape = RoundedCornerShape(30.dp)
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,

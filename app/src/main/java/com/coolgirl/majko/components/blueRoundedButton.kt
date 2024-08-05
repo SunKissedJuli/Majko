@@ -2,7 +2,7 @@ package com.coolgirl.majko.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -17,8 +17,8 @@ fun BlueRoundedButton(onClick: ()-> Unit, buttonText: String, modifier: Modifier
     Button(onClick = onClick,
         shape = RoundedCornerShape(rounded.dp),
         modifier = modifier.fillMaxWidth(0.7f),
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-        Text(text = buttonText, color = MaterialTheme.colors.background,
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)) {
+        Text(text = buttonText, color = MaterialTheme.colorScheme.background,
             fontSize = 18.sp, fontWeight = FontWeight.Medium)
     }
 }

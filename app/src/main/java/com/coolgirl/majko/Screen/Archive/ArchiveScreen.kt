@@ -1,13 +1,11 @@
 package com.coolgirl.majko.Screen.Archive
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -65,7 +63,7 @@ fun ArchiveScreen(navController: NavHostController){
                         .height(65.dp)
                         .padding(all = 10.dp)
                         .clip(RoundedCornerShape(30.dp))
-                        .background(color = MaterialTheme.colors.primary),
+                        .background(color = MaterialTheme.colorScheme.primary),
                     verticalAlignment = Alignment.CenterVertically) {
 
                     SearchBox(uiState.searchString, { viewModel.updateSearchString(it, 2) }, R.string.project_search)
@@ -73,7 +71,7 @@ fun ArchiveScreen(navController: NavHostController){
                         Row {
                             IconButton(onClick = { viewModel.updateExpandedFilter() }, Modifier.size(27.dp)) {
                                 Icon(painter = painterResource(R.drawable.icon_filter),
-                                    contentDescription = "", tint = MaterialTheme.colors.background)
+                                    contentDescription = "", tint = MaterialTheme.colorScheme.background)
                             }
 
                         }
@@ -85,7 +83,7 @@ fun ArchiveScreen(navController: NavHostController){
 
                     IconButton(onClick = { viewModel.updateSearchString(uiState.searchString, 2) }, Modifier.size(27.dp)) {
                         Icon(painter = painterResource(R.drawable.icon_filter_off),
-                            contentDescription = "", tint = MaterialTheme.colors.background)
+                            contentDescription = "", tint = MaterialTheme.colorScheme.background)
                     }
                 }
             }
@@ -93,7 +91,8 @@ fun ArchiveScreen(navController: NavHostController){
     ) {
         Column(Modifier
                 .fillMaxSize()
-                .padding(it)) {
+                .padding(it)
+            .background(MaterialTheme.colorScheme.background)) {
             SetArchiveScreen(uiState, navController, viewModel, uiStateCard)
         }
     }
@@ -117,7 +116,7 @@ fun SetArchiveScreen(uiState: ArchiveUiState, navController: NavHostController, 
             if (!groupProject.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.project_group),
-                        color = MaterialTheme.colors.onSurface,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(groupProject) { project ->
@@ -134,7 +133,7 @@ fun SetArchiveScreen(uiState: ArchiveUiState, navController: NavHostController, 
             if (!personalProject.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.project_personal),
-                        color = MaterialTheme.colors.onSurface,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(personalProject) { project ->
@@ -158,14 +157,14 @@ private fun LongTapPanel(onRemovingFromArchive: ()-> Unit, onRemoving: ()-> Unit
         Modifier
             .fillMaxWidth()
             .height(65.dp)
-            .background(color = MaterialTheme.colors.primaryVariant),
+            .background(color = MaterialTheme.colorScheme.secondary),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
 
 
         Box(Modifier.padding(all = 10.dp)) {
             IconButton(onClick = {expandedLongPanel = true  }) {
                 Icon(painter = painterResource(R.drawable.icon_menu),
-                    contentDescription = "", tint = MaterialTheme.colors.background)
+                    contentDescription = "", tint = MaterialTheme.colorScheme.background)
             }
             DropdownMenu(
                 expanded = expandedLongPanel,

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
                     private val majkoInfoRepository: MajkoInfoRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(TaskUiState())
+    private val _uiState = MutableStateFlow(TaskUiState.default())
     val uiState: StateFlow<TaskUiState> = _uiState.asStateFlow()
 
     fun updateSearchString(newSearchString: String, whatFilter: Int) {

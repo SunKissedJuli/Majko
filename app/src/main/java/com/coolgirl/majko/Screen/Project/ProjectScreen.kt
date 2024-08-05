@@ -1,28 +1,18 @@
 package com.coolgirl.majko.Screen.Project
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -30,7 +20,6 @@ import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -87,7 +76,7 @@ fun ProjectScreen(navController: NavHostController){
                         .height(65.dp)
                         .padding(all = 10.dp)
                         .clip(RoundedCornerShape(30.dp))
-                        .background(color = MaterialTheme.colors.primary),
+                        .background(color = MaterialTheme.colorScheme.primary),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
@@ -97,7 +86,7 @@ fun ProjectScreen(navController: NavHostController){
                         Row {
                             IconButton(onClick = { viewModel.updateExpandedFilter() }, Modifier.size(27.dp)) {
                                 Icon(painter = painterResource(R.drawable.icon_filter),
-                                    contentDescription = "", tint = MaterialTheme.colors.background)
+                                    contentDescription = "", tint = MaterialTheme.colorScheme.background)
                             }
                         }
                         FilterDropdown(expanded = uiState.expandedFilter,
@@ -110,13 +99,13 @@ fun ProjectScreen(navController: NavHostController){
 
                     IconButton(onClick = { viewModel.updateSearchString(uiState.searchString, 2) }, Modifier.size(27.dp)) {
                         Icon(painter = painterResource(R.drawable.icon_filter_off),
-                            contentDescription = "", tint = MaterialTheme.colors.background)
+                            contentDescription = "", tint = MaterialTheme.colorScheme.background)
                     }
 
                     Box(Modifier.padding(end = 10.dp)) {
                         IconButton(onClick = { viewModel.updateExpanded() }) {
                             Icon(painter = painterResource(R.drawable.icon_menu),
-                                contentDescription = "", tint = MaterialTheme.colors.background)
+                                contentDescription = "", tint = MaterialTheme.colorScheme.background)
                         }
                         DropdownMenu(
                             expanded = uiState.expanded,
@@ -143,7 +132,8 @@ fun ProjectScreen(navController: NavHostController){
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(it)) {
+                .padding(it)
+                .background(MaterialTheme.colorScheme.background)) {
             Column(Modifier.fillMaxSize()) {
                 SetProjectScreen(uiState, navController, viewModel, uiStateCard)
             }
@@ -175,7 +165,7 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
             if (!groupProject.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.project_group),
-                        color = MaterialTheme.colors.onSurface,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(groupProject) { project ->
@@ -192,7 +182,7 @@ fun SetProjectScreen(uiState: ProjectUiState, navController: NavHostController, 
             if (!personalProject.isNullOrEmpty()) {
                 item {
                     Text(text = stringResource(R.string.project_personal),
-                        color = MaterialTheme.colors.onSurface,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp))
                 }
                 items(personalProject) { project ->
@@ -218,7 +208,7 @@ fun JoinByInviteWindow(uiState: ProjectUiState, onUpdate: (String) -> Unit,
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colors.secondary)) {
+                .background(MaterialTheme.colorScheme.secondary)) {
 
             WhiteRoundedTextField(uiState.invite, onUpdate,
                 stringResource(R.string.invite), Modifier.padding(bottom = 20.dp))
@@ -232,7 +222,7 @@ fun JoinByInviteWindow(uiState: ProjectUiState, onUpdate: (String) -> Unit,
                 if(uiState.invite_message.equals("")){
                     BlueRoundedButton(onJoin, stringResource(R.string.project_joininvite))
                 }else {
-                    Text(text = uiState.invite_message, color = MaterialTheme.colors.background)
+                    Text(text = uiState.invite_message, color = MaterialTheme.colorScheme.background)
                     BlueRoundedButton(onDismissRequest, stringResource(R.string.projectedit_close))
                 }
             }
@@ -250,7 +240,7 @@ fun AddProject(uiState: ProjectUiState,  onUpdateName: (String) -> Unit,
                 .height(380.dp)
                 .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colors.secondary)) {
+                .background(MaterialTheme.colorScheme.secondary)) {
 
             WhiteRoundedTextField(uiState.newProjectName, onUpdateName,
                 stringResource(R.string.project_name) )
@@ -275,7 +265,7 @@ fun LongTapPanel(onAddingToArchive: ()-> Unit, onRemoving: ()-> Unit, uiState: P
         Modifier
             .fillMaxWidth()
             .height(65.dp)
-            .background(color = MaterialTheme.colors.secondary),
+            .background(color = MaterialTheme.colorScheme.secondary),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
 
 
@@ -283,7 +273,7 @@ fun LongTapPanel(onAddingToArchive: ()-> Unit, onRemoving: ()-> Unit, uiState: P
 
             IconButton(onClick = {onLongTapExpanded()}) {
                 Icon(painter = painterResource(R.drawable.icon_menu),
-                    contentDescription = "", tint = MaterialTheme.colors.background)
+                    contentDescription = "", tint = MaterialTheme.colorScheme.background)
             }
 
             DropdownMenu(

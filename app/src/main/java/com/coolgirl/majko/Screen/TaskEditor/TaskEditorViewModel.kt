@@ -22,7 +22,7 @@ import com.coolgirl.majko.navigation.Screen
 
 class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     private val majkoInfoRepository: MajkoInfoRepository) : ViewModel(){
-    private val _uiState = MutableStateFlow(TaskEditorUiState())
+    private val _uiState = MutableStateFlow(TaskEditorUiState.default())
     val uiState: StateFlow<TaskEditorUiState> = _uiState.asStateFlow()
 
     fun updateTaskText(text: String) {
@@ -268,9 +268,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
     }
 
     fun loadData(taskId: String) {
-
         _uiState.update { it.copy(taskId = taskId) }
-
         if(!taskId.equals("0")){
             viewModelScope.launch {
                 majkoRepository.getTaskById(TaskById(uiState.value.taskId)).collect() { response ->
@@ -300,6 +298,10 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
                     }
                 }
             }
+        }
+        else{
+            loadStatuses()
+            loadPriorities()
         }
     }
 

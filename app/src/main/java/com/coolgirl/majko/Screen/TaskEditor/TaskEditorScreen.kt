@@ -1,6 +1,5 @@
 package com.coolgirl.majko.Screen.TaskEditor
 
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -8,14 +7,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.*
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,8 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
@@ -72,7 +66,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 Modifier
                     .fillMaxWidth()
                     .height(60.dp)
-                    .background(MaterialTheme.colors.primary)
+                    .background(MaterialTheme.colorScheme.primary)
                     .padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
@@ -82,7 +76,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     IconButton(onClick = { viewModel.updateExpanded() }) {
                         Icon(
                             painter = painterResource(R.drawable.icon_menu),
-                            contentDescription = "", tint = MaterialTheme.colors.background
+                            contentDescription = "", tint = MaterialTheme.colorScheme.background
                         )
                     }
                     DropdownMenu(
@@ -96,7 +90,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                     viewModel.removeTask(navController)
                                     viewModel.updateExpanded()
                                 }){
-                            Text(stringResource(R.string.project_delite), fontSize=18.sp, color = MaterialTheme.colors.onSecondary,
+                            Text(stringResource(R.string.project_delite), fontSize=18.sp, color = MaterialTheme.colorScheme.onSecondary,
                                 modifier = Modifier.padding(all = 10.dp))
                         }
                     }
@@ -123,7 +117,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                         Row(modifier = Modifier.fillMaxWidth()) {
                             if (uiState.taskName.isEmpty()) {
                                 Text(text = stringResource(R.string.taskeditor_name),
-                                    color = MaterialTheme.colors.onSurface,fontSize = 20.sp) }
+                                    color = MaterialTheme.colorScheme.onSurface,fontSize = 20.sp) }
                             innerTextField() } })
                 BasicTextField(
                     value = uiState.taskText,
@@ -134,7 +128,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                         Row(modifier = Modifier.fillMaxWidth()) {
                             if (uiState.taskText.isEmpty()) {
                                 Text(text = stringResource(R.string.taskeditor_hint),
-                                    color = MaterialTheme.colors.onSurface,fontSize = 18.sp) }
+                                    color = MaterialTheme.colorScheme.onSurface,fontSize = 18.sp) }
                             innerTextField() } })
             }
 
@@ -149,7 +143,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                             verticalAlignment = Alignment.CenterVertically) {
 
                             Icon(painter = painterResource(R.drawable.icon_plus),
-                                contentDescription = "", tint = MaterialTheme.colors.background)
+                                contentDescription = "", tint = MaterialTheme.colorScheme.background)
 
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(text = stringResource(R.string.taskeditor_add),
@@ -171,7 +165,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                     Row(modifier = Modifier.fillMaxWidth()) {
                                         if (uiState.noteText.isEmpty()) {
                                             Text(text = stringResource(R.string.taskeditor_hint),
-                                                color = MaterialTheme.colors.onSurface,fontSize = 18.sp) }
+                                                color = MaterialTheme.colorScheme.onSurface,fontSize = 18.sp) }
                                         innerTextField() } })
 
                             Row(Modifier.fillMaxWidth(),
@@ -182,9 +176,9 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                                     modifier = Modifier
                                         .fillMaxWidth(0.65f)
                                         .padding(vertical = 10.dp),
-                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
+                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)) {
                                     Text(text = stringResource(R.string.project_add),
-                                        color = MaterialTheme.colors.background,
+                                        color = MaterialTheme.colorScheme.background,
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Medium)
                                 }
@@ -206,7 +200,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                             val count = uiState.subtask?.size?:0
                             items(count) { rowIndex ->
                                 Column(Modifier.width(200.dp)) {
-                                    TaskCard(navController, viewModel.getPriority(subtask[rowIndex].priority),
+                                    TaskCard(navController,  colorResource(viewModel.getPriority(subtask[rowIndex].priority)),
                                         viewModel.getStatusName(subtask[rowIndex].status)?: stringResource(R.string.common_no),
                                         subtask[rowIndex])
                                 }
@@ -216,18 +210,8 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                 }
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
-                    Button(onClick = { viewModel.addingTask() },
-                        shape = CircleShape,
-                        modifier = Modifier
-                            .fillMaxWidth(0.65f)
-                            .padding(vertical = 10.dp),
-                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary)) {
-                        Text(text = stringResource(R.string.taskeditor_addtask),
-                            color = MaterialTheme.colors.background,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
+                    BlueRoundedButton({ viewModel.addingTask() }, stringResource(R.string.taskeditor_addtask),
+                        modifier = Modifier.padding(bottom = 10.dp, top = 20.dp))
                 }
             }
 
@@ -236,7 +220,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     .fillMaxWidth()
                     .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 15.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(color = MaterialTheme.colors.background),
+                    .background(color = MaterialTheme.colorScheme.background),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top) {
 
@@ -281,13 +265,13 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colors.secondary)) {
+                .background(MaterialTheme.colorScheme.secondary)) {
             Column {
                 Column(
                     Modifier
                         .padding(all = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(color = MaterialTheme.colors.background),
+                        .background(color = MaterialTheme.colorScheme.background),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top) {
 
@@ -305,7 +289,7 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         decorationBox = { innerTextField ->
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.subtaskName.isEmpty()) {
-                                    Text(text = stringResource(R.string.taskeditor_name), color = MaterialTheme.colors.onSurface,
+                                    Text(text = stringResource(R.string.taskeditor_name), color = MaterialTheme.colorScheme.onSurface,
                                         fontSize = 20.sp, maxLines = 2)
                                 }
                                 innerTextField()
@@ -322,7 +306,7 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                             Row(modifier = Modifier.fillMaxWidth()) {
                                 if (uiState.subtaskText.isEmpty()) {
                                     Text(text = stringResource(R.string.taskeditor_hint),
-                                        color = MaterialTheme.colors.onSurface, fontSize = 18.sp, maxLines = 4)
+                                        color = MaterialTheme.colorScheme.onSurface, fontSize = 18.sp, maxLines = 4)
                                 }
                                 innerTextField()
                             }
@@ -334,7 +318,7 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         .fillMaxWidth()
                         .padding(start = 15.dp, top = 5.dp, end = 15.dp, bottom = 15.dp)
                         .clip(RoundedCornerShape(20.dp))
-                        .background(color = MaterialTheme.colors.background),
+                        .background(color = MaterialTheme.colorScheme.background),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top) {
 
@@ -354,7 +338,7 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         Text(
                             text = stringResource(R.string.taskeditor_project) + (" ") + (uiState.taskProjectObj?.name
                                 ?: stringResource(R.string.common_no)), fontSize = 18.sp,
-                            color = MaterialTheme.colors.onSecondary,)
+                            color = MaterialTheme.colorScheme.onSecondary,)
                         HorizontalLine()
 
                         SpinnerSample(
@@ -377,8 +361,8 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                             .fillMaxWidth(0.65f)
                             .padding(vertical = 10.dp),
                         colors = ButtonDefaults.buttonColors(
-                            MaterialTheme.colors.primary)) {
-                        Text(text = stringResource(R.string.project_add), color = MaterialTheme.colors.background,
+                            MaterialTheme.colorScheme.primary)) {
+                        Text(text = stringResource(R.string.project_add), color = MaterialTheme.colorScheme.background,
                             fontSize = 18.sp, fontWeight = FontWeight.Medium)
                     }
                 }
@@ -397,7 +381,7 @@ private fun SetNotes(uiState: TaskEditorUiState, onUpdateNoteText: (String, Stri
 
                 Icon(painter = painterResource(R.drawable.icon_line),
                     contentDescription = "",
-                    tint = MaterialTheme.colors.background)
+                    tint = MaterialTheme.colorScheme.background)
                 Spacer(modifier = Modifier.width(10.dp))
 
                 BasicTextField(
@@ -409,18 +393,18 @@ private fun SetNotes(uiState: TaskEditorUiState, onUpdateNoteText: (String, Stri
                         Row(modifier = Modifier.fillMaxWidth()) {
                             if (item.note.isEmpty()) {
                                 Text(text = stringResource(R.string.taskeditor_hint),
-                                    color = MaterialTheme.colors.surface,fontSize = 18.sp) }
+                                    color = MaterialTheme.colorScheme.surface,fontSize = 18.sp) }
                             innerTextField() } })
                 Spacer(modifier = Modifier.width(5.dp))
 
                 IconButton(onClick = { onSaveNote(item.id, item.note) }) {
                     Icon(painter = painterResource(R.drawable.icon_check),
-                        contentDescription = "", tint = MaterialTheme.colors.primary)
+                        contentDescription = "", tint = MaterialTheme.colorScheme.primary)
                 }
 
                 IconButton(onClick = { onRemoveNote(item.id) }) {
                     Icon(painter = painterResource(R.drawable.icon_delete),
-                        contentDescription = "", tint = MaterialTheme.colors.onSecondary)
+                        contentDescription = "", tint = MaterialTheme.colorScheme.onSecondary)
                 }
             }
         }

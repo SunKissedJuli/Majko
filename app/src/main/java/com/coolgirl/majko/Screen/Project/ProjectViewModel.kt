@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : ViewModel(){
-    private val _uiState = MutableStateFlow(ProjectUiState())
+    private val _uiState = MutableStateFlow(ProjectUiState.default())
     val uiState: StateFlow<ProjectUiState> = _uiState.asStateFlow()
 
     private val _uiStateCard = MutableStateFlow(ProjectCardUiState())
