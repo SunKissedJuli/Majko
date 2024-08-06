@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -79,7 +80,8 @@ fun TaskCard(navHostController: NavHostController,
                     contentDescription = "",
                     Modifier
                         .size(27.dp)
-                        .clip(CircleShape))
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop)
             }else{
                 Box(
                     Modifier
