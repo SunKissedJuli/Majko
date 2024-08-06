@@ -143,8 +143,6 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
                         if(response.data.image.isNotEmpty()){
                             _uiState.update { it.copy(avatar = Constantas.BASE_URI + response.data.image)}
                         }
-                        Log.d("TAG", "avatar = " + uiState.value.avatar)
-
                 }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

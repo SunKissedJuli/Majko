@@ -36,11 +36,11 @@ fun ErrorSnackbar(
         Snackbar(
             action = {
                 TextButton(onClick = { data.dismiss() }) {
-                    Text(stringResource(R.string.message_ok), color = MaterialTheme.colorScheme.onError)
+                    Text(stringResource(R.string.message_ok), color = MaterialTheme.colorScheme.onSecondary)
                 }
             },
             containerColor = MaterialTheme.colorScheme.error,
-            contentColor = MaterialTheme.colorScheme.onError,
+            contentColor = MaterialTheme.colorScheme.onSecondary,
             modifier = Modifier.alpha(0.9f)
         ) {
             Text(text = data.visuals.message)
