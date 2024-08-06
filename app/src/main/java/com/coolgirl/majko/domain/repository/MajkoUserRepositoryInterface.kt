@@ -9,6 +9,7 @@ import com.coolgirl.majko.data.remote.dto.User.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface MajkoUserRepositoryInterface {
 
@@ -24,6 +25,6 @@ interface MajkoUserRepositoryInterface {
 
    fun updateUserPassword(user: UserUpdatePassword): Flow<ApiResult<CurrentUserDataResponseUi>>
 
-   fun updateUserImage(user: UserUpdateImage): Flow<ApiResult<CurrentUserDataResponseUi>>
+   fun updateUserImage(user: UserUpdateImage, file: File): Flow<ApiResult<CurrentUserDataResponseUi>>
 
 }

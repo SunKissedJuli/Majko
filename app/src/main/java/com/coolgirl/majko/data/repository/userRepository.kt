@@ -7,15 +7,18 @@ import com.coolgirl.majko.data.dataUi.User.toUi
 import com.coolgirl.majko.data.remote.ApiMajko
 import com.coolgirl.majko.data.remote.ApiResult
 import com.coolgirl.majko.data.remote.dto.*
-import com.coolgirl.majko.data.remote.dto.User.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
-import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
 import com.coolgirl.majko.data.remote.handler
 import com.coolgirl.majko.data.remote.map
 import com.coolgirl.majko.domain.repository.MajkoUserRepositoryInterface
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class MajkoUserRepository @Inject constructor(
     private val api: ApiMajko
@@ -57,8 +60,14 @@ class MajkoUserRepository @Inject constructor(
         emit(uiResult)
     }
 
-    override fun updateUserImage(user: UserUpdateImage): Flow<ApiResult<CurrentUserDataResponseUi>> = flow {
-        val apiResult = handler { api.updateUserImage(user) }
+    override fun updateUserImage(user: UserUpdateImage, file: File): Flow<ApiResult<CurrentUserDataResponseUi>> = flow {
+        val namePart = RequestBody.create("text/plain".toMediaTypeOrNull(), user.name ?: "")
+        val filePart = MultipartBody.Part.createFormData(
+            "image",
+            file.name,
+            file.asRequestBody("image/*".toMediaTypeOrNull())
+        )
+        val apiResult = handler { api.updateUserImage(namePart, filePart) }
         val uiResult = apiResult.map { it.toUi() }
         emit(uiResult)
     }

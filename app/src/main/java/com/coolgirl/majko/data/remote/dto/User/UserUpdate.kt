@@ -13,8 +13,7 @@ data class UserUpdateName(
 )
 
 data class UserUpdateImage(
-    @SerializedName("name") val name : String?,
-    @SerializedName("image") val image : File?,
+    @SerializedName("name") val name : String?
 )
 
 data class UserUpdatePassword(

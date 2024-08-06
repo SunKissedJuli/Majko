@@ -170,54 +170,56 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
 
     @SuppressLint("Range", "SuspiciousIndentation")
     @Composable
-    fun OpenGalery(context: Context = LocalContext.current): ManagedActivityResultLauncher<String, Uri?> {
+    fun OpenGallery(context: Context = LocalContext.current): ManagedActivityResultLauncher<String, Uri?> {
         var file by remember { mutableStateOf<File?>(null) }
         val coroutineScope = rememberCoroutineScope()
         val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            val cursor: Cursor? = context.getContentResolver().query(uri!!, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    var fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                    val iStream : InputStream = context.contentResolver.openInputStream(uri!!)!!
-                    val outputDir : File = context.cacheDir
-                    val outputFile : File = File(outputDir,fileName)
-                    copyStreamToFile(iStream, outputFile)
-                    file = outputFile
-                    iStream.close()
-
-                }
-            }finally { cursor!!.close()
-                coroutineScope.launch() {
-                    viewModelScope.launch {
-                        majkoRepository.updateUserImage(UserUpdateImage(uiState.value.userName, file)).collect() { response ->
-                            when(response){
-                                is ApiSuccess ->{  }
-                                is ApiError -> { Log.d("TAG", "error message = " + response.message) }
-                                is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
-                                else -> {}
-                            }
-                        }
+            uri?.let {
+                 file = getFileFromUri(context, uri)
+                coroutineScope.launch {
+                    if (file != null) {
+                        updateUserImage(UserUpdateImage(uiState.value.userName), file!!)
                     }
                 }
-
             }
         }
+
         return launcher
     }
 
-
-    private fun copyStreamToFile(inputStream: InputStream, outputFile: File){
-        inputStream.use { input ->
-            val outputStream = FileOutputStream(outputFile)
-            outputStream.use { output ->
-                val buffer = ByteArray(4 * 1024) // buffer size
-                while (true) {
-                    val byteCount = input.read(buffer)
-                    if (byteCount < 0) break
-                    output.write(buffer, 0, byteCount)
+    private suspend fun updateUserImage(user: UserUpdateImage, file: File) {
+        Log.d("tag", "updateUserImage file")
+            majkoRepository.updateUserImage(user, file).collect { response ->
+                when (response) {
+                    is ApiSuccess -> {
+                        loadData()
+                    }
+                    is ApiError -> {
+                        Log.d("TAG", "Error message = ${response.message}")
+                    }
+                    is ApiExeption -> {
+                        Log.d("TAG", "Exception e = ${response.e}")
+                    }
+                    else -> {}
                 }
-               output.flush()
             }
+    }
+
+
+    private fun getFileFromUri(context: Context, uri: Uri): File? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val file = File(context.cacheDir, "temp_image")
+
+            inputStream?.use { input ->
+                FileOutputStream(file).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            file
+        } catch (e: Exception) {
+            Log.e("OpenGallery", "Error getting file from URI: ${e.message}", e)
+            null
         }
     }
 }

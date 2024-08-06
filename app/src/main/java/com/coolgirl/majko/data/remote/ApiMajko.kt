@@ -13,6 +13,8 @@ import com.coolgirl.majko.data.remote.dto.TaskData.*
 import com.coolgirl.majko.data.remote.dto.User.CurrentUserDataResponse
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpDataResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -37,8 +39,9 @@ interface ApiMajko{
     @POST("api/user/update")
     suspend fun updateUserPassword(@Body user: UserUpdatePassword): Response<CurrentUserDataResponse>
 
+    @Multipart
     @POST("api/user/update")
-    suspend fun updateUserImage(@Body user: UserUpdateImage): Response<CurrentUserDataResponse>
+    suspend fun updateUserImage(@Part("name") name: RequestBody, @Part image: MultipartBody.Part): Response<CurrentUserDataResponse>
 
     //таски
     @POST("api/task/allUserTasks")

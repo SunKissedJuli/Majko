@@ -74,7 +74,7 @@ fun ProfileScreen( navController: NavHostController) {
 }
 
 @Composable
-fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit, onUpdateUserEmail: (String) -> Unit, viewModel: ProfileViewModel, navController: NavHostController, launcher: ManagedActivityResultLauncher<String, Uri?> = viewModel.OpenGalery()) {
+fun SetProfileScreen(uiState: ProfileUiState, onUpdateUserName: (String) -> Unit, onUpdateUserEmail: (String) -> Unit, viewModel: ProfileViewModel, navController: NavHostController, launcher: ManagedActivityResultLauncher<String, Uri?> = viewModel.OpenGallery()) {
 
     Column(
         Modifier.fillMaxSize(),
