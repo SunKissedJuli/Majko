@@ -13,13 +13,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 fun ApiClient(userDataStore: UserDataStore): ApiMajko {
 
     val token = runBlocking {
-        "Bearer " + (userDataStore.getAccessToken().first()?: null)
+        userDataStore.getAccessToken().first() ?: null
     }
+
+    val authorizationHeader = getAuthorizationHeader(token)
 
     val interceptor = Interceptor { chain ->
         val request = chain.request().newBuilder()
             .addHeader("Accept", "application/json")
-            .addHeader("Authorization", token)
+            .addHeader("Authorization", authorizationHeader)
             .build()
         chain.proceed(request)
     }
@@ -35,5 +37,9 @@ fun ApiClient(userDataStore: UserDataStore): ApiMajko {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(ApiMajko::class.java)
+}
+
+private fun getAuthorizationHeader(token: String?): String {
+    return "Bearer $token"
 }
 

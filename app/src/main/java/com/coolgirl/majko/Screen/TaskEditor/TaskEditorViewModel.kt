@@ -200,11 +200,10 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun saveTask(navHostController: NavHostController){
+    fun saveTask(navHostController: NavHostController, newTask: TaskUpdateData){
         if(!uiState.value.taskId.equals("0")){
-           updateTask(navHostController)
+           updateTask(navHostController, newTask)
         }else{
-           // navHostController.navigate(Screen.Task.route)
             navHostController.popBackStack()
             viewModelScope.launch {
                 val newTask = TaskData(uiState.value.taskName, uiState.value.taskText,uiState.value.taskDeadline,
@@ -220,11 +219,9 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun updateTask(navHostController: NavHostController){
+    fun updateTask(navHostController: NavHostController, newTask: TaskUpdateData){
         navHostController.popBackStack()
         viewModelScope.launch {
-            val newTask = TaskUpdateData(uiState.value.taskId, uiState.value.taskName, uiState.value.taskText,
-                uiState.value.taskPriority,uiState.value.taskDeadline, uiState.value.taskStatus)
             majkoRepository.updateTask(newTask).collect() { response ->
                 when(response){
                     is ApiSuccess -> { }
@@ -235,10 +232,8 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun saveSubtask(){
+    fun saveSubtask(newTask: TaskData){
         viewModelScope.launch {
-            val newTask = TaskData(uiState.value.subtaskName, uiState.value.subtaskText,uiState.value.subtaskDeadline,
-                uiState.value.subtaskPriority,uiState.value.subtaskStatus,"",uiState.value.taskId)
             majkoRepository.postNewTask(newTask).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
@@ -336,9 +331,9 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         }
     }
 
-    fun addNote(){
+    fun addNote(note: NoteData){
         viewModelScope.launch {
-            majkoRepository.addNote(NoteData(uiState.value.taskId, uiState.value.noteText)).collect() { response ->
+            majkoRepository.addNote(note).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
                         addNewNote()

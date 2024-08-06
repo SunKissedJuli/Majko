@@ -20,6 +20,9 @@ import com.coolgirl.majko.Screen.Splash.SplashScreen
 import com.coolgirl.majko.Screen.Task.TaskScreen
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorScreen
 import com.coolgirl.majko.navigation.Screen.Archive.createStringArgument
+import com.coolgirl.majko.navigation.Screen.Archive.groupEditorArguments
+import com.coolgirl.majko.navigation.Screen.Archive.projectEditorArguments
+import com.coolgirl.majko.navigation.Screen.Archive.taskEditorArguments
 
 @Composable
 fun AppNavHost(
@@ -65,7 +68,7 @@ fun AppNavHost(
 
         composable(
             route = Screen.ProjectEditor.route,
-            arguments = listOf(createStringArgument(Screen.NavArgs.PROJECT_ID))
+            arguments = projectEditorArguments()
         ) { backStackEntry ->
             val projectId = backStackEntry.arguments?.getString(Screen.NavArgs.PROJECT_ID) ?: ""
             ProjectEditScreen(navController, projectId)
@@ -73,7 +76,7 @@ fun AppNavHost(
 
         composable(
             route = Screen.GroupEditor.route,
-            arguments = listOf(createStringArgument(Screen.NavArgs.GROUP_ID))
+            arguments = groupEditorArguments()
         ) { backStackEntry ->
             val groupId = backStackEntry.arguments?.getString(Screen.NavArgs.GROUP_ID) ?: ""
             GroupEditorScreen(navController, groupId)
@@ -81,7 +84,7 @@ fun AppNavHost(
 
         composable(
             route = Screen.TaskEditor.route,
-            arguments = listOf(createStringArgument(Screen.NavArgs.TASK_ID))
+            arguments = taskEditorArguments()
         ) { backStackEntry ->
             val taskId = backStackEntry.arguments?.getString(Screen.NavArgs.TASK_ID) ?: ""
             TaskEditorScreen(navController, taskId)

@@ -213,11 +213,9 @@ class ProjectEditViewModel(private val majkoRepository: MajkoProjectRepository,
         }
     }
 
-    fun saveProject(navHostController: NavHostController){
+    fun saveProject(navHostController: NavHostController, updateProject: ProjectUpdate){
         navHostController.popBackStack()
         viewModelScope.launch {
-            val updateProject = ProjectUpdate(uiState.value.projectId, uiState.value.projectData!!.name,
-                uiState.value.projectData!!.description, uiState.value.projectData!!.isArchive)
             majkoRepository.updateProject(updateProject).collect() { response ->
                 when(response){
                     is ApiSuccess ->{  }

@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
 import com.coolgirl.majko.data.dataUi.ProjectData.toUi
+import com.coolgirl.majko.data.remote.dto.GroupData.GroupUpdate
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 @Composable
@@ -45,7 +46,8 @@ fun GroupEditorScreen(navController: NavHostController, groupId: String){
     if (uiState.exitDialog) {
         ExitAlertDialog(
             onConfirm = { viewModel.updateExitDialog()
-                viewModel.saveGroup(navController) },
+                viewModel.saveGroup(navController, GroupUpdate(uiState.groupId,
+                    uiState.groupData!!.title, uiState.groupData!!.description)) },
             onDismiss = { viewModel.updateExitDialog()
                 navController.popBackStack()})
     }
@@ -74,7 +76,8 @@ fun SetGroupEditorScreen(uiState: GroupEditorUiState, viewModel: GroupEditorView
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
 
-                ButtonBack({viewModel.saveGroup(navController)})
+                ButtonBack({viewModel.saveGroup(navController, GroupUpdate(uiState.groupId,
+                    uiState.groupData!!.title, uiState.groupData!!.description))})
 
                 Box() {
                     IconButton(onClick = {viewModel.updateExpanded() }) {

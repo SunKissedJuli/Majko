@@ -24,6 +24,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.components.*
 import com.coolgirl.majko.data.dataUi.TaskData.toUi
+import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectUpdate
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -46,7 +47,8 @@ fun ProjectEditScreen(navController: NavHostController, projectId : String){
     if (uiState.exitDialog) {
         ExitAlertDialog(
             onConfirm = { viewModel.updateExitDialog()
-                viewModel.saveProject(navController) },
+                viewModel.saveProject(navController, ProjectUpdate(uiState.projectId, uiState.projectData!!.name,
+                    uiState.projectData!!.description, uiState.projectData!!.isArchive)) },
             onDismiss = { viewModel.updateExitDialog()
                 navController.popBackStack()})
     }
@@ -79,7 +81,8 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                verticalAlignment = Alignment.CenterVertically,
                horizontalArrangement = Arrangement.SpaceBetween) {
 
-               ButtonBack({viewModel.saveProject(navController)})
+               ButtonBack({viewModel.saveProject(navController, ProjectUpdate(uiState.projectId, uiState.projectData!!.name,
+                   uiState.projectData!!.description, uiState.projectData!!.isArchive))})
 
                Box {
                    IconButton(onClick = {viewModel.updateExpanded() }) {

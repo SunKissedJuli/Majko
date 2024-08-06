@@ -19,6 +19,7 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.components.BlueRoundedButton
 import com.coolgirl.majko.components.ErrorSnackbar
 import com.coolgirl.majko.components.LineTextField
+import com.coolgirl.majko.data.remote.dto.UserSignUpData.UserSignUpData
 import com.coolgirl.majko.navigation.Screen
 import org.koin.androidx.compose.koinViewModel
 
@@ -117,7 +118,9 @@ fun SetRegisterScreen(navController: NavController, viewModel: RegisterViewModel
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom) {
 
-        BlueRoundedButton({ viewModel.signUp(navController) }, stringResource(R.string.login_registration),
+        BlueRoundedButton({ viewModel.signUp(navController,
+            UserSignUpData(uiState.userLogin, uiState.userPassword, uiState.userName)) },
+            stringResource(R.string.login_registration),
             modifier = Modifier.fillMaxWidth(0.73f), rounded = 15)
 
         Spacer(modifier = Modifier.height(10.dp))

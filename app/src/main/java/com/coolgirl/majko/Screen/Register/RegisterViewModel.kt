@@ -53,7 +53,7 @@ class RegisterViewModel(private val majkoRepository: MajkoUserRepository) : View
         }
     }
 
-    fun signUp(navController: NavController) {
+    fun signUp(navController: NavController, userSignUpData: UserSignUpData) {
         if (uiState.value.userPassword.isNullOrEmpty() || uiState.value.userLogin.isNullOrEmpty()
             || uiState.value.userName.isNullOrEmpty() || uiState.value.userPasswordRepeat.isNullOrEmpty()) {
             isError(R.string.error_moredata)
@@ -63,8 +63,7 @@ class RegisterViewModel(private val majkoRepository: MajkoUserRepository) : View
             isError(R.string.error_login_passwordlenght)
         } else{
             viewModelScope.launch {
-                majkoRepository.signUp(
-                    UserSignUpData(uiState.value.userLogin, uiState.value.userPassword, uiState.value.userName)).collect() { response ->
+                majkoRepository.signUp(userSignUpData).collect() { response ->
                         when (response) {
                             is ApiSuccess -> {
                                 setAccesToken(response.data!!.accessToken!!)

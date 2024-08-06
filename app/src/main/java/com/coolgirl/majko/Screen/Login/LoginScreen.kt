@@ -19,6 +19,7 @@ import com.coolgirl.majko.R
 import com.coolgirl.majko.components.BlueRoundedButton
 import com.coolgirl.majko.components.ErrorSnackbar
 import com.coolgirl.majko.components.LineTextField
+import com.coolgirl.majko.data.remote.dto.UserSignInData
 import com.coolgirl.majko.navigation.Screen
 import org.koin.androidx.compose.koinViewModel
 
@@ -109,7 +110,9 @@ fun SetLoginScreen(navController: NavController, viewModel: LoginViewModel, uiSt
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom) {
 
-        BlueRoundedButton({ viewModel.signIn(navController) }, stringResource(R.string.login_enter),
+        BlueRoundedButton({ viewModel.signIn(navController,
+            UserSignInData(uiState.userLogin, uiState.userPassword)) },
+            stringResource(R.string.login_enter),
             modifier = Modifier.fillMaxWidth(0.73f), rounded = 15)
 
         Spacer(modifier = Modifier.height(10.dp))

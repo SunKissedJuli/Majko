@@ -48,10 +48,10 @@ class LoginViewModel(private val majkoRepository: MajkoUserRepository) : ViewMod
         }
     }
 
-    fun signIn(navController: NavController){
+    fun signIn(navController: NavController, userSignInData: UserSignInData){
         if(!uiState.value.userPassword.isNullOrEmpty()&&!uiState.value.userLogin.isNullOrEmpty()){
             viewModelScope.launch {
-                majkoRepository.signIn(UserSignInData(uiState.value.userLogin, uiState.value.userPassword))
+                majkoRepository.signIn(userSignInData)
                     .collect() { response ->
                         when (response) {
                             is ApiSuccess -> {

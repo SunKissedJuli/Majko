@@ -24,6 +24,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
+import com.coolgirl.majko.data.remote.dto.NoteData.NoteData
+import com.coolgirl.majko.data.remote.dto.TaskData.TaskData
+import com.coolgirl.majko.data.remote.dto.TaskData.TaskUpdateData
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -45,7 +48,9 @@ fun TaskEditorScreen(navController: NavHostController, taskId : String){
     if (uiState.exitDialog) {
         ExitAlertDialog(
             onConfirm = { viewModel.updateExitDialog()
-                viewModel.saveTask(navController) },
+                viewModel.saveTask(navController,
+                    TaskUpdateData(uiState.taskId, uiState.taskName, uiState.taskText,
+                uiState.taskPriority,uiState.taskDeadline, uiState.taskStatus)) },
             onDismiss = { viewModel.updateExitDialog()
                 navController.popBackStack()})
     }
@@ -71,7 +76,8 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     .padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
-                ButtonBack({viewModel.saveTask(navController)})
+                ButtonBack({viewModel.saveTask(navController, TaskUpdateData(uiState.taskId, uiState.taskName, uiState.taskText,
+                    uiState.taskPriority,uiState.taskDeadline, uiState.taskStatus))})
 
                 Box {
                     IconButton(onClick = { viewModel.updateExpanded() }) {
@@ -172,7 +178,7 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                             Row(Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center){
 
-                                Button(onClick = { viewModel.addNote() },
+                                Button(onClick = { viewModel.addNote(NoteData(uiState.taskId, uiState.noteText)) },
                                     shape = CircleShape,
                                     modifier = Modifier
                                         .fillMaxWidth(0.65f)
@@ -359,7 +365,10 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
                         .fillMaxWidth()
                         .padding(bottom = 10.dp),
                     horizontalArrangement = Arrangement.Center) {
-                    Button(onClick = { viewModel.saveSubtask() },
+                    Button(onClick = { viewModel.saveSubtask(
+                        TaskData(uiState.subtaskName, uiState.subtaskText,uiState.subtaskDeadline,
+                        uiState.subtaskPriority,uiState.subtaskStatus,uiState.taskProject,uiState.taskId)
+                    ) },
                         shape = CircleShape,
                         modifier = Modifier
                             .fillMaxWidth(0.65f)

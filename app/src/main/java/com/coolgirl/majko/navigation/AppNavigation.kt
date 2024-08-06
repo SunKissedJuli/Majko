@@ -40,6 +40,10 @@ sealed class Screen(val route: String) {
         type = NavType.StringType
     }
 
+    fun projectEditorArguments() = listOf(createStringArgument(Screen.NavArgs.PROJECT_ID))
+    fun groupEditorArguments() = listOf(createStringArgument(Screen.NavArgs.GROUP_ID))
+    fun taskEditorArguments() = listOf(createStringArgument(Screen.NavArgs.TASK_ID))
+
     object NavArgs {
         const val PROJECT_ID = "projectId"
         const val GROUP_ID = "groupId"
