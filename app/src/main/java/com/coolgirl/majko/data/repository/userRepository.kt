@@ -39,20 +39,28 @@ class MajkoUserRepository @Inject constructor(
         emit(uiResult)
     }
 
-    override fun updateUserName(user: UserUpdateName): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.updateUserName(user) })
+    override fun updateUserName(user: UserUpdateName): Flow<ApiResult<CurrentUserDataResponseUi>> = flow {
+        val apiResult = handler { api.updateUserName(user) }
+        val uiResult = apiResult.map { it.toUi() }
+        emit(uiResult)
     }
 
-    override fun updateUserEmail(user: UserUpdateEmail): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.updateUserEmail(user) })
+    override fun updateUserEmail(user: UserUpdateEmail): Flow<ApiResult<CurrentUserDataResponseUi>> = flow {
+        val apiResult = handler { api.updateUserEmail(user) }
+        val uiResult = apiResult.map { it.toUi() }
+        emit(uiResult)
     }
 
-    override fun updateUserPassword(user: UserUpdatePassword): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.updateUserPassword(user) })
+    override fun updateUserPassword(user: UserUpdatePassword): Flow<ApiResult<CurrentUserDataResponseUi>> = flow {
+        val apiResult = handler { api.updateUserPassword(user) }
+        val uiResult = apiResult.map { it.toUi() }
+        emit(uiResult)
     }
 
-    override fun updateUserImage(user: UserUpdateImage): Flow<ApiResult<CurrentUserDataResponse>> = flow {
-        emit(handler { api.updateUserImage(user) })
+    override fun updateUserImage(user: UserUpdateImage): Flow<ApiResult<CurrentUserDataResponseUi>> = flow {
+        val apiResult = handler { api.updateUserImage(user) }
+        val uiResult = apiResult.map { it.toUi() }
+        emit(uiResult)
     }
 
 }

@@ -151,7 +151,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
         return if (!uiState.value.statuses.isNullOrEmpty()) {
             uiState.value.statuses.find { it.id == statusId }?.name ?:  R.string.common_no.toString()
         } else {
-            R.string.common_no.toString()
+            ""
         }
     }
 
@@ -173,7 +173,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
                 }
             }
         }
-        return R.string.common_no.toString()
+        return ""
     }
 
     fun saveUpdateNote(noteId: String, noteText: String){
@@ -275,19 +275,19 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
                     when(response){
                         is ApiSuccess ->{
 
-                            updateTaskPriority(response.data!!.priority.toString())
-                            if(response.data!!.countNotes!=0){ loadNotesData() }
-                            if(response.data!!.countSubtasks!=0){ loadSubtaskData() }
+                            updateTaskPriority(response.data.priority.toString())
+                            if(response.data.countNotes!=0){ loadNotesData() }
+                            if(response.data.countSubtasks!=0){ loadSubtaskData() }
 
                             _uiState.update { it.copy(
                                 taskId = taskId,
-                                taskDeadline = response.data!!.deadline,
-                                taskName = response.data!!.title!!,
-                                taskText = response.data!!.text!!,
-                                taskStatus = response.data!!.status,
-                                taskPriority = response.data!!.priority,
-                                taskProjectObj = response.data!!.project,
-                                taskProject = response.data!!.project?.id
+                                taskDeadline = response.data.deadline,
+                                taskName = response.data.title,
+                                taskText = response.data.text,
+                                taskStatus = response.data.status,
+                                taskPriority = response.data.priority,
+                                taskProjectObj = response.data.project,
+                                taskProject = response.data.project.id
                                 ) }
 
                             loadStatuses()
@@ -311,7 +311,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoInfoRepository.getStatuses().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        _uiState.update { it.copy(statuses = response.data!!)}
+                        _uiState.update { it.copy(statuses = response.data)}
                         _uiState.update { it.copy(taskStatusName = getStatusName(uiState.value.taskStatus)) }
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -326,7 +326,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoInfoRepository.getPriorities().collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        _uiState.update { it.copy(proprieties = response.data!!)}
+                        _uiState.update { it.copy(proprieties = response.data)}
                         _uiState.update {it.copy(taskPriorityName = getPriorityName(uiState.value.taskPriority)) }
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -356,7 +356,7 @@ class TaskEditorViewModel(private val majkoRepository: MajkoTaskRepository,
             viewModelScope.launch {
                 majkoRepository.getSubtask(TaskById(uiState.value.taskId)).collect() { response ->
                     when(response){
-                        is ApiSuccess ->{ _uiState.update { it.copy(subtask = response.data!!) }}
+                        is ApiSuccess ->{ _uiState.update { it.copy(subtask = response.data) }}
                         is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                         is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }
                     }

@@ -2,14 +2,15 @@ package com.coolgirl.majko.Screen.Group
 
 import com.coolgirl.majko.R
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorUiState
+import com.coolgirl.majko.data.dataUi.GroupData.GroupResponseUi
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 
 data class GroupUiState(
-    val personalGroup : List<GroupResponse>? = listOf(),
-    val groupGroup : List<GroupResponse>? = listOf(),
-    val searchPersonalGroup : List<GroupResponse>? = listOf(),
-    val searchGroupGroup : List<GroupResponse>? = listOf(),
+    val personalGroup : List<GroupResponseUi>? = listOf(),
+    val groupGroup : List<GroupResponseUi>? = listOf(),
+    val searchPersonalGroup : List<GroupResponseUi>? = listOf(),
+    val searchGroupGroup : List<GroupResponseUi>? = listOf(),
     val searchString: String = DEFAULT_STRING,
     val isAdding: Boolean = DEFAULT_BOOLEAN,
     val newGroupName : String = DEFAULT_STRING,

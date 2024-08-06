@@ -8,6 +8,7 @@ import com.coolgirl.majko.data.remote.ApiError
 import com.coolgirl.majko.data.remote.ApiExeption
 import com.coolgirl.majko.data.remote.ApiSuccess
 import com.coolgirl.majko.components.ProjectCardUiState
+import com.coolgirl.majko.data.dataUi.ProjectData.ProjectDataResponseUi
 import com.coolgirl.majko.data.remote.dto.ProjectData.*
 import com.coolgirl.majko.data.remote.dto.TaskData.SearchTask
 import com.coolgirl.majko.data.repository.MajkoProjectRepository
@@ -218,7 +219,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
             majkoRepository.getPersonalProject(SearchTask(search)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                        val validData: MutableList<ProjectDataResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
                             if (item.isPersonal && item.isArchive==0) {
                                 validData.add(item)
@@ -239,7 +240,7 @@ class ProjectViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
             majkoRepository.getGroupProject(SearchTask(search)).collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                        val validData: MutableList<ProjectDataResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
                             if (!item.isPersonal && item.isArchive == 0) {
                                 validData.add(item)

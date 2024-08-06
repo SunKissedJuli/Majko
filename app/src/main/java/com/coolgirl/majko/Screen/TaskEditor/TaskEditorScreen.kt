@@ -1,5 +1,6 @@
 package com.coolgirl.majko.Screen.TaskEditor
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -238,7 +239,10 @@ fun SetTaskEditorScreen(uiState: TaskEditorUiState, onUpdateTaskText: (String) -
                     }
 
                     HorizontalLine()
-                    Text(text= stringResource(R.string.taskeditor_project) + (" ") + (uiState.taskProjectObj?.name ?: stringResource(R.string.common_no)), fontSize = 18.sp)
+                    Text(text = stringResource(R.string.taskeditor_project) + " " +
+                            (uiState.taskProjectObj.name.ifEmpty { stringResource(R.string.common_no) }),
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onSecondary)
                     HorizontalLine()
                     if(uiState.taskStatusName.isNotEmpty()||uiState.taskId=="0"){
                         SpinnerSample(
@@ -331,20 +335,20 @@ private fun AddNewTask(uiState: TaskEditorUiState, viewModel: TaskEditorViewMode
 
                             SpinnerSample(name = stringResource(R.string.taskeditor_priority),
                                 items = viewModel.getPriority(),
-                                selectedItem = viewModel.getPriorityName(uiState.subtaskPriority)?: stringResource(R.string.common_no),
+                                selectedItem = viewModel.getPriorityName(uiState.subtaskPriority),
                                 { viewModel.updateSubtaskPriority(it) })
                         HorizontalLine()
-
-                        Text(
-                            text = stringResource(R.string.taskeditor_project) + (" ") + (uiState.taskProjectObj?.name
-                                ?: stringResource(R.string.common_no)), fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onSecondary,)
+                        Text(text = stringResource(R.string.taskeditor_project) + " " +
+                                    (uiState.taskProjectObj.name.ifEmpty { stringResource(R.string.common_no) }),
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
                         HorizontalLine()
 
                         SpinnerSample(
                             name = stringResource(R.string.taskeditor_status),
                             items = viewModel.getStatus(),
-                            selectedItem = viewModel.getStatusName(uiState.subtaskStatus)?: stringResource(R.string.common_no),
+                            selectedItem = viewModel.getStatusName(uiState.subtaskStatus),
                             { viewModel.updateSubtaskStatus(it) })
                         HorizontalLine()
                     }

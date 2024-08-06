@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.components.*
+import com.coolgirl.majko.data.dataUi.TaskData.toUi
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -195,8 +196,8 @@ fun SetProjectEditScreen(uiState: ProjectEditUiState, viewModel: ProjectEditView
                             Column(
                                 Modifier.width(200.dp)) {
                                 TaskCard(navController,
-                                    colorResource(viewModel.getPriority(projectData[rowIndex].priority)),
-                                    viewModel.getStatusName(projectData[rowIndex].status),
+                                    colorResource(viewModel.getPriority(projectData[rowIndex].priority!!)),
+                                    viewModel.getStatusName(projectData[rowIndex].status!!),
                                     projectData[rowIndex])
                             }
                         }

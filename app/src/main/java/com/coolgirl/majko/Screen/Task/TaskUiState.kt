@@ -3,14 +3,15 @@ package com.coolgirl.majko.Screen.Task
 import com.coolgirl.majko.R
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorUiState
 import com.coolgirl.majko.data.dataUi.Info.InfoUi
+import com.coolgirl.majko.data.dataUi.TaskData.TaskDataResponseUi
 import com.coolgirl.majko.data.remote.dto.Info.Info
 import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
 
 data class TaskUiState(
-    val allTaskList: List<TaskDataResponse>? = listOf(),
-    val favoritesTaskList: List<TaskDataResponse>? = listOf(),
-    val searchAllTaskList: List<TaskDataResponse>? = listOf(),
-    val searchFavoritesTaskList: List<TaskDataResponse>? = listOf(),
+    val allTaskList: List<TaskDataResponseUi>? = listOf(),
+    val favoritesTaskList: List<TaskDataResponseUi>? = listOf(),
+    val searchAllTaskList: List<TaskDataResponseUi>? = listOf(),
+    val searchFavoritesTaskList: List<TaskDataResponseUi>? = listOf(),
     val searchString: String = DEFAULT_STRING,
     val statuses: List<InfoUi> = listOf(),
     val isError: Boolean = DEFAULT_BOOLEAN,

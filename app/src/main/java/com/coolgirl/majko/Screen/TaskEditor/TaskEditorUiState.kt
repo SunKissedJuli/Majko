@@ -2,6 +2,9 @@ package com.coolgirl.majko.Screen.TaskEditor
 
 import com.coolgirl.majko.R
 import com.coolgirl.majko.data.dataUi.Info.InfoUi
+import com.coolgirl.majko.data.dataUi.NoteData.NoteDataResponseUi
+import com.coolgirl.majko.data.dataUi.ProjectData.ProjectDataResponseUi
+import com.coolgirl.majko.data.dataUi.TaskData.TaskDataResponseUi
 import com.coolgirl.majko.data.remote.dto.Info.Info
 import com.coolgirl.majko.data.remote.dto.NoteData.NoteDataResponse
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
@@ -14,15 +17,15 @@ data class TaskEditorUiState(
     val taskPriority: Int = DEFAULT_INT,
     val taskStatus: Int = DEFAULT_INT,
     val taskPriorityName: String = DEFAULT_STRING,
-    val taskStatusName: String = "",
-    val taskProject: String? = null,
-    val taskProjectObj: ProjectDataResponse? = null,
+    val taskStatusName: String = DEFAULT_STRING,
+    val taskProject: String = DEFAULT_STRING,
+    val taskProjectObj: ProjectDataResponseUi = ProjectDataResponseUi.empty(),
     val taskId: String = DEFAULT_TASK_ID,
     val backgroundColor: Int = DEFAULT_BACKGROUND_COLOR,
     val noteText: String = DEFAULT_STRING,
     val newNote: Boolean = DEFAULT_BOOLEAN,
-    val notes: List<NoteDataResponse>? = listOf(),
-    val subtask: List<TaskDataResponse>? = listOf(),
+    val notes: List<NoteDataResponseUi>? = listOf(),
+    val subtask: List<TaskDataResponseUi>? = listOf(),
     val isAdding: Boolean = DEFAULT_BOOLEAN,
     val subtaskText: String = DEFAULT_STRING,
     val subtaskName: String = DEFAULT_STRING,

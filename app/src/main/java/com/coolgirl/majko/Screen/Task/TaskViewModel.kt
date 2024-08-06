@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
+import com.coolgirl.majko.data.dataUi.TaskData.TaskDataResponseUi
 import com.coolgirl.majko.data.remote.ApiError
 import com.coolgirl.majko.data.remote.ApiExeption
 import com.coolgirl.majko.data.remote.ApiSuccess
@@ -79,7 +80,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
                 }
             }
         }
-        return R.string.common_no.toString()
+        return ""
     }
 
     fun updateExpandedFilter(){
@@ -108,10 +109,10 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoRepository.getAllUserTask(SearchTask(search)).collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
-                        val fav: MutableList<TaskDataResponse> = mutableListOf()
-                        val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
+                        val fav: MutableList<TaskDataResponseUi> = mutableListOf()
+                        val notFavorite: MutableList<TaskDataResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (!item.isFavorite && !item.mainTaskId.isNullOrEmpty()) {
+                            if (!item.isFavorite) {
                                 notFavorite.add(item)
                             }else if(item.isFavorite){
                                 fav.add(item)
@@ -135,7 +136,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoRepository.getAllUserTask(SearchTask(search)).collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
-                        val fav: MutableList<TaskDataResponse> = mutableListOf()
+                        val fav: MutableList<TaskDataResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
                             if(item.isFavorite){
                                 fav.add(item)
@@ -159,9 +160,9 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoRepository.getAllUserTask(SearchTask(search)).collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
-                        val notFavorite: MutableList<TaskDataResponse> = mutableListOf()
+                        val notFavorite: MutableList<TaskDataResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
-                            if (!item.isFavorite && !item.mainTaskId.isNullOrEmpty()) {
+                            if (!item.isFavorite) {
                                 notFavorite.add(item)
                             }
                         }
@@ -184,7 +185,7 @@ class TaskViewModel(private val majkoRepository: MajkoTaskRepository,
             majkoInfoRepository.getStatuses().collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
-                        _uiState.update { it.copy(statuses = response.data!!) }
+                        _uiState.update { it.copy(statuses = response.data) }
                     }
                     is ApiError -> {
                         Log.d("TAG", "error message = " + response.message)

@@ -15,7 +15,7 @@ data class ProfileUiState(
     val confirmPassword: String = DEFAULT_STRING,
     val isError: Boolean = DEFAULT_BOOLEAN,
     val errorMessage: Int? = null,
-    val currentUser: CurrentUserDataResponseUi? = null,
+    val currentUser: CurrentUserDataResponseUi? = CurrentUserDataResponseUi.empty(),
     val isMessage: Boolean = DEFAULT_BOOLEAN,
     val message: Int? = null
 ){

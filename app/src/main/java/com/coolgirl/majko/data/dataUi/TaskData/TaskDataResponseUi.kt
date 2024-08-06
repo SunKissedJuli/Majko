@@ -50,7 +50,7 @@ fun TaskDataResponse.toUi(): TaskDataResponseUi {
         countNotes = this.countNotes ?: 0,
         countFiles = this.countFiles ?: 0,
         isFavorite = this.isFavorite ?: false,
-        project = this.project!!.toUi()
+        project = this.project?.toUi()?: ProjectDataResponseUi.empty()
     )
 }
 

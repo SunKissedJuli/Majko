@@ -23,6 +23,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.*
+import com.coolgirl.majko.data.dataUi.ProjectData.toUi
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 @Composable

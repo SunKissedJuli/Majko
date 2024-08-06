@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
 import com.coolgirl.majko.components.ProjectCardUiState
+import com.coolgirl.majko.data.dataUi.ProjectData.ProjectDataResponseUi
 import com.coolgirl.majko.data.remote.ApiError
 import com.coolgirl.majko.data.remote.ApiExeption
 import com.coolgirl.majko.data.remote.ApiSuccess
@@ -111,7 +112,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
                 ?: uiState.value.groupProject?.find { it.id == id }
 
             project?.let {
-                val removeProject = ProjectById(it.id)
+                val removeProject = ProjectById(it.id!!)
 
                 viewModelScope.launch {
                     majkoRepository.removeProject(removeProject).collect { response ->
@@ -142,7 +143,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
             majkoRepository.getPersonalProject(SearchTask(search)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                        val validData: MutableList<ProjectDataResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
                             if (item.isPersonal && item.isArchive==1) {
                                 validData.add(item)
@@ -162,7 +163,7 @@ class ArchiveViewModel(private val majkoRepository: MajkoProjectRepository) : Vi
             majkoRepository.getGroupProject(SearchTask(search)).collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                        val validData: MutableList<ProjectDataResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
                             if (!item.isPersonal && item.isArchive == 1) {
                                 validData.add(item)

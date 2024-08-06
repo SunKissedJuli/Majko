@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.coolgirl.majko.R
+import com.coolgirl.majko.data.dataUi.GroupData.GroupResponseUi
 import com.coolgirl.majko.data.remote.ApiError
 import com.coolgirl.majko.data.remote.ApiExeption
 import com.coolgirl.majko.data.remote.ApiSuccess
@@ -164,7 +165,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
             majkoRepository.getGroupGroup(SearchTask(search)).collect() { response ->
                 when (response) {
                     is ApiSuccess -> {
-                        val validData: MutableList<GroupResponse> = mutableListOf()
+                        val validData: MutableList<GroupResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
                             if (!item.isPersonal) {
                                 validData.add(item)
@@ -188,7 +189,7 @@ class GroupViewModel(private val majkoRepository: MajkoGroupRepository) : ViewMo
             majkoRepository.getPersonalGroup(SearchTask(search)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        val validData: MutableList<GroupResponse> = mutableListOf()
+                        val validData: MutableList<GroupResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
                             if (item.isPersonal ) {
                                 validData.add(item)

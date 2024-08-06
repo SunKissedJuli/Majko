@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.Constantas
+import com.coolgirl.majko.data.dataUi.ProjectData.ProjectDataResponseUi
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 import com.coolgirl.majko.navigation.Screen
 
@@ -27,7 +28,7 @@ import com.coolgirl.majko.navigation.Screen
 fun ProjectCard(
     navHostController: NavHostController,
     priorityColor: Color = MaterialTheme.colorScheme.background,
-    projectData: ProjectDataResponse,
+    projectData: ProjectDataResponseUi,
     onLongTap: (String) -> Unit = {},
     onLongTapRelease: (String) -> Unit = {},
     isSelected: Boolean = false

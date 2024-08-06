@@ -9,7 +9,17 @@ data class CurrentUserDataResponseUi(
     var name : String,
     var image : String,
     var email : String,
-)
+){
+    companion object{
+        fun empty() = CurrentUserDataResponseUi(
+            id = "",
+            createdAt = "",
+            updatedAt = "",
+            name = "",
+            image = "",
+            email = "")
+    }
+}
 
 fun CurrentUserDataResponse.toUi() : CurrentUserDataResponseUi{
    return CurrentUserDataResponseUi(

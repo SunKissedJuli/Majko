@@ -1,5 +1,7 @@
 package com.coolgirl.majko.data.dataUi.ProjectData
 
+import androidx.compose.ui.res.stringResource
+import com.coolgirl.majko.R
 import com.coolgirl.majko.data.dataUi.User.CurrentUserDataResponseUi
 import com.coolgirl.majko.data.dataUi.User.toUi
 import com.coolgirl.majko.data.remote.dto.ProjectData.Member
@@ -19,7 +21,23 @@ data class ProjectDataResponseUi(
     val image: String,
     var isPersonal: Boolean,
     val countFiles: Int,
-)
+){
+    companion object{
+        fun empty() = ProjectDataResponseUi(
+            id = "",
+            createdAt = "",
+            updatedAt = "",
+            name = "",
+            description = "",
+            isArchive = 0,
+            author = CurrentUserDataResponseUi.empty(),
+            members = listOf(),
+            image = "",
+            isPersonal = true,
+            countFiles = 0
+        )
+    }
+}
 
 fun ProjectDataResponse.toUi() : ProjectDataResponseUi{
     return ProjectDataResponseUi(
@@ -29,8 +47,8 @@ fun ProjectDataResponse.toUi() : ProjectDataResponseUi{
         name = this.name.orEmpty(),
         description = this.description.orEmpty(),
         isArchive = this.isArchive?:0,
-        author = this.author.toUi(),
-        members = this.members,
+        author = this.author?.toUi()?: CurrentUserDataResponseUi.empty(),
+        members = this.members?: emptyList(),
         image = this.image.orEmpty(),
         isPersonal = this.isPersonal?:true,
         countFiles = this.countFiles?:0

@@ -2,13 +2,14 @@ package com.coolgirl.majko.Screen.Project
 
 import com.coolgirl.majko.R
 import com.coolgirl.majko.Screen.TaskEditor.TaskEditorUiState
+import com.coolgirl.majko.data.dataUi.ProjectData.ProjectDataResponseUi
 import com.coolgirl.majko.data.remote.dto.ProjectData.ProjectDataResponse
 
 data class ProjectUiState(
-    val personalProject : List<ProjectDataResponse>? = listOf(),
-    val groupProject : List<ProjectDataResponse>? = listOf(),
-    val searchPersonalProject : List<ProjectDataResponse>? = listOf(),
-    val searchGroupProject : List<ProjectDataResponse>? = listOf(),
+    val personalProject : List<ProjectDataResponseUi>? = listOf(),
+    val groupProject : List<ProjectDataResponseUi>? = listOf(),
+    val searchPersonalProject : List<ProjectDataResponseUi>? = listOf(),
+    val searchGroupProject : List<ProjectDataResponseUi>? = listOf(),
     val searchString: String = DEFAULT_STRING,
     val isAdding: Boolean = DEFAULT_BOOLEAN,
     val newProjectName : String = DEFAULT_STRING,

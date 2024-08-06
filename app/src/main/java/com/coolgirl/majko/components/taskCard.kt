@@ -26,7 +26,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.Constantas
-import com.coolgirl.majko.data.remote.dto.TaskData.TaskDataResponse
+import com.coolgirl.majko.data.dataUi.TaskData.TaskDataResponseUi
 import com.coolgirl.majko.navigation.Screen
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -38,7 +38,7 @@ import java.util.*
 fun TaskCard(navHostController: NavHostController,
              priorityColor : Color,
              statusName : String,
-             taskData: TaskDataResponse,
+             taskData: TaskDataResponseUi,
              onBurnStarClick: (String) -> Unit = {},
              onDeadStarClick: (String) -> Unit = {},
              onLongTap: (String) -> Unit = {},
@@ -90,7 +90,7 @@ fun TaskCard(navHostController: NavHostController,
             }
 
             Spacer(Modifier.width(7.dp))
-            Text(text= taskData.title?: stringResource(R.string.common_noname), modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
+            Text(text= taskData.title, modifier = Modifier.fillMaxWidth(0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium, softWrap = true, maxLines = 2)
             Spacer(Modifier.width(5.dp))
             if (taskData.isFavorite==true){
                 IconButton(onClick = { onBurnStarClick(taskData.id) }) {
@@ -113,7 +113,7 @@ fun TaskCard(navHostController: NavHostController,
                 .fillMaxHeight(0.64f),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top){
-            Text(text= taskData.text?: stringResource(R.string.common_nonote), fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
+            Text(text= taskData.text, fontSize = 13.sp, fontWeight = FontWeight.Light, softWrap = true, maxLines = 9)
         }
         Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.Bottom){
             Column(
@@ -130,7 +130,7 @@ fun TaskCard(navHostController: NavHostController,
                 Row(Modifier.padding(start = 10.dp, bottom = 2.dp), horizontalArrangement = Arrangement.Center){
                     Text(text= stringResource(R.string.taskeditor_status) + " " + statusName, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                 }
-                if(taskData.project!=null){
+                if(taskData.project.name.isNotEmpty()){
                     Row(Modifier.padding(start = 10.dp), horizontalArrangement = Arrangement.Center){
                         Text(text= stringResource(R.string.projectedit_project) + " " + taskData.project.name, fontSize = 13.sp, fontWeight = FontWeight.Medium, maxLines = 2)
                     }

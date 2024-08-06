@@ -62,7 +62,7 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
                     .collect() { response ->
                         when (response) {
                             is ApiSuccess -> {
-                                _uiState.update { it.copy(currentUser = response.data.toUi()) }
+                                _uiState.update { it.copy(currentUser = response.data) }
                                 isMessage(R.string.message_success)
                             }
                             is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -73,11 +73,12 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
         }
     }
 
-    fun isError(message: Int?){
-        if(uiState.value.isError){
-            _uiState.update { it.copy(isError = false)}
-        }else{
-            _uiState.update { it.copy(errorMessage = message, isError = true)}
+    fun isError(message: Int?) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                errorMessage = message,
+                isError = message != null // Устанавливаем isError в true, если message не null
+            )
         }
     }
 
@@ -94,7 +95,7 @@ class ProfileViewModel(private val majkoRepository: MajkoUserRepository) : ViewM
             majkoRepository.updateUserEmail(UserUpdateEmail(uiState.value.userName, uiState.value.userEmail)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        _uiState.update { it.copy(currentUser = response.data.toUi()) }
+                        _uiState.update { it.copy(currentUser = response.data) }
                         isMessage(R.string.message_success)
                     }
                     is ApiError -> {

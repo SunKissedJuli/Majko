@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.coolgirl.majko.R
 import com.coolgirl.majko.commons.Constantas
+import com.coolgirl.majko.data.dataUi.GroupData.GroupResponseUi
 import com.coolgirl.majko.data.remote.dto.GroupData.GroupResponse
 import com.coolgirl.majko.navigation.Screen
 
@@ -26,7 +27,7 @@ import com.coolgirl.majko.navigation.Screen
 @Composable
 fun GroupCard(navHostController: NavHostController,
               priorityColor : Color = MaterialTheme.colorScheme.background,
-              groupData: GroupResponse,
+              groupData: GroupResponseUi,
               onLongTap: (String) -> Unit = {},
               onLongTapRelease: (String) -> Unit = {},
               isSelected: Boolean = false){

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.coolgirl.majko.data.dataUi.ProjectData.ProjectDataResponseUi
 import com.coolgirl.majko.data.remote.ApiError
 import com.coolgirl.majko.data.remote.ApiExeption
 import com.coolgirl.majko.data.remote.ApiSuccess
@@ -92,9 +93,9 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
             majkoRepository.getGroupById(GroupById(uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        _uiState.update { it.copy(groupData = response.data!!) }
+                        _uiState.update { it.copy(groupData = response.data) }
                         if(!response.data.members.isNullOrEmpty()){
-                            _uiState.update { it.copy(members = response.data!!.members) }
+                            _uiState.update { it.copy(members = response.data.members) }
                         }
                     }
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
@@ -150,7 +151,7 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
             majkoProjectRepository.getPersonalProject(SearchTask()).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        val validData: MutableList<ProjectDataResponse> = mutableListOf()
+                        val validData: MutableList<ProjectDataResponseUi> = mutableListOf()
                         response.data?.forEach { item ->
                             if (item.isPersonal && item.isArchive == 0) {
                                 validData.add(item)
@@ -169,7 +170,7 @@ class GroupEditorViewModel(private val majkoRepository: MajkoGroupRepository,
             majkoRepository.createInvitetoGroup(GroupByIdUnderscore(uiState.value.groupId)).collect() { response ->
                 when(response){
                     is ApiSuccess ->{
-                        _uiState.update { it.copy(invite = response.data!!.invite) }
+                        _uiState.update { it.copy(invite = response.data.invite) }
                         newInvite()}
                     is ApiError -> { Log.d("TAG", "error message = " + response.message) }
                     is ApiExeption -> { Log.d("TAG", "exeption e = " + response.e) }

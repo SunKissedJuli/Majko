@@ -19,7 +19,7 @@ fun NoteDataResponse.toUi(): NoteDataResponseUi{
     return NoteDataResponseUi(
         id = this.id.orEmpty(),
         note = this.note.orEmpty(),
-        author = this.author.toUi(),
+        author = this.author?.toUi()?: CurrentUserDataResponseUi.empty(),
         createdAt = this.createdAt.orEmpty(),
         updatedAt = this.updatedAt.orEmpty(),
         isPersonal = this.isPersonal?:true,
